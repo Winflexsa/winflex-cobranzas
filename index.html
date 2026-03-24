@@ -176,6 +176,7 @@ tbody tr:hover td{background:var(--surface2)}
           <thead><tr><th>Fecha</th><th>Cliente</th><th>Concepto</th><th>Total</th><th>Efectivo</th><th>Transf.</th><th>Cheques</th><th></th></tr></thead>
           <tbody id="mes-body"></tbody>
         </table></div>
+        <div id="mes-conc-totals" style="padding:12px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;border-top:1px solid var(--border);margin-top:8px"></div>
       </div>
     </div>
 
@@ -434,6 +435,11 @@ function renderMesDetalle(){
   charts.mesPag=new Chart(document.getElementById('chart-mes-pago'),{type:'doughnut',data:{labels:['Efectivo','Transferencia','Cheques'],datasets:[{data:[Math.round(ef),Math.round(tr),Math.round(ch)],backgroundColor:['#16a34a','#2563eb','#d97706']}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},color:'#6b6860'}}}}});
   // Table
   const sorted=[...regs].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  // Build totals by concepto
+  const concTotals = {};
+  regs.forEach(r=>{ concTotals[r.concepto]=(concTotals[r.concepto]||0)+r.total; });
+  const totalMes = regs.reduce((a,r)=>a+r.total,0);
+
   document.getElementById('mes-body').innerHTML=sorted.map(r=>`<tr>
     <td>${fmtD(r.fecha)}</td><td style="font-weight:500">${r.cliente}</td>
     <td>${conceptoBadge(r.concepto)}</td>
@@ -446,6 +452,15 @@ function renderMesDetalle(){
       <button class="btn btn-sm btn-danger" onclick="eliminar(${r.id})">×</button>
     </td>
   </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Sin registros</td></tr>';
+
+  // Totals by concepto below table
+  const totDiv = document.getElementById('mes-conc-totals');
+  if(totDiv) {
+    const parts = Object.entries(concTotals).sort((a,b)=>b[1]-a[1]).map(([c,v])=>
+      `<span style="margin-right:16px">${conceptoBadge(c)} <strong>${fmtM(v)}</strong> <span style="color:var(--text3);font-size:11px">${totalMes?Math.round(v/totalMes*100)+'%':''}</span></span>`
+    ).join('');
+    totDiv.innerHTML = parts + `<span style="font-size:13px;font-weight:600;color:var(--accent);margin-left:8px">Total: ${fmtM(totalMes)}</span>`;
+  }
 }
 
 // ── CLIENTES ─────────────────────────────────────────────────────
