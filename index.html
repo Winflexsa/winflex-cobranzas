@@ -417,15 +417,18 @@ function renderMesDetalle(){
   const regs=STATE.records.filter(r=>r.mes===selMes);
   const total=regs.reduce((a,r)=>a+r.total,0);
   const ef=regs.reduce((a,r)=>a+r.efectivo,0);
+  const concTots={};regs.forEach(r=>{concTots[r.concepto]=(concTots[r.concepto]||0)+r.total;});
   const tr=regs.reduce((a,r)=>a+r.transferencia,0);
   const ch=regs.reduce((a,r)=>a+r.cheques,0);
-  document.getElementById('mes-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Total</div><div class="metric-value pos">${fmtM(total)}</div><div class="metric-sub">${regs.length} registros</div></div>
-    <div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">${fmtM(ef)}</div></div>
-    <div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">${fmtM(tr)}</div></div>
-    <div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">${fmtM(ch)}</div></div>
-    <div class="metric"><div class="metric-label">Clientes</div><div class="metric-value">${new Set(regs.map(r=>r.cliente)).size}</div></div>
-  `;
+  document.getElementById('mes-metrics').innerHTML=
+    '<div class="metric"><div class="metric-label">Total mes</div><div class="metric-value pos">'+fmtM(total)+'</div><div class="metric-sub">'+regs.length+' registros</div></div>' +
+    (['Flexibles','Bandejas','Pet','Amcor'].filter(c=>concTots[c]).map(c=>
+      '<div class="metric"><div class="metric-label">'+c+'</div><div class="metric-value">'+fmtM(concTots[c])+'</div><div class="metric-sub">'+(total?Math.round(concTots[c]/total*100)+'% del total':'')+'</div></div>'
+    ).join('')) +
+    '<div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">'+fmtM(ef)+'</div><div class="metric-sub">'+(total?Math.round(ef/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">'+fmtM(tr)+'</div><div class="metric-sub">'+(total?Math.round(tr/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">'+fmtM(ch)+'</div><div class="metric-sub">'+(total?Math.round(ch/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Clientes</div><div class="metric-value">'+new Set(regs.map(r=>r.cliente)).size+'</div></div>'
   document.getElementById('mes-detalle-title').textContent='Registros — '+selMes;
   // Charts
   const concMap={};regs.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
