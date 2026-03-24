@@ -368,7 +368,6 @@ function goTo(name,btn){
 function renderResumen(){
   const total=STATE.records.reduce((a,r)=>a+r.total,0);
   const ef=STATE.records.reduce((a,r)=>a+r.efectivo,0);
-  const concMap={};STATE.records.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
   const tr=STATE.records.reduce((a,r)=>a+r.transferencia,0);
   const ch=STATE.records.reduce((a,r)=>a+r.cheques,0);
   const meses=getMeses();
