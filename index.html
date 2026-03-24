@@ -371,36 +371,43 @@ function renderResumen(){
   const tr=STATE.records.reduce((a,r)=>a+r.transferencia,0);
   const ch=STATE.records.reduce((a,r)=>a+r.cheques,0);
   const meses=getMeses();
+
+  // Concepto map - declared first
+  const concMap={};
+  STATE.records.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
+
+  // Metrics with concepto breakdown
+  const concMetrics=['Flexibles','Bandejas','Pet','Amcor'].filter(c=>concMap[c]).map(c=>
+    '<div class="metric"><div class="metric-label">'+c+'</div><div class="metric-value">'+fmtM(concMap[c])+'</div><div class="metric-sub">'+(total?Math.round(concMap[c]/total*100)+'% del total':'')+'</div></div>'
+  ).join('');
+
   document.getElementById('res-metrics').innerHTML=
-    '<div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value pos">'+fmtM(total)+'</div><div class="metric-sub">'+STATE.records.length+' registros</div></div>' +
-    (['Flexibles','Bandejas','Pet','Amcor'].filter(c=>concMap[c]).map(c=>
-      '<div class="metric"><div class="metric-label">'+c+'</div><div class="metric-value">'+fmtM(concMap[c])+'</div><div class="metric-sub">'+(total?Math.round(concMap[c]/total*100)+'% del total':'')+'</div></div>'
-    ).join('')) +
-    '<div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">'+fmtM(ef)+'</div><div class="metric-sub">'+(total?Math.round(ef/total*100)+'%':'')+'</div></div>' +
-    '<div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">'+fmtM(tr)+'</div><div class="metric-sub">'+(total?Math.round(tr/total*100)+'%':'')+'</div></div>' +
-    '<div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">'+fmtM(ch)+'</div><div class="metric-sub">'+(total?Math.round(ch/total*100)+'%':'')+'</div></div>' +
-    '<div class="metric"><div class="metric-label">Meses</div><div class="metric-value">'+meses.length+'</div></div>'
+    '<div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value pos">'+fmtM(total)+'</div><div class="metric-sub">'+STATE.records.length+' registros</div></div>'+
+    concMetrics+
+    '<div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">'+fmtM(ef)+'</div><div class="metric-sub">'+(total?Math.round(ef/total*100)+'%':'')+'</div></div>'+
+    '<div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">'+fmtM(tr)+'</div><div class="metric-sub">'+(total?Math.round(tr/total*100)+'%':'')+'</div></div>'+
+    '<div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">'+fmtM(ch)+'</div><div class="metric-sub">'+(total?Math.round(ch/total*100)+'%':'')+'</div></div>'+
+    '<div class="metric"><div class="metric-label">Meses</div><div class="metric-value">'+meses.length+'</div></div>';
+
   const baseOpts={responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6860'}}},scales:{x:{ticks:{font:{family:'DM Sans',size:10},color:'#a8a69a'},grid:{display:false}},y:{ticks:{font:{family:'DM Sans',size:10},color:'#a8a69a'},grid:{color:'#f0efe9'}}}};
-  // Concepto
-  const concMap={};STATE.records.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
+
   if(charts.concepto)charts.concepto.destroy();
   charts.concepto=new Chart(document.getElementById('chart-concepto'),{type:'doughnut',data:{labels:Object.keys(concMap),datasets:[{data:Object.values(concMap).map(Math.round),backgroundColor:['#2563eb','#16a34a','#d97706','#6b7280']}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},color:'#6b6860'}}}}});
-  // Pago
+
   if(charts.pago)charts.pago.destroy();
   charts.pago=new Chart(document.getElementById('chart-pago'),{type:'doughnut',data:{labels:['Efectivo','Transferencia','Cheques'],datasets:[{data:[Math.round(ef),Math.round(tr),Math.round(ch)],backgroundColor:['#16a34a','#2563eb','#d97706']}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},color:'#6b6860'}}}}});
-  // Evolución
+
   const evolMap={};STATE.records.forEach(r=>{evolMap[r.mes]=(evolMap[r.mes]||0)+r.total;});
   const evolS=Object.entries(evolMap).sort((a,b)=>a[0].localeCompare(b[0]));
   if(charts.evol)charts.evol.destroy();
   charts.evol=new Chart(document.getElementById('chart-evol'),{type:'bar',data:{labels:evolS.map(e=>e[0]),datasets:[{label:'Total',data:evolS.map(e=>Math.round(e[1])),backgroundColor:'#1a472a',borderRadius:4}]},options:{...baseOpts,plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x},y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v/1000000)+'M'}}}}});
-  // Top clientes
+
   const cliMap={};STATE.records.forEach(r=>{if(r.cliente)cliMap[r.cliente]=(cliMap[r.cliente]||0)+r.total;});
   const cliS=Object.entries(cliMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
   if(charts.clientes)charts.clientes.destroy();
   charts.clientes=new Chart(document.getElementById('chart-clientes'),{type:'bar',data:{labels:cliS.map(e=>e[0]),datasets:[{label:'Total',data:cliS.map(e=>Math.round(e[1])),backgroundColor:'#86efac',borderRadius:4}]},options:{...baseOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x,ticks:{...baseOpts.scales.x.ticks,callback:v=>'$'+Math.round(v/1000)+'k'}},y:{...baseOpts.scales.y}}}});
 }
 
-// ── MENSUAL ──────────────────────────────────────────────────────
 function renderMensual(){
   const meses=getMeses();
   if(!selMes||!meses.includes(selMes)) selMes=meses[0];
