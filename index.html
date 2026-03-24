@@ -368,16 +368,19 @@ function goTo(name,btn){
 function renderResumen(){
   const total=STATE.records.reduce((a,r)=>a+r.total,0);
   const ef=STATE.records.reduce((a,r)=>a+r.efectivo,0);
+  const concMap={};STATE.records.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
   const tr=STATE.records.reduce((a,r)=>a+r.transferencia,0);
   const ch=STATE.records.reduce((a,r)=>a+r.cheques,0);
   const meses=getMeses();
-  document.getElementById('res-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value pos">${fmtM(total)}</div><div class="metric-sub">${STATE.records.length} registros</div></div>
-    <div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">${fmtM(ef)}</div><div class="metric-sub">${Math.round(ef/total*100)}%</div></div>
-    <div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">${fmtM(tr)}</div><div class="metric-sub">${Math.round(tr/total*100)}%</div></div>
-    <div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">${fmtM(ch)}</div><div class="metric-sub">${Math.round(ch/total*100)}%</div></div>
-    <div class="metric"><div class="metric-label">Meses</div><div class="metric-value">${meses.length}</div></div>
-  `;
+  document.getElementById('res-metrics').innerHTML=
+    '<div class="metric"><div class="metric-label">Total cobrado</div><div class="metric-value pos">'+fmtM(total)+'</div><div class="metric-sub">'+STATE.records.length+' registros</div></div>' +
+    (['Flexibles','Bandejas','Pet','Amcor'].filter(c=>concMap[c]).map(c=>
+      '<div class="metric"><div class="metric-label">'+c+'</div><div class="metric-value">'+fmtM(concMap[c])+'</div><div class="metric-sub">'+(total?Math.round(concMap[c]/total*100)+'% del total':'')+'</div></div>'
+    ).join('')) +
+    '<div class="metric"><div class="metric-label">Efectivo</div><div class="metric-value">'+fmtM(ef)+'</div><div class="metric-sub">'+(total?Math.round(ef/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Transferencia</div><div class="metric-value info">'+fmtM(tr)+'</div><div class="metric-sub">'+(total?Math.round(tr/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Cheques</div><div class="metric-value warn">'+fmtM(ch)+'</div><div class="metric-sub">'+(total?Math.round(ch/total*100)+'%':'')+'</div></div>' +
+    '<div class="metric"><div class="metric-label">Meses</div><div class="metric-value">'+meses.length+'</div></div>'
   const baseOpts={responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6860'}}},scales:{x:{ticks:{font:{family:'DM Sans',size:10},color:'#a8a69a'},grid:{display:false}},y:{ticks:{font:{family:'DM Sans',size:10},color:'#a8a69a'},grid:{color:'#f0efe9'}}}};
   // Concepto
   const concMap={};STATE.records.forEach(r=>{concMap[r.concepto]=(concMap[r.concepto]||0)+r.total;});
