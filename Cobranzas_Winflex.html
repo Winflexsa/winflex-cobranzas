@@ -738,8 +738,61 @@ async function boot(){
   loadCfg();
   document.getElementById('cfg-modal').style.display='none';
   await initApp();
+  // Integración con app de Cobranzas: detectar prefill desde localStorage
+  setTimeout(checkPrefillCaja2, 500);
 }
 boot();
+
+// ────────────────────────────────────────────────────────────────
+// INTEGRACIÓN CON APP DE COBRANZAS
+// Recibe datos de una cobranza vía localStorage y precarga el form.
+// ────────────────────────────────────────────────────────────────
+function checkPrefillCaja2() {
+  try {
+    const raw = localStorage.getItem('winflex_prefill_caja2');
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    // Validar antigüedad (max 5 min)
+    if (!data._ts || (Date.now() - data._ts) > 5 * 60 * 1000) {
+      localStorage.removeItem('winflex_prefill_caja2');
+      return;
+    }
+    // Navegar a "Nueva cobranza"
+    const navBtn = document.querySelector('.nav-item[onclick*="\'nuevo\'"]');
+    if (navBtn) navBtn.click();
+    else if (typeof goTo === 'function') goTo('nuevo');
+    // Esperar a que se inicialicen los inputs
+    setTimeout(() => {
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val != null && val !== '') el.value = val;
+      };
+      set('np-fecha', data.fecha || new Date().toISOString().slice(0,10));
+      set('np-cliente', data.cliente);
+      if (data.concepto) set('np-concepto', data.concepto);
+      set('np-efectivo', data.efectivo || 0);
+      set('np-transf', data.transferencia || 0);
+      set('np-cheques', data.cheques || 0);
+      // Recalcular el total
+      if (typeof calcTotal === 'function') calcTotal();
+      // Banner discreto
+      const pgNuevo = document.getElementById('pg-nuevo');
+      if (pgNuevo && !document.getElementById('prefill-banner')) {
+        const banner = document.createElement('div');
+        banner.id = 'prefill-banner';
+        banner.style.cssText = 'background:#dcfce7;color:#16a34a;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;font-weight:500';
+        banner.textContent = '✓ Datos precargados desde la app de Cobranzas. Revisá el concepto y guardá.';
+        pgNuevo.insertBefore(banner, pgNuevo.firstChild.nextSibling);
+        setTimeout(() => { banner.remove(); }, 10000);
+      }
+      // Limpiar la key
+      localStorage.removeItem('winflex_prefill_caja2');
+    }, 400);
+  } catch (e) {
+    console.error('Prefill Caja 2 error:', e);
+    try { localStorage.removeItem('winflex_prefill_caja2'); } catch (_) {}
+  }
+}
 </script>
 </body>
 </html>
