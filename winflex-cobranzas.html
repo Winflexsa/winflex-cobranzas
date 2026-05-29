@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winflex · Cobranzas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1116; --bg2:#12161d; --surface:#171c25; --surface2:#1d2330;
+    --border:#2a3140; --border2:#353d4f;
+    --text:#e9ecf1; --muted:#9aa3b2; --faint:#69707e;
+    --accent:#e0b84c; --accent-dim:#7a6526;
+    --pend:#f0b429; --venc:#f05252; --cobr:#2dca72; --parc:#48b0f7;
+    --shadow:0 8px 30px rgba(0,0,0,.45);
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%, #1a2030 0%, var(--bg) 55%) fixed;
+    color:var(--text); font-size:14px; -webkit-font-smoothing:antialiased;
+  }
+  .num{font-variant-numeric:tabular-nums}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,select,textarea{font-family:inherit;font-size:14px}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ---------- LOGIN ---------- */
+  #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100}
+  .login-card{width:340px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px 30px;box-shadow:var(--shadow);text-align:center}
+  .logo{width:64px;height:64px;border-radius:16px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#1d2330,#12161d);border:1px solid var(--border2);position:relative}
+  .logo b{font-size:30px;font-weight:800;color:var(--text)}
+  .logo .badge{position:absolute;bottom:-6px;right:-6px;width:26px;height:26px;border-radius:8px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;color:#1a1408;font-weight:800;font-size:15px;border:2px solid var(--surface)}
+  .login-card h1{font-size:18px;font-weight:700;letter-spacing:.2px}
+  .login-card p{color:var(--muted);font-size:12.5px;margin-top:4px;margin-bottom:22px}
+  .pin-in{width:100%;text-align:center;letter-spacing:10px;font-size:22px;padding:13px;border-radius:12px;
+    background:var(--bg2);border:1px solid var(--border);color:var(--text);outline:none}
+  .pin-in:focus{border-color:var(--accent)}
+  .login-card .err{color:var(--venc);font-size:12.5px;height:16px;margin-top:10px}
+  .btn-primary{width:100%;margin-top:14px;padding:13px;border-radius:12px;background:var(--accent);color:#1a1408;font-weight:700;font-size:14.5px;transition:.15s}
+  .btn-primary:hover{filter:brightness(1.08)}
+
+  /* ---------- LAYOUT ---------- */
+  #app{display:none;max-width:1240px;margin:0 auto;padding:0 18px 60px}
+  header{display:flex;align-items:center;gap:14px;padding:18px 2px 16px;position:sticky;top:0;background:linear-gradient(var(--bg),var(--bg) 70%,transparent);z-index:30}
+  .hlogo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1d2330,#12161d);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;position:relative}
+  .hlogo .dot{position:absolute;bottom:-4px;right:-4px;width:16px;height:16px;border-radius:5px;background:var(--accent);color:#1a1408;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+  header h1{font-size:16px;font-weight:700}
+  header .sub{color:var(--faint);font-size:11.5px}
+  header .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .who{font-size:12px;color:var(--muted)}
+  .cloud{font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:6px}
+  .cloud .led{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+  .cloud.ok .led{background:var(--cobr)} .cloud.busy .led{background:var(--pend);animation:pulse 1s infinite} .cloud.bad .led{background:var(--venc)}
+  @keyframes pulse{50%{opacity:.3}}
+  .icon-btn{padding:6px 9px;border-radius:9px;border:1px solid var(--border);color:var(--muted);font-size:12.5px}
+  .icon-btn:hover{border-color:var(--border2);color:var(--text)}
+
+  nav{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px;margin-bottom:20px}
+  nav button{flex:1;padding:10px;border-radius:10px;color:var(--muted);font-weight:600;font-size:13.5px;transition:.15s}
+  nav button.active{background:var(--surface2);color:var(--text);box-shadow:inset 0 0 0 1px var(--border2)}
+  nav button:hover:not(.active){color:var(--text)}
+
+  .tab{display:none} .tab.active{display:block;animation:fade .2s}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}}
+
+  /* ---------- KPIs ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+  .kpi .lab{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .kpi .val{font-size:24px;font-weight:800;margin-top:7px}
+  .kpi .meta{font-size:11.5px;color:var(--faint);margin-top:3px}
+  .kpi .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+  .kpi.por .bar{background:var(--pend)} .kpi.venc .bar{background:var(--venc)}
+  .kpi.cobr .bar{background:var(--cobr)} .kpi.tot .bar{background:var(--accent)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+  .card h3{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px}
+
+  /* ---------- TOOLBAR ---------- */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+  .search{flex:1;min-width:200px;position:relative}
+  .search input{width:100%;padding:11px 13px 11px 36px;border-radius:11px;background:var(--surface);border:1px solid var(--border);color:var(--text);outline:none}
+  .search input:focus{border-color:var(--border2)}
+  .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.5}
+  select.filter{padding:11px 13px;border-radius:11px;background:var(--surface);border:1px solid var(--border);color:var(--text);outline:none}
+  .btn{padding:11px 16px;border-radius:11px;background:var(--accent);color:#1a1408;font-weight:700;font-size:13.5px;white-space:nowrap}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  .btn.ghost:hover{border-color:var(--border2)}
+  .btn.sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+
+  /* ---------- TABLES ---------- */
+  .tablewrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);font-weight:700;text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--surface2)}
+  td.r,th.r{text-align:right}
+  .cli-name{font-weight:600}
+  .cli-meta{font-size:11.5px;color:var(--faint)}
+  .empty{padding:50px;text-align:center;color:var(--faint)}
+
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .b-pend{background:rgba(240,180,41,.14);color:var(--pend)}
+  .b-venc{background:rgba(240,82,82,.14);color:var(--venc)}
+  .b-cobr{background:rgba(45,202,114,.14);color:var(--cobr)}
+  .b-parc{background:rgba(72,176,247,.14);color:var(--parc)}
+  .vend{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+
+  .row-acts{display:flex;gap:6px;justify-content:flex-end}
+  .mini{padding:5px 9px;border-radius:8px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
+  .mini:hover{border-color:var(--border2);color:var(--text)}
+  .mini.go{color:var(--cobr);border-color:rgba(45,202,114,.3)} .mini.go:hover{background:rgba(45,202,114,.1)}
+  .mini.del:hover{color:var(--venc);border-color:rgba(240,82,82,.3)}
+
+  /* ---------- MODAL ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:80;padding:40px 16px;overflow-y:auto}
+  .overlay.open{display:flex}
+  .modal{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border2);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;animation:pop .2s}
+  @keyframes pop{from{opacity:0;transform:scale(.97) translateY(6px)}}
+  .modal header{position:static;background:none;padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center}
+  .modal header h2{font-size:16px;font-weight:700}
+  .modal header .x{margin-left:auto;font-size:20px;color:var(--muted);padding:0 6px}
+  .modal .body{padding:22px;max-height:62vh;overflow-y:auto}
+  .modal .foot{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:11px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--text);outline:none}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+  .field textarea{resize:vertical;min-height:60px}
+  .frow{display:flex;gap:12px} .frow .field{flex:1}
+  .contact-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+  .contact-row input{flex:1;padding:9px 10px;border-radius:9px;background:var(--bg2);border:1px solid var(--border);color:var(--text);outline:none;font-size:13px}
+  .contact-row button{color:var(--venc);padding:6px 8px;border-radius:8px;border:1px solid var(--border)}
+  .add-contact{font-size:12.5px;color:var(--accent);font-weight:600;margin-top:4px}
+  .hint{font-size:11.5px;color:var(--faint);margin-top:5px}
+
+  /* ---------- CONFIG ---------- */
+  .cfg-sec{margin-bottom:22px}
+  .cfg-sec h3{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px}
+  .file-zone{border:1px dashed var(--border2);border-radius:12px;padding:18px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+  .file-zone:hover{border-color:var(--accent);color:var(--text)}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);z-index:120;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  .toast.bad{border-color:var(--venc)} .toast.ok{border-color:var(--cobr)}
+
+  @media(max-width:760px){
+    .kpis{grid-template-columns:1fr 1fr}
+    .grid2{grid-template-columns:1fr}
+    header h1{font-size:14px} .who{display:none}
+    th.hide,td.hide{display:none}
+    nav button{font-size:12px;padding:9px 4px}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div class="logo"><b>W</b><span class="badge">$</span></div>
+    <h1>Winflex Cobranzas</h1>
+    <p>Ingresá tu PIN para continuar</p>
+    <input id="pinInput" class="pin-in num" type="password" inputmode="numeric" maxlength="6" placeholder="••••" autocomplete="off">
+    <div class="err" id="pinErr"></div>
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="hlogo">W<span class="dot">$</span></div>
+    <div>
+      <h1>Cobranzas</h1>
+      <div class="sub">Winflex S.A.</div>
+    </div>
+    <div class="right">
+      <span class="who" id="whoLabel"></span>
+      <div class="cloud" id="cloudStatus"><span class="led"></span><span id="cloudText">Local</span></div>
+      <button class="icon-btn" onclick="refreshNow()" title="Actualizar">↻</button>
+      <button class="icon-btn" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <nav>
+    <button class="active" data-tab="resumen" onclick="switchTab('resumen')">Resumen</button>
+    <button data-tab="facturas" onclick="switchTab('facturas')">Facturas</button>
+    <button data-tab="clientes" onclick="switchTab('clientes')">Clientes</button>
+    <button data-tab="config" onclick="switchTab('config')">Config</button>
+  </nav>
+
+  <!-- RESUMEN -->
+  <section class="tab active" id="tab-resumen">
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Saldo por vendedor</h3>
+        <div id="porVendedor"></div>
+      </div>
+      <div class="card">
+        <h3>Top deudores</h3>
+        <div id="topDeudores"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h3>Próximos vencimientos (30 días) · vencidas primero</h3>
+      <div id="proxVenc"></div>
+    </div>
+  </section>
+
+  <!-- FACTURAS -->
+  <section class="tab" id="tab-facturas">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input id="facSearch" placeholder="Buscar por cliente, número…" oninput="renderFacturas()">
+      </div>
+      <select class="filter" id="facVend" onchange="renderFacturas()"><option value="">Todos los vendedores</option></select>
+      <select class="filter" id="facEstado" onchange="renderFacturas()">
+        <option value="">Todos los estados</option>
+        <option value="vencida">Vencidas</option>
+        <option value="pendiente">Pendientes</option>
+        <option value="parcial">Parciales</option>
+        <option value="cobrada">Cobradas</option>
+        <option value="adeuda">Solo con saldo</option>
+      </select>
+      <button class="btn" onclick="openFactura()">+ Factura</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Cliente</th><th>Comprob.</th><th class="hide">Fecha</th><th>Vence</th>
+          <th class="r">Importe</th><th class="r hide">Cobrado</th><th class="r">Saldo</th><th>Estado</th><th></th>
+        </tr></thead>
+        <tbody id="facBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section class="tab" id="tab-clientes">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input id="cliSearch" placeholder="Buscar cliente…" oninput="renderClientes()">
+      </div>
+      <select class="filter" id="cliVend" onchange="renderClientes()"><option value="">Todos los vendedores</option></select>
+      <button class="btn" onclick="openCliente()">+ Cliente</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Cliente</th><th class="hide">Vendedor</th><th class="hide">Condición</th><th>Contacto</th><th class="r">Saldo</th><th></th>
+        </tr></thead>
+        <tbody id="cliBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CONFIG -->
+  <section class="tab" id="tab-config">
+    <div class="card">
+      <div class="cfg-sec">
+        <h3>Conexión JSONBin</h3>
+        <div class="frow">
+          <div class="field"><label>Bin ID</label><input id="cfgBin" placeholder="ej: 69c1…"></div>
+          <div class="field"><label>Master Key</label><input id="cfgKey" type="password" placeholder="$2a$10$…"></div>
+        </div>
+        <button class="btn sm" onclick="saveConfig()">Guardar y conectar</button>
+        <button class="btn ghost sm" onclick="refreshNow()" style="margin-left:8px">Probar / Actualizar</button>
+        <div class="hint">Los datos se sincronizan en la nube. Sin Bin configurado, todo queda solo en este dispositivo.</div>
+      </div>
+      <div class="cfg-sec">
+        <h3>Importar datos</h3>
+        <div class="frow">
+          <label class="file-zone" style="flex:1">
+            <input type="file" accept=".json" hidden onchange="importJSON(event,'clientes')">
+            ⬆ Importar <b>clientes</b> (JSON)
+          </label>
+          <label class="file-zone" style="flex:1">
+            <input type="file" accept=".json" hidden onchange="importJSON(event,'facturas')">
+            ⬆ Importar <b>facturas</b> (JSON)
+          </label>
+        </div>
+        <div class="hint">El JSON de facturas que te paso (parseado del PDF del Tango) se carga acá. Las facturas se asignan al cliente por código o razón social.</div>
+      </div>
+      <div class="cfg-sec">
+        <h3>Respaldo</h3>
+        <button class="btn ghost sm" onclick="exportBackup()">⬇ Descargar respaldo completo (JSON)</button>
+      </div>
+      <div class="cfg-sec">
+        <h3>Datos</h3>
+        <div class="hint" id="cfgStats"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- MODAL CLIENTE -->
+<div class="overlay" id="ovCliente">
+  <div class="modal">
+    <header><h2 id="cliTitle">Nuevo cliente</h2><button class="x" onclick="closeOverlay('ovCliente')">×</button></header>
+    <div class="body">
+      <div class="frow">
+        <div class="field"><label>Razón social *</label><input id="f_razon"></div>
+        <div class="field" style="max-width:130px"><label>Código</label><input id="f_codigo"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>CUIT</label><input id="f_cuit"></div>
+        <div class="field"><label>Vendedor</label><select id="f_vend"></select></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Plazo (días)</label><input id="f_plazo" type="number" value="30"></div>
+        <div class="field"><label>Vence desde</label><select id="f_modo"><option value="factura">Fecha factura</option><option value="remito">Fecha remito</option></select></div>
+      </div>
+      <div class="field">
+        <label>Contactos</label>
+        <div id="f_contactos"></div>
+        <button class="add-contact" onclick="addContactRow()">+ Agregar contacto</button>
+      </div>
+      <div class="field"><label>Observaciones</label><textarea id="f_obs"></textarea></div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" id="cliDelBtn" onclick="deleteCliente()" style="margin-right:auto;display:none">Eliminar</button>
+      <button class="btn ghost" onclick="closeOverlay('ovCliente')">Cancelar</button>
+      <button class="btn" onclick="saveCliente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FACTURA -->
+<div class="overlay" id="ovFactura">
+  <div class="modal">
+    <header><h2 id="facTitle">Nueva factura</h2><button class="x" onclick="closeOverlay('ovFactura')">×</button></header>
+    <div class="body">
+      <div class="field"><label>Cliente *</label>
+        <input id="ff_cliInput" list="cliList" placeholder="Escribí para buscar…" oninput="onFacClienteInput()">
+        <datalist id="cliList"></datalist>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Tipo</label><select id="ff_tipo"><option>FC A</option><option>FC B</option><option>NC A</option><option>NC B</option><option>Remito</option></select></div>
+        <div class="field"><label>Número</label><input id="ff_numero" placeholder="0001-00012345"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Fecha *</label><input id="ff_fecha" type="date"></div>
+        <div class="field"><label>Importe *</label><input id="ff_importe" type="number" step="0.01" placeholder="0,00"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Cobrado</label><input id="ff_cobrado" type="number" step="0.01" value="0"></div>
+        <div class="field"><label>Vencimiento</label><input id="ff_venc" type="date"><div class="hint">Se calcula solo; podés pisarlo.</div></div>
+      </div>
+      <div class="field"><label>Observaciones</label><textarea id="ff_obs"></textarea></div>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" id="facDelBtn" onclick="deleteFactura()" style="margin-right:auto;display:none">Eliminar</button>
+      <button class="btn ghost" onclick="closeOverlay('ovFactura')">Cancelar</button>
+      <button class="btn" onclick="saveFactura()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COBRO -->
+<div class="overlay" id="ovCobro">
+  <div class="modal" style="max-width:400px">
+    <header><h2>Registrar cobro</h2><button class="x" onclick="closeOverlay('ovCobro')">×</button></header>
+    <div class="body">
+      <div id="cobroInfo" class="hint" style="margin-bottom:14px"></div>
+      <div class="field"><label>Monto cobrado ahora</label><input id="cobroMonto" type="number" step="0.01"></div>
+      <div class="field"><label>Fecha de cobro</label><input id="cobroFecha" type="date"></div>
+      <button class="btn ghost sm" onclick="cobrarTotal()">Cobrar el saldo total</button>
+    </div>
+    <div class="foot">
+      <button class="btn ghost" onclick="closeOverlay('ovCobro')">Cancelar</button>
+      <button class="btn" onclick="saveCobro()">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   WINFLEX COBRANZAS · app simple
+   Estados: pendiente / vencida / parcial / cobrada
+   ============================================================ */
+
+const VENDEDORES = ['Matías','Enrique','Vicente','Winflex'];
+const PINS = { '1540':'Matías', '0104':'Mirta', '2727':'Enrique' };
+const LS = { bin:'wfc_bin', key:'wfc_key', user:'wfc_user', data:'wfc_data' };
+
+let STATE = { clientes:[], facturas:[], meta:{version:1} };
+let CURRENT_USER = null;
+let editingCli = null, editingFac = null, cobroTarget = null;
+let saving = false, savePending = false, refreshTimer = null;
+
+/* ---------- utils ---------- */
+const $ = id => document.getElementById(id);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const NOW = () => new Date().toISOString();
+const todayISO = () => new Date().toISOString().slice(0,10);
+function fmt(n){ n = +n||0; return '$' + n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function fmtFull(n){ n = +n||0; return '$' + n.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtM(n){ n=+n||0; if(Math.abs(n)>=1e6) return '$'+(n/1e6).toLocaleString('es-AR',{maximumFractionDigits:1})+'M'; if(Math.abs(n)>=1e3) return '$'+(n/1e3).toLocaleString('es-AR',{maximumFractionDigits:0})+'k'; return fmt(n); }
+function dShow(iso){ if(!iso) return '—'; const [y,m,d]=iso.slice(0,10).split('-'); return `${d}/${m}/${y.slice(2)}`; }
+function esc(s){ return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg,type=''){ const t=$('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>t.className='toast '+type,2600); }
+
+/* ---------- cálculo de estado ---------- */
+function getCliente(id){ return STATE.clientes.find(c=>c.id===id); }
+function vencimientoDe(f){
+  if(f.fechaVencimiento) return f.fechaVencimiento.slice(0,10);
+  const cli = getCliente(f.clienteId);
+  const plazo = (cli && +cli.condicionDias) || 30;
+  const base = (f.fecha||todayISO()).slice(0,10);
+  const d = new Date(base+'T00:00:00'); d.setDate(d.getDate()+plazo);
+  return d.toISOString().slice(0,10);
+}
+function saldoDe(f){ return Math.max(0, (+f.importe||0) - (+f.cobrado||0)); }
+function estadoDe(f){
+  const saldo = saldoDe(f);
+  if(saldo <= 0.5) return 'cobrada';
+  const vencida = vencimientoDe(f) < todayISO();
+  if((+f.cobrado||0) > 0) return vencida ? 'parcial-venc' : 'parcial';
+  return vencida ? 'vencida' : 'pendiente';
+}
+const ESTADO_META = {
+  'cobrada':{lab:'Cobrada',cls:'b-cobr'},
+  'pendiente':{lab:'Pendiente',cls:'b-pend'},
+  'vencida':{lab:'Vencida',cls:'b-venc'},
+  'parcial':{lab:'Parcial',cls:'b-parc'},
+  'parcial-venc':{lab:'Parcial · vencida',cls:'b-venc'},
+};
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function doLogin(){
+  const pin = $('pinInput').value.trim();
+  if(PINS[pin]){
+    CURRENT_USER = PINS[pin];
+    localStorage.setItem(LS.user, CURRENT_USER);
+    startApp();
+  } else {
+    $('pinErr').textContent = 'PIN incorrecto';
+    $('pinInput').value=''; $('pinInput').focus();
+  }
+}
+$('pinInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+function logout(){ localStorage.removeItem(LS.user); location.reload(); }
+
+function startApp(){
+  $('login').style.display='none';
+  $('app').style.display='block';
+  $('whoLabel').textContent = CURRENT_USER;
+  // selects de vendedores
+  fillVendSelects();
+  // config guardada
+  $('cfgBin').value = localStorage.getItem(LS.bin) || '';
+  $('cfgKey').value = localStorage.getItem(LS.key) || '';
+  loadLocal();
+  if(localStorage.getItem(LS.bin)) loadFromCloud(true);
+  else { renderAll(); setCloud('local','Local'); }
+  // auto-refresh cada 60s
+  refreshTimer = setInterval(()=>{ if(localStorage.getItem(LS.bin) && !saving) loadFromCloud(false); }, 60000);
+}
+
+function fillVendSelects(){
+  const opts = VENDEDORES.map(v=>`<option>${v}</option>`).join('');
+  $('f_vend').innerHTML = opts;
+  $('facVend').innerHTML = '<option value="">Todos los vendedores</option>'+opts;
+  $('cliVend').innerHTML = '<option value="">Todos los vendedores</option>'+opts;
+}
+
+/* ============================================================
+   PERSISTENCIA
+   ============================================================ */
+function loadLocal(){
+  try{ const d = JSON.parse(localStorage.getItem(LS.data)); if(d&&d.clientes) STATE=d; }catch(e){}
+}
+function saveLocal(){ localStorage.setItem(LS.data, JSON.stringify(STATE)); }
+
+function setCloud(state,text){
+  const el=$('cloudStatus'); el.className='cloud '+(state==='ok'?'ok':state==='busy'?'busy':state==='bad'?'bad':'');
+  $('cloudText').textContent=text;
+}
+function binURL(){ return 'https://api.jsonbin.io/v3/b/'+localStorage.getItem(LS.bin); }
+function binHeaders(){ return {'Content-Type':'application/json','X-Master-Key':localStorage.getItem(LS.key),'X-Bin-Meta':'false'}; }
+
+async function loadFromCloud(showToast){
+  const bin = localStorage.getItem(LS.bin), key = localStorage.getItem(LS.key);
+  if(!bin||!key){ setCloud('local','Local'); return; }
+  setCloud('busy','Sincronizando…');
+  try{
+    const r = await fetch(binURL()+'/latest',{headers:binHeaders()});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    const record = d.record || d;
+    if(record && record.clientes){ STATE = record; saveLocal(); renderAll(); }
+    setCloud('ok','En la nube');
+    if(showToast) toast('Datos cargados de la nube','ok');
+  }catch(e){
+    setCloud('bad','Error de sync');
+    if(showToast) toast('No se pudo conectar: '+e.message,'bad');
+  }
+}
+
+async function saveToCloud(){
+  const bin = localStorage.getItem(LS.bin), key = localStorage.getItem(LS.key);
+  saveLocal();
+  if(!bin||!key){ setCloud('local','Local'); return; }
+  if(saving){ savePending = true; return; }   // mutex: evita escrituras pisadas
+  saving = true; setCloud('busy','Guardando…');
+  try{
+    STATE.meta = STATE.meta||{}; STATE.meta.lastUpdate = NOW(); STATE.meta.lastUser = CURRENT_USER;
+    const r = await fetch(binURL(),{method:'PUT',headers:binHeaders(),body:JSON.stringify(STATE)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    setCloud('ok','En la nube');
+  }catch(e){
+    setCloud('bad','Error al guardar');
+    toast('No se pudo guardar en la nube: '+e.message,'bad');
+  }finally{
+    saving = false;
+    if(savePending){ savePending=false; saveToCloud(); }
+  }
+}
+
+function saveConfig(){
+  const bin=$('cfgBin').value.trim(), key=$('cfgKey').value.trim();
+  if(bin) localStorage.setItem(LS.bin,bin); else localStorage.removeItem(LS.bin);
+  if(key) localStorage.setItem(LS.key,key); else localStorage.removeItem(LS.key);
+  toast('Configuración guardada');
+  if(bin&&key) loadFromCloud(true);
+}
+function refreshNow(){ loadFromCloud(true); }
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function switchTab(t){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+t));
+  if(t==='resumen') renderResumen();
+  if(t==='facturas') renderFacturas();
+  if(t==='clientes') renderClientes();
+  if(t==='config') renderStats();
+}
+function renderAll(){ renderResumen(); renderFacturas(); renderClientes(); renderStats(); renderCliList(); }
+
+/* ============================================================
+   RESUMEN
+   ============================================================ */
+function renderResumen(){
+  let porCobrar=0, vencido=0, porVencer=0, cobradoTot=0, facturado=0;
+  STATE.facturas.forEach(f=>{
+    const imp=+f.importe||0, saldo=saldoDe(f), est=estadoDe(f);
+    facturado+=imp; cobradoTot+=(imp-saldo);
+    if(saldo>0.5){ porCobrar+=saldo; if(est.startsWith('venc')||est==='parcial-venc') vencido+=saldo; else porVencer+=saldo; }
+  });
+  $('kpis').innerHTML = `
+    <div class="kpi por"><div class="bar"></div><div class="lab">Por cobrar</div><div class="val num">${fmtM(porCobrar)}</div><div class="meta">${fmtFull(porCobrar)}</div></div>
+    <div class="kpi venc"><div class="bar"></div><div class="lab">Vencido</div><div class="val num" style="color:var(--venc)">${fmtM(vencido)}</div><div class="meta">${(porCobrar?Math.round(vencido/porCobrar*100):0)}% del saldo</div></div>
+    <div class="kpi cobr"><div class="bar"></div><div class="lab">Cobrado</div><div class="val num">${fmtM(cobradoTot)}</div><div class="meta">de ${fmtM(facturado)} facturado</div></div>
+    <div class="kpi tot"><div class="bar"></div><div class="lab">A vencer</div><div class="val num">${fmtM(porVencer)}</div><div class="meta">${STATE.facturas.length} comprobantes</div></div>`;
+
+  // por vendedor
+  const pv={}; VENDEDORES.forEach(v=>pv[v]=0);
+  STATE.facturas.forEach(f=>{ const s=saldoDe(f); if(s>0.5){ const cli=getCliente(f.clienteId); const v=(cli&&cli.vendedor)||'Winflex'; pv[v]=(pv[v]||0)+s; }});
+  const maxV = Math.max(1,...Object.values(pv));
+  $('porVendedor').innerHTML = Object.entries(pv).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([v,s])=>`
+    <div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${v}</span><span class="num" style="color:var(--muted)">${fmtM(s)}</span></div>
+      <div style="height:6px;background:var(--bg2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${s/maxV*100}%;background:var(--accent);border-radius:4px"></div></div>
+    </div>`).join('') || '<div class="empty">Sin saldos</div>';
+
+  // top deudores
+  const byCli={};
+  STATE.facturas.forEach(f=>{ const s=saldoDe(f); if(s>0.5) byCli[f.clienteId]=(byCli[f.clienteId]||0)+s; });
+  const top = Object.entries(byCli).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  $('topDeudores').innerHTML = top.map(([cid,s])=>{ const c=getCliente(cid); return `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <span class="cli-name" style="font-weight:500">${esc(c?c.razonSocial:'?')}</span>
+      <span class="num" style="font-weight:700">${fmtM(s)}</span>
+    </div>`; }).join('') || '<div class="empty">Sin deudores</div>';
+
+  // próximos vencimientos
+  const pend = STATE.facturas.filter(f=>saldoDe(f)>0.5).map(f=>({f,v:vencimientoDe(f),e:estadoDe(f)}))
+    .filter(o=>o.v <= new Date(Date.now()+30*864e5).toISOString().slice(0,10))
+    .sort((a,b)=>a.v.localeCompare(b.v)).slice(0,12);
+  $('proxVenc').innerHTML = pend.length ? `<table><tbody>${pend.map(o=>{
+    const c=getCliente(o.f.clienteId); const m=ESTADO_META[o.e];
+    return `<tr><td>${dShow(o.v)}</td><td class="cli-name">${esc(c?c.razonSocial:'?')}</td><td>${esc(o.f.tipo||'')} ${esc(o.f.numero||'')}</td><td class="r num">${fmt(saldoDe(o.f))}</td><td><span class="badge ${m.cls}">${m.lab}</span></td></tr>`;
+  }).join('')}</tbody></table>` : '<div class="empty">Nada vence en los próximos 30 días</div>';
+}
+
+/* ============================================================
+   FACTURAS
+   ============================================================ */
+function renderFacturas(){
+  const q=($('facSearch').value||'').toLowerCase();
+  const fv=$('facVend').value, fe=$('facEstado').value;
+  let rows = STATE.facturas.map(f=>({f, cli:getCliente(f.clienteId)}));
+  rows = rows.filter(({f,cli})=>{
+    if(fv && (!cli || cli.vendedor!==fv)) return false;
+    const est=estadoDe(f);
+    if(fe==='adeuda' && saldoDe(f)<=0.5) return false;
+    else if(fe && fe!=='adeuda'){ if(fe==='vencida'){ if(est!=='vencida'&&est!=='parcial-venc') return false; } else if(fe==='parcial'){ if(est!=='parcial'&&est!=='parcial-venc') return false; } else if(est!==fe) return false; }
+    if(q){ const hay=((cli?cli.razonSocial:'')+' '+(f.numero||'')+' '+(f.tipo||'')).toLowerCase(); if(!hay.includes(q)) return false; }
+    return true;
+  });
+  rows.sort((a,b)=>{
+    const sa=saldoDe(a.f)>0.5?0:1, sb=saldoDe(b.f)>0.5?0:1;
+    if(sa!==sb) return sa-sb;
+    return vencimientoDe(a.f).localeCompare(vencimientoDe(b.f));
+  });
+  $('facBody').innerHTML = rows.length ? rows.map(({f,cli})=>{
+    const est=estadoDe(f), m=ESTADO_META[est], saldo=saldoDe(f);
+    return `<tr>
+      <td><div class="cli-name">${esc(cli?cli.razonSocial:'⚠ sin cliente')}</div><div class="cli-meta">${esc(cli?cli.vendedor:'')}</div></td>
+      <td>${esc(f.tipo||'')}<div class="cli-meta">${esc(f.numero||'')}</div></td>
+      <td class="hide">${dShow(f.fecha)}</td>
+      <td class="num">${dShow(vencimientoDe(f))}</td>
+      <td class="r num">${fmt(f.importe)}</td>
+      <td class="r num hide" style="color:var(--muted)">${(+f.cobrado>0)?fmt(f.cobrado):'—'}</td>
+      <td class="r num" style="font-weight:700">${saldo>0.5?fmt(saldo):'—'}</td>
+      <td><span class="badge ${m.cls}">${m.lab}</span></td>
+      <td><div class="row-acts">
+        ${saldo>0.5?`<button class="mini go" onclick="openCobro('${f.id}')">Cobrar</button>`:''}
+        <button class="mini" onclick="openFactura('${f.id}')">✎</button>
+        <button class="mini del" onclick="deleteFactura('${f.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="9" class="empty">No hay facturas. Cargá una con “+ Factura” o importá el JSON del PDF en Config.</td></tr>';
+}
+
+function renderCliList(){
+  $('cliList').innerHTML = STATE.clientes.map(c=>`<option value="${esc(c.razonSocial)}">`).join('');
+}
+
+function openFactura(id){
+  editingFac = id ? STATE.facturas.find(f=>f.id===id) : null;
+  $('facTitle').textContent = editingFac ? 'Editar factura' : 'Nueva factura';
+  $('facDelBtn').style.display = editingFac ? 'block' : 'none';
+  renderCliList();
+  if(editingFac){
+    const c=getCliente(editingFac.clienteId);
+    $('ff_cliInput').value = c?c.razonSocial:'';
+    $('ff_tipo').value = editingFac.tipo||'FC A';
+    $('ff_numero').value = editingFac.numero||'';
+    $('ff_fecha').value = (editingFac.fecha||'').slice(0,10);
+    $('ff_importe').value = editingFac.importe||'';
+    $('ff_cobrado').value = editingFac.cobrado||0;
+    $('ff_venc').value = vencimientoDe(editingFac);
+    $('ff_obs').value = editingFac.obs||'';
+  } else {
+    $('ff_cliInput').value=''; $('ff_tipo').value='FC A'; $('ff_numero').value='';
+    $('ff_fecha').value=todayISO(); $('ff_importe').value=''; $('ff_cobrado').value=0;
+    $('ff_venc').value=''; $('ff_obs').value='';
+  }
+  openOverlay('ovFactura');
+}
+function onFacClienteInput(){
+  const name=$('ff_cliInput').value.trim();
+  const c=STATE.clientes.find(x=>x.razonSocial.toLowerCase()===name.toLowerCase());
+  if(c && $('ff_fecha').value){
+    const plazo=+c.condicionDias||30; const d=new Date($('ff_fecha').value+'T00:00:00'); d.setDate(d.getDate()+plazo);
+    if(!$('ff_venc').value) $('ff_venc').value=d.toISOString().slice(0,10);
+  }
+}
+function saveFactura(){
+  const name=$('ff_cliInput').value.trim();
+  let cli=STATE.clientes.find(x=>x.razonSocial.toLowerCase()===name.toLowerCase());
+  if(!cli){ toast('Cliente no encontrado. Creálo primero en Clientes.','bad'); return; }
+  const imp=+$('ff_importe').value;
+  if(!imp){ toast('Falta el importe','bad'); return; }
+  const obj = {
+    clienteId:cli.id,
+    tipo:$('ff_tipo').value, numero:$('ff_numero').value.trim(),
+    fecha:$('ff_fecha').value||todayISO(),
+    importe:imp, cobrado:+$('ff_cobrado').value||0,
+    fechaVencimiento:$('ff_venc').value||'',
+    obs:$('ff_obs').value.trim(), updatedAt:NOW()
+  };
+  if(obj.cobrado>=imp-0.5 && !obj.fechaCobro) obj.fechaCobro=todayISO();
+  if(editingFac){ Object.assign(editingFac,obj); }
+  else { STATE.facturas.push({id:uid(),createdAt:NOW(),...obj}); }
+  closeOverlay('ovFactura'); saveToCloud(); renderFacturas(); renderResumen();
+  toast('Factura guardada','ok');
+}
+function deleteFactura(id){
+  const fid = id || (editingFac&&editingFac.id);
+  if(!fid) return;
+  if(!confirm('¿Eliminar esta factura?')) return;
+  STATE.facturas = STATE.facturas.filter(f=>f.id!==fid);
+  closeOverlay('ovFactura'); saveToCloud(); renderFacturas(); renderResumen();
+  toast('Factura eliminada');
+}
+
+/* ---------- cobro ---------- */
+function openCobro(id){
+  cobroTarget = STATE.facturas.find(f=>f.id===id); if(!cobroTarget) return;
+  const c=getCliente(cobroTarget.clienteId), saldo=saldoDe(cobroTarget);
+  $('cobroInfo').innerHTML = `<b>${esc(c?c.razonSocial:'')}</b> · ${esc(cobroTarget.tipo||'')} ${esc(cobroTarget.numero||'')}<br>Importe ${fmt(cobroTarget.importe)} · Saldo pendiente <b style="color:var(--text)">${fmt(saldo)}</b>`;
+  $('cobroMonto').value = saldo.toFixed(2);
+  $('cobroFecha').value = todayISO();
+  openOverlay('ovCobro');
+}
+function cobrarTotal(){ if(cobroTarget) $('cobroMonto').value = saldoDe(cobroTarget).toFixed(2); }
+function saveCobro(){
+  if(!cobroTarget) return;
+  const monto=+$('cobroMonto').value||0;
+  cobroTarget.cobrado = (+cobroTarget.cobrado||0) + monto;
+  if(saldoDe(cobroTarget)<=0.5) cobroTarget.fechaCobro = $('cobroFecha').value||todayISO();
+  cobroTarget.updatedAt=NOW();
+  closeOverlay('ovCobro'); saveToCloud(); renderFacturas(); renderResumen();
+  toast('Cobro registrado','ok');
+}
+
+/* ============================================================
+   CLIENTES
+   ============================================================ */
+function saldoCliente(id){ return STATE.facturas.filter(f=>f.clienteId===id).reduce((s,f)=>s+saldoDe(f),0); }
+function renderClientes(){
+  const q=($('cliSearch').value||'').toLowerCase(), fv=$('cliVend').value;
+  let rows = STATE.clientes.filter(c=>{
+    if(fv && c.vendedor!==fv) return false;
+    if(q && !((c.razonSocial+' '+(c.codigo||'')+' '+(c.cuit||'')).toLowerCase().includes(q))) return false;
+    return true;
+  }).map(c=>({c,saldo:saldoCliente(c.id)})).sort((a,b)=>b.saldo-a.saldo || a.c.razonSocial.localeCompare(b.c.razonSocial));
+  $('cliBody').innerHTML = rows.length ? rows.map(({c,saldo})=>{
+    const ct=(c.contactos&&c.contactos[0])||{};
+    const contactStr = ct.nombre||ct.telefono||ct.email ? `${esc(ct.nombre||'')}${ct.telefono?' · '+esc(ct.telefono):''}` : '<span style="color:var(--faint)">—</span>';
+    return `<tr onclick="openCliente('${c.id}')" style="cursor:pointer">
+      <td><div class="cli-name">${esc(c.razonSocial)}</div><div class="cli-meta">${esc(c.codigo||'')}${c.cuit?' · '+esc(c.cuit):''}</div></td>
+      <td class="hide"><span class="vend">${esc(c.vendedor||'—')}</span></td>
+      <td class="hide num">${c.condicionDias||30} días</td>
+      <td>${contactStr}</td>
+      <td class="r num" style="font-weight:700">${saldo>0.5?fmt(saldo):'<span style="color:var(--faint)">$0</span>'}</td>
+      <td><div class="row-acts"><button class="mini" onclick="event.stopPropagation();openCliente('${c.id}')">✎</button></div></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty">No hay clientes. Importá el JSON en Config o agregá uno.</td></tr>';
+}
+
+function openCliente(id){
+  editingCli = id ? STATE.clientes.find(c=>c.id===id) : null;
+  $('cliTitle').textContent = editingCli ? 'Editar cliente' : 'Nuevo cliente';
+  $('cliDelBtn').style.display = editingCli ? 'block' : 'none';
+  const c = editingCli || {};
+  $('f_razon').value=c.razonSocial||''; $('f_codigo').value=c.codigo||'';
+  $('f_cuit').value=c.cuit||''; $('f_vend').value=c.vendedor||'Winflex';
+  $('f_plazo').value=c.condicionDias||30; $('f_modo').value=c.modoVencimiento||'factura';
+  $('f_obs').value=c.obs||'';
+  $('f_contactos').innerHTML='';
+  (c.contactos&&c.contactos.length?c.contactos:[{}]).forEach(addContactRow);
+  openOverlay('ovCliente');
+}
+function addContactRow(ct){
+  ct = ct&&ct.nombre!==undefined?ct:{};
+  const div=document.createElement('div'); div.className='contact-row';
+  div.innerHTML = `<input placeholder="Nombre" value="${esc(ct.nombre||'')}">
+    <input placeholder="Teléfono" value="${esc(ct.telefono||'')}">
+    <input placeholder="Email" value="${esc(ct.email||'')}">
+    <button onclick="this.parentNode.remove()">×</button>`;
+  $('f_contactos').appendChild(div);
+}
+function saveCliente(){
+  const razon=$('f_razon').value.trim();
+  if(!razon){ toast('Falta la razón social','bad'); return; }
+  const contactos=[...$('f_contactos').querySelectorAll('.contact-row')].map(r=>{
+    const [n,t,e]=r.querySelectorAll('input');
+    return {nombre:n.value.trim(),telefono:t.value.trim(),email:e.value.trim()};
+  }).filter(c=>c.nombre||c.telefono||c.email);
+  const obj={ razonSocial:razon, codigo:$('f_codigo').value.trim(), cuit:$('f_cuit').value.trim(),
+    vendedor:$('f_vend').value, condicionDias:+$('f_plazo').value||30, modoVencimiento:$('f_modo').value,
+    contactos, obs:$('f_obs').value.trim(), updatedAt:NOW() };
+  if(editingCli){ Object.assign(editingCli,obj); }
+  else { STATE.clientes.push({id:uid(),createdAt:NOW(),...obj}); }
+  closeOverlay('ovCliente'); saveToCloud(); renderClientes(); renderCliList(); renderResumen();
+  toast('Cliente guardado','ok');
+}
+function deleteCliente(){
+  if(!editingCli) return;
+  const n=STATE.facturas.filter(f=>f.clienteId===editingCli.id).length;
+  if(n>0){ toast(`No se puede: tiene ${n} factura(s) cargadas`,'bad'); return; }
+  if(!confirm('¿Eliminar este cliente?')) return;
+  STATE.clientes=STATE.clientes.filter(c=>c.id!==editingCli.id);
+  closeOverlay('ovCliente'); saveToCloud(); renderClientes(); renderCliList();
+  toast('Cliente eliminado');
+}
+
+/* ============================================================
+   IMPORT / EXPORT
+   ============================================================ */
+function importJSON(ev,kind){
+  const file=ev.target.files[0]; if(!file) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      let data=JSON.parse(rd.result);
+      if(kind==='clientes'){
+        const arr = Array.isArray(data)?data : (data.clientes||[]);
+        let add=0,upd=0;
+        arr.forEach(c=>{
+          const ex = STATE.clientes.find(x=>(c.codigo&&x.codigo===c.codigo) || x.razonSocial.toLowerCase()===(c.razonSocial||'').toLowerCase());
+          const norm={ razonSocial:c.razonSocial||'', codigo:c.codigo||'', cuit:c.cuit||'',
+            vendedor:VENDEDORES.includes(c.vendedor)?c.vendedor:'Winflex',
+            condicionDias:+c.condicionDias||30, modoVencimiento:c.modoVencimiento||'factura',
+            contactos:c.contactos||[], obs:c.obs||'', updatedAt:NOW() };
+          if(ex){ Object.assign(ex,norm); upd++; }
+          else { STATE.clientes.push({id:c.id||uid(),createdAt:NOW(),...norm}); add++; }
+        });
+        toast(`Clientes: ${add} nuevos, ${upd} actualizados`,'ok');
+      } else { // facturas
+        const arr = Array.isArray(data)?data : (data.facturas||[]);
+        let add=0,skip=0;
+        arr.forEach(f=>{
+          let cli=null;
+          if(f.clienteId) cli=getCliente(f.clienteId);
+          if(!cli && f.codigo) cli=STATE.clientes.find(c=>c.codigo===f.codigo);
+          if(!cli && (f.cliente||f.razonSocial)){ const nm=(f.cliente||f.razonSocial).toLowerCase(); cli=STATE.clientes.find(c=>c.razonSocial.toLowerCase()===nm); }
+          if(!cli){ skip++; return; }
+          // evitar duplicado por tipo+numero+cliente
+          const dup=STATE.facturas.find(x=>x.clienteId===cli.id && x.numero===(f.numero||'') && (f.numero||''));
+          if(dup){ skip++; return; }
+          STATE.facturas.push({ id:f.id||uid(), clienteId:cli.id,
+            tipo:f.tipo||'FC A', numero:f.numero||'', fecha:(f.fecha||todayISO()).slice(0,10),
+            importe:+f.importe||0, cobrado:+f.cobrado||0,
+            fechaVencimiento:(f.fechaVencimiento||'').slice(0,10), fechaCobro:f.fechaCobro||'',
+            obs:f.obs||'', createdAt:NOW(), updatedAt:NOW() });
+          add++;
+        });
+        toast(`Facturas: ${add} cargadas${skip?', '+skip+' omitidas (sin cliente o duplicadas)':''}`, skip&&!add?'bad':'ok');
+      }
+      saveToCloud(); renderAll();
+    }catch(e){ toast('JSON inválido: '+e.message,'bad'); }
+    ev.target.value='';
+  };
+  rd.readAsText(file);
+}
+function exportBackup(){
+  const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='winflex-cobranzas-'+todayISO()+'.json'; a.click();
+}
+function renderStats(){
+  const conSaldo=STATE.facturas.filter(f=>saldoDe(f)>0.5).length;
+  $('cfgStats').innerHTML = `${STATE.clientes.length} clientes · ${STATE.facturas.length} facturas (${conSaldo} con saldo)<br>Última actualización: ${STATE.meta&&STATE.meta.lastUpdate?dShow(STATE.meta.lastUpdate)+' por '+(STATE.meta.lastUser||'?'):'—'}`;
+}
+
+/* ---------- overlays ---------- */
+function openOverlay(id){ $(id).classList.add('open'); }
+function closeOverlay(id){ $(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); }));
+
+/* ---------- arranque ---------- */
+(function init(){
+  const u=localStorage.getItem(LS.user);
+  if(u && Object.values(PINS).includes(u)){ CURRENT_USER=u; startApp(); }
+  else $('pinInput').focus();
+})();
+</script>
+</body>
+</html>
