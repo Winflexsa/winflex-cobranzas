@@ -13,7 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#f4f3f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--text:#1a1916;--text2:#6b6860;--text3:#a8a69a;--accent:#1a472a;--accent-light:#e8f2ec;--accent-text:#1a472a;--warn:#92400e;--warn-light:#fef3c7;--danger:#991b1b;--danger-light:#fee2e2;--success:#14532d;--success-light:#dcfce7;--info:#1e40af;--info-light:#dbeafe;--radius:10px;--radius-sm:6px;--shadow:0 1px 3px rgba(0,0,0,.06)}
+:root{--bg:#f4f3f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--text:#1a1916;--text2:#6b6860;--text3:#a8a69a;--accent:#1f8b4c;--accent-dark:#137a3c;--accent-light:#e7f4ec;--accent-text:#15633a;--wf-grad:linear-gradient(135deg,#43b649 0%,#1f8b4c 52%,#137a3c 100%);--wf-gray:#58595b;--warn:#92400e;--warn-light:#fef3c7;--danger:#991b1b;--danger-light:#fee2e2;--success:#14532d;--success-light:#dcfce7;--info:#1e40af;--info-light:#dbeafe;--radius:10px;--radius-sm:6px;--shadow:0 1px 3px rgba(0,0,0,.06)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
 .shell{display:flex;min-height:100vh}
@@ -83,10 +83,45 @@ tbody tr:hover td{background:var(--surface2)}
 .toast.ok{background:var(--success-light);color:var(--success);border:1px solid #86efac}
 .toast.warn{background:var(--warn-light);color:var(--warn);border:1px solid #fcd34d}
 .cfg-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center}
-@media(max-width:768px){.sidebar{width:100%;position:relative;height:auto}.main{margin-left:0;padding:14px}.card-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+/* ── Branding ── */
+.brand{background:linear-gradient(180deg,#fff 0%,var(--accent-light) 220%)}
+.sidebar{border-top:3px solid transparent;border-image:var(--wf-grad) 1}
+.btn-primary{background:var(--accent);border-color:var(--accent)}
+/* ── PIN login ── */
+#pin-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:var(--wf-grad);background-attachment:fixed}
+#pin-screen::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 55%),radial-gradient(circle at 80% 90%,rgba(0,0,0,.12),transparent 50%)}
+.pin-card{position:relative;background:var(--surface);border-radius:18px;padding:34px 30px 28px;width:340px;max-width:92vw;box-shadow:0 24px 70px rgba(0,0,0,.32);text-align:center;animation:pinIn .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes pinIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.pin-card img{width:148px;height:auto;margin:0 auto 6px;display:block}
+.pin-sub{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:22px}
+.pin-title{font-size:14px;color:var(--text2);margin-bottom:14px}
+#pin-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:22px;text-align:center;letter-spacing:8px;font-family:'DM Mono',monospace;color:var(--text);outline:none;transition:border-color .15s}
+#pin-input:focus{border-color:var(--accent)}
+.pin-err{color:var(--danger);font-size:12.5px;min-height:18px;margin-top:14px;font-weight:500}
+.pin-user{margin-top:12px;font-size:12px;color:var(--accent-text);font-weight:600;min-height:16px}
+.logout-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;padding:4px 8px;border-radius:6px}
+.logout-btn:hover{background:var(--surface2);color:var(--danger)}
+/* ── Gestión de clientes ── */
+.cli-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.merge-suggest{background:var(--warn-light);border:1px solid #fcd34d;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;font-family:'DM Mono',monospace}
+.cli-row-actions{display:flex;gap:4px}
+@media(max-width:768px){.sidebar{width:100%;position:relative;height:auto}.main{margin-left:0;padding:14px}.card-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.pin-card{width:300px}}
 </style>
 </head>
 <body>
+
+<!-- ── PIN LOGIN ── -->
+<div id="pin-screen">
+  <div class="pin-card">
+    <img id="pin-logo" alt="Winflex">
+    <div class="pin-sub">Cobranzas · Caja 2</div>
+    <div class="pin-title">Ingresá tu PIN</div>
+    <input type="password" id="pin-input" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')checkPin()" oninput="document.getElementById('pin-err').textContent=''">
+    <button class="btn btn-primary" id="pin-go" onclick="checkPin()" style="width:100%;margin-top:12px;padding:11px">Ingresar</button>
+    <div class="pin-err" id="pin-err"></div>
+  </div>
+</div>
 
 <div id="cfg-modal" class="cfg-modal" style="display:flex">
   <div class="modal-box">
@@ -129,6 +164,33 @@ tbody tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<div id="cli-modal" class="modal-bg">
+  <div class="modal-box" style="width:600px">
+    <div class="modal-header">
+      <div class="modal-title">Gestión de clientes</div>
+      <button class="modal-close" onclick="cerrarCliModal()">&#x2715;</button>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;box-shadow:none;background:var(--accent-light);border-color:#bfe3cd">
+      <div class="card-title" style="color:var(--accent-text)">Agregar cliente nuevo</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cli-new-name" placeholder="Nombre del cliente..." style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px">
+        <button class="btn btn-primary" onclick="agregarCliente()">Agregar</button>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px">Queda disponible en el autocompletado de "Nueva cobranza".</div>
+    </div>
+
+    <div id="cli-merge-box"></div>
+
+    <div class="card-title" style="margin-top:6px">Todos los clientes <span id="cli-count-lbl" style="color:var(--text3);font-weight:400"></span></div>
+    <input type="text" id="cli-mgr-q" placeholder="Buscar..." oninput="renderCliManager()" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;margin-bottom:10px">
+    <div class="tbl-wrap" style="max-height:300px;overflow-y:auto"><table>
+      <thead><tr><th>Cliente</th><th>Registros</th><th>Total</th><th></th></tr></thead>
+      <tbody id="cli-mgr-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
 <div class="shell">
   <div class="sidebar">
     <div class="brand">
@@ -144,8 +206,10 @@ tbody tr:hover td{background:var(--surface2)}
       <button class="nav-item" onclick="goTo('exportar',this)"><span>⬇</span> Exportar</button>
     </nav>
     <div class="sync-area">
+      <div id="who" style="font-size:11px;color:var(--accent-text);font-weight:600;margin-bottom:6px;display:none"></div>
       <div class="sync-pill"><div class="sync-dot loading" id="sync-dot"></div><span id="sync-txt">Conectando...</span></div>
       <button onclick="actualizarDesdeNube()" style="margin-top:8px;width:100%;padding:7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--accent-light);color:var(--accent-text);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">↻ Actualizar</button>
+      <button class="logout-btn" onclick="logout()" style="width:100%;margin-top:6px">Cerrar sesión</button>
     </div>
   </div>
 
@@ -190,14 +254,18 @@ tbody tr:hover td{background:var(--surface2)}
     <div class="page" id="pg-clientes">
       <div class="page-title">Por cliente</div>
       <div class="page-sub">Total cobrado por cliente</div>
+      <div class="cli-tools">
+        <button class="btn btn-primary" onclick="abrirCliModal()">👥 Gestionar clientes</button>
+        <span style="font-size:12px;color:var(--text3)">Agregar, renombrar o fusionar duplicados</span>
+      </div>
       <div class="filter-bar">
         <input type="text" id="cli-q" placeholder="Buscar cliente..." oninput="renderClientes()" style="width:200px">
         <select id="cli-mes" onchange="renderClientes()"><option value="">Todos los meses</option></select>
-        <select id="cli-concepto" onchange="renderClientes()"><option value="">Todos los conceptos</option><option>Flexibles</option><option>Bandejas</option><option>Pet</option></select>
+        <select id="cli-concepto" onchange="renderClientes()"><option value="">Todos los conceptos</option><option>Flexibles</option><option>Bandejas</option><option>Pet</option><option>Amcor</option></select>
       </div>
       <div class="metrics" id="cli-metrics"></div>
       <div class="card"><div class="tbl-wrap"><table>
-        <thead><tr><th>Cliente</th><th>Total</th><th>Efectivo</th><th>Transf.</th><th>Cheques</th><th>Flexibles</th><th>Bandejas</th><th>PET</th><th>Registros</th></tr></thead>
+        <thead><tr><th>Cliente</th><th>Total</th><th>Efectivo</th><th>Transf.</th><th>Cheques</th><th>Flexibles</th><th>Bandejas</th><th>PET</th><th>Amcor</th><th>Registros</th></tr></thead>
         <tbody id="cli-body"></tbody>
       </table></div></div>
     </div>
@@ -209,7 +277,7 @@ tbody tr:hover td{background:var(--surface2)}
       <div class="filter-bar">
         <input type="text" id="det-q" placeholder="Buscar cliente..." oninput="renderDetalle()" style="width:160px">
         <select id="det-mes" onchange="renderDetalle()"><option value="">Todos los meses</option></select>
-        <select id="det-concepto" onchange="renderDetalle()"><option value="">Todos los conceptos</option><option>Flexibles</option><option>Bandejas</option><option>Pet</option></select>
+        <select id="det-concepto" onchange="renderDetalle()"><option value="">Todos los conceptos</option><option>Flexibles</option><option>Bandejas</option><option>Pet</option><option>Amcor</option></select>
         <select id="det-pago" onchange="renderDetalle()">
           <option value="">Todas las formas de pago</option>
           <option value="efectivo">Efectivo</option>
@@ -355,7 +423,7 @@ const fmtM = n => n?'$'+Math.round(n).toLocaleString('es-AR'):'-';
 const fmtD = s => {if(!s||!s.trim())return '-';try{const d=new Date(s+'T12:00:00');return isNaN(d)?s:d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'});}catch{return s;}}
 const today = ()=>new Date().toISOString().split('T')[0];
 const conceptoBadge = c => {
-  const map={'Flexibles':'badge-flex','Bandejas':'badge-band','Pet':'badge-pet'};
+  const map={'Flexibles':'badge-flex','Bandejas':'badge-band','Pet':'badge-pet','Amcor':'badge-otro'};
   return '<span class="badge '+(map[c]||'badge-otro')+'">'+c+'</span>';
 };
 const getMeses = ()=>[...new Set(STATE.records.map(r=>r.mes))].sort((a,b)=>b.localeCompare(a));
@@ -406,12 +474,12 @@ function renderResumen(){
   const evolMap={};STATE.records.forEach(r=>{evolMap[r.mes]=(evolMap[r.mes]||0)+r.total;});
   const evolS=Object.entries(evolMap).sort((a,b)=>a[0].localeCompare(b[0]));
   if(charts.evol)charts.evol.destroy();
-  charts.evol=new Chart(document.getElementById('chart-evol'),{type:'bar',data:{labels:evolS.map(e=>e[0]),datasets:[{label:'Total',data:evolS.map(e=>Math.round(e[1])),backgroundColor:'#1a472a',borderRadius:4}]},options:{...baseOpts,plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x},y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v/1000000)+'M'}}}}});
+  charts.evol=new Chart(document.getElementById('chart-evol'),{type:'bar',data:{labels:evolS.map(e=>e[0]),datasets:[{label:'Total',data:evolS.map(e=>Math.round(e[1])),backgroundColor:'#1f8b4c',borderRadius:4}]},options:{...baseOpts,plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x},y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v/1000000)+'M'}}}}});
 
   const cliMap={};STATE.records.forEach(r=>{if(r.cliente)cliMap[r.cliente]=(cliMap[r.cliente]||0)+r.total;});
   const cliS=Object.entries(cliMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
   if(charts.clientes)charts.clientes.destroy();
-  charts.clientes=new Chart(document.getElementById('chart-clientes'),{type:'bar',data:{labels:cliS.map(e=>e[0]),datasets:[{label:'Total',data:cliS.map(e=>Math.round(e[1])),backgroundColor:'#86efac',borderRadius:4}]},options:{...baseOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x,ticks:{...baseOpts.scales.x.ticks,callback:v=>'$'+Math.round(v/1000)+'k'}},y:{...baseOpts.scales.y}}}});
+  charts.clientes=new Chart(document.getElementById('chart-clientes'),{type:'bar',data:{labels:cliS.map(e=>e[0]),datasets:[{label:'Total',data:cliS.map(e=>Math.round(e[1])),backgroundColor:'#7fce9d',borderRadius:4}]},options:{...baseOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...baseOpts.scales.x,ticks:{...baseOpts.scales.x.ticks,callback:v=>'$'+Math.round(v/1000)+'k'}},y:{...baseOpts.scales.y}}}});
 }
 
 function renderMensual(){
@@ -494,12 +562,13 @@ function renderClientes(){
   });
   const cliMap={};
   regs.forEach(r=>{
-    if(!cliMap[r.cliente])cliMap[r.cliente]={total:0,efectivo:0,transferencia:0,cheques:0,flex:0,band:0,pet:0,cant:0};
+    if(!cliMap[r.cliente])cliMap[r.cliente]={total:0,efectivo:0,transferencia:0,cheques:0,flex:0,band:0,pet:0,amcor:0,cant:0};
     const m=cliMap[r.cliente];
     m.total+=r.total;m.efectivo+=r.efectivo;m.transferencia+=r.transferencia;m.cheques+=r.cheques;m.cant++;
     if(r.concepto==='Flexibles')m.flex+=r.total;
     if(r.concepto==='Bandejas')m.band+=r.total;
     if(r.concepto==='Pet')m.pet+=r.total;
+    if(r.concepto==='Amcor')m.amcor+=r.total;
   });
   const sorted=Object.entries(cliMap).sort((a,b)=>b[1].total-a[1].total);
   const totTotal=sorted.reduce((a,[,v])=>a+v.total,0);
@@ -516,8 +585,159 @@ function renderClientes(){
     <td>${v.flex?fmtM(v.flex):'-'}</td>
     <td>${v.band?fmtM(v.band):'-'}</td>
     <td>${v.pet?fmtM(v.pet):'-'}</td>
+    <td>${v.amcor?fmtM(v.amcor):'-'}</td>
     <td style="color:var(--text3)">${v.cant}</td>
-  </tr>`).join('')||'<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text3)">Sin resultados</td></tr>';
+  </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text3)">Sin resultados</td></tr>';
+}
+
+// ── GESTIÓN DE CLIENTES ──────────────────────────────────────────
+// Nombres únicos = catálogo (autocompletado) ∪ nombres que ya están en registros
+function getAllClientNames(){
+  const set = new Set();
+  CLIENTES_BD.forEach(c=>{ if(c&&c.trim()) set.add(c.trim()); });
+  STATE.records.forEach(r=>{ if(r.cliente&&r.cliente.trim()) set.add(r.cliente.trim()); });
+  return [...set].sort((a,b)=>a.localeCompare(b,'es'));
+}
+function cliStats(name){
+  let cant=0,total=0;
+  STATE.records.forEach(r=>{ if(r.cliente===name){cant++;total+=r.total;} });
+  return {cant,total};
+}
+// normaliza para comparar: minúsculas, sin acentos, sin puntuación final, espacios colapsados
+function normName(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[.,;]+$/,'').replace(/\s+/g,' ').trim();
+}
+function lev(a,b){
+  const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let prev=Array.from({length:n+1},(_,i)=>i),cur=new Array(n+1);
+  for(let i=1;i<=m;i++){cur[0]=i;for(let j=1;j<=n;j++){cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));}[prev,cur]=[cur,prev];}
+  return prev[n];
+}
+// agrupa nombres parecidos (mismo normalizado, o distancia ≤2 en nombres de ≥4 letras)
+function findDupGroups(){
+  const names=getAllClientNames();
+  const norm=names.map(normName);
+  const used=new Set();const groups=[];
+  for(let i=0;i<names.length;i++){
+    if(used.has(i))continue;
+    const g=[names[i]];used.add(i);
+    for(let j=i+1;j<names.length;j++){
+      if(used.has(j))continue;
+      const exact = norm[i]===norm[j];
+      const near = Math.min(norm[i].length,norm[j].length)>=4 && lev(norm[i],norm[j])<=1;
+      if(exact||near){ g.push(names[j]); used.add(j); }
+    }
+    if(g.length>1) groups.push(g);
+  }
+  return groups;
+}
+
+function abrirCliModal(){ document.getElementById('cli-modal').style.display='flex'; renderCliMerge(); renderCliManager(); }
+function cerrarCliModal(){ document.getElementById('cli-modal').style.display='none'; }
+document.getElementById('cli-modal').addEventListener('click',function(e){if(e.target===this)cerrarCliModal();});
+
+function renderCliMerge(){
+  const box=document.getElementById('cli-merge-box');
+  const groups=findDupGroups();
+  if(!groups.length){ box.innerHTML=''; return; }
+  box.innerHTML = '<div class="card-title" style="margin-top:4px">Posibles duplicados detectados</div>' +
+    groups.map((g,gi)=>{
+      const stats=g.map(n=>({n,...cliStats(n)}));
+      // sugerencia: el de más registros como destino
+      stats.sort((a,b)=>b.cant-a.cant);
+      const opts=stats.map(s=>`<option value="${s.n.replace(/"/g,'&quot;')}">${s.n} (${s.cant})</option>`).join('');
+      const chips=stats.map(s=>`<span class="chip">${s.n} · ${s.cant}</span>`).join(' ');
+      return `<div class="merge-suggest">
+        <div style="flex:1;min-width:200px">${chips}</div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--text2)">Unificar en:</span>
+          <select id="merge-target-${gi}" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit">${opts}</select>
+          <button class="btn btn-sm btn-primary" onclick='fusionarGrupo(${JSON.stringify(g)},${gi})'>Fusionar</button>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+async function fusionarGrupo(grupo,gi){
+  const target=document.getElementById('merge-target-'+gi).value;
+  const fuentes=grupo.filter(n=>n!==target);
+  if(!fuentes.length)return;
+  if(!confirm(`Reasignar todos los registros de:\n• ${fuentes.join('\n• ')}\n\n→ "${target}"?\n\nEsto actualiza los registros y no se puede deshacer.`))return;
+  let cambios=0;
+  STATE.records.forEach(r=>{ if(fuentes.includes(r.cliente)){ r.cliente=target; cambios++; } });
+  // limpiar del catálogo los nombres fuente, asegurar que el destino esté
+  for(let i=CLIENTES_BD.length-1;i>=0;i--){ if(fuentes.includes(CLIENTES_BD[i])) CLIENTES_BD.splice(i,1); }
+  if(!CLIENTES_BD.includes(target)) CLIENTES_BD.push(target);
+  rebuildDatalists();
+  await saveCloud();
+  toast(`${cambios} registro(s) reasignados a "${target}"`);
+  renderCliMerge(); renderCliManager(); renderClientes();
+}
+
+function agregarCliente(){
+  const inp=document.getElementById('cli-new-name');
+  const name=(inp.value||'').trim();
+  if(!name){ toast('Escribí un nombre','warn'); return; }
+  if(getAllClientNames().some(n=>normName(n)===normName(name))){ toast('Ese cliente ya existe (o muy parecido)','warn'); return; }
+  CLIENTES_BD.push(name);
+  rebuildDatalists();
+  inp.value='';
+  toast('Cliente agregado: '+name);
+  renderCliManager();
+}
+
+async function renombrarCliente(oldName){
+  const nuevo=prompt('Nuevo nombre para "'+oldName+'":',oldName);
+  if(nuevo===null)return;
+  const name=nuevo.trim();
+  if(!name||name===oldName)return;
+  const st=cliStats(oldName);
+  let cambios=0;
+  STATE.records.forEach(r=>{ if(r.cliente===oldName){ r.cliente=name; cambios++; } });
+  for(let i=CLIENTES_BD.length-1;i>=0;i--){ if(CLIENTES_BD[i]===oldName) CLIENTES_BD.splice(i,1); }
+  if(!CLIENTES_BD.includes(name)) CLIENTES_BD.push(name);
+  rebuildDatalists();
+  if(cambios>0) await saveCloud();
+  toast(`Renombrado a "${name}"${cambios?` (${cambios} reg.)`:''}`);
+  renderCliMerge(); renderCliManager(); renderClientes();
+}
+
+function quitarClienteCatalogo(name){
+  // solo elimina del catálogo de autocompletado; nunca borra registros
+  if(cliStats(name).cant>0){ toast('Tiene registros: usá Fusionar o Renombrar','warn'); return; }
+  for(let i=CLIENTES_BD.length-1;i>=0;i--){ if(CLIENTES_BD[i]===name) CLIENTES_BD.splice(i,1); }
+  rebuildDatalists();
+  toast('Quitado del autocompletado: '+name);
+  renderCliManager();
+}
+
+function rebuildDatalists(){
+  // dedup case-insensitive del catálogo conservando mejor forma
+  const seen={};const clean=[];
+  getAllClientNames().forEach(n=>{ const k=normName(n); if(!seen[k]){seen[k]=true;clean.push(n);} });
+  ['list-clientes','list-clientes-ed'].forEach(id=>{
+    const dl=document.getElementById(id); if(!dl)return;
+    dl.innerHTML=''; clean.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o);});
+  });
+}
+
+function renderCliManager(){
+  const q=normName(document.getElementById('cli-mgr-q').value||'');
+  const names=getAllClientNames().filter(n=>!q||normName(n).includes(q));
+  document.getElementById('cli-count-lbl').textContent='('+getAllClientNames().length+')';
+  document.getElementById('cli-mgr-body').innerHTML = names.map(n=>{
+    const s=cliStats(n);
+    return `<tr>
+      <td style="font-weight:500">${n}</td>
+      <td style="color:var(--text3)">${s.cant}</td>
+      <td>${s.total?fmtM(s.total):'-'}</td>
+      <td class="cli-row-actions">
+        <button class="btn btn-sm" onclick='renombrarCliente(${JSON.stringify(n)})'>Renombrar</button>
+        <button class="btn btn-sm btn-danger" onclick='quitarClienteCatalogo(${JSON.stringify(n)})' title="Quitar del autocompletado">×</button>
+      </td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="4" style="text-align:center;padding:18px;color:var(--text3)">Sin clientes</td></tr>';
 }
 
 // ── DETALLE ──────────────────────────────────────────────────────
@@ -565,10 +785,7 @@ function calcTotal(){
 
 function initNuevo(){
   document.getElementById('np-fecha').value=today();
-  const dl=document.getElementById('list-clientes');
-  if(dl&&dl.children.length===0) CLIENTES_BD.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o);});
-  const dled=document.getElementById('list-clientes-ed');
-  if(dled&&dled.children.length===0) CLIENTES_BD.forEach(c=>{const o=document.createElement('option');o.value=c;dled.appendChild(o);});
+  rebuildDatalists();
 }
 
 async function guardarNuevo(){
@@ -586,7 +803,7 @@ async function guardarNuevo(){
   const rec={id:STATE.nextId++,mes,fecha,cliente,concepto,total,efectivo:ef,transferencia:tr,cheques:ch};
   STATE.records.push(rec);
   // Add to datalists if new
-  if(!CLIENTES_BD.includes(cliente)){CLIENTES_BD.push(cliente);const o=document.createElement('option');o.value=cliente;document.getElementById('list-clientes').appendChild(o);}
+  if(!CLIENTES_BD.includes(cliente)){CLIENTES_BD.push(cliente);rebuildDatalists();}
   await saveCloud();
   document.getElementById('ultimo-card').style.display='block';
   document.getElementById('ultimo-body').innerHTML=`<table><tbody>
@@ -736,12 +953,52 @@ async function actualizarDesdeNube(){
   }
 }
 
+// ── PIN LOGIN ────────────────────────────────────────────────────
+const PINS = { '1540':'Matías', '3080':'Jonathan', '0104':'Mirta', '0204':'Georgina' };
+let currentUser = '';
+
+function checkPin(){
+  const inp=document.getElementById('pin-input');
+  const val=(inp.value||'').trim();
+  if(PINS[val]){
+    currentUser = PINS[val];
+    sessionStorage.setItem('wf_cob_user', currentUser);
+    document.getElementById('pin-screen').style.display='none';
+    startApp();
+  } else {
+    document.getElementById('pin-err').textContent='PIN incorrecto';
+    inp.value='';
+    const card=document.querySelector('.pin-card');
+    card.style.animation='none'; void card.offsetWidth; card.style.animation='pinIn .3s';
+    inp.focus();
+  }
+}
+function logout(){
+  sessionStorage.removeItem('wf_cob_user');
+  location.reload();
+}
+
+async function startApp(){
+  document.getElementById('who').textContent='👤 '+currentUser;
+  document.getElementById('who').style.display='block';
+  await initApp();
+  setTimeout(checkPrefillCaja2, 500);
+}
+
 async function boot(){
   loadCfg();
   document.getElementById('cfg-modal').style.display='none';
-  await initApp();
-  // Integración con app de Cobranzas: detectar prefill desde localStorage
-  setTimeout(checkPrefillCaja2, 500);
+  // logo en pantalla de PIN (reusa el del sidebar, sin duplicar)
+  try{ document.getElementById('pin-logo').src = document.querySelector('.brand img').src; }catch(e){}
+  // sesión recordada (mientras la pestaña esté abierta)
+  const saved = sessionStorage.getItem('wf_cob_user');
+  if(saved && Object.values(PINS).includes(saved)){
+    currentUser = saved;
+    document.getElementById('pin-screen').style.display='none';
+    startApp();
+  } else {
+    setTimeout(()=>{const i=document.getElementById('pin-input');if(i)i.focus();},100);
+  }
 }
 boot();
 
