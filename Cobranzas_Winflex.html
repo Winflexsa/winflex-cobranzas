@@ -373,6 +373,7 @@ const RECORDS_INIT = [{"id": 1, "mes": "03-2026", "fecha": "2026-03-02", "client
 const NEXT_ID_INIT = 132;
 
 let STATE = { records:[], nextId:NEXT_ID_INIT };
+let LOAD_OK = false; // true solo si loadCloud terminó OK; bloquea saveCloud si la carga falló
 let CFG = { apiKey:'$2a$10$8p4t41BnTv.9Ls.4kFLhouDMqJGQEd5LQlBYEz8n1y6nH/3dFq27G', binId:'' };
 let editingId = null;
 let selMes = null;
@@ -384,36 +385,50 @@ function loadCfg(){ CFG.apiKey='$2a$10$8p4t41BnTv.9Ls.4kFLhouDMqJGQEd5LQlBYEz8n1
 async function loadCloud(){
   setSyncState('loading','Cargando...');
   try{
-    if(!CFG.binId){ STATE.records=JSON.parse(JSON.stringify(RECORDS_INIT)); STATE.nextId=NEXT_ID_INIT; await saveCloud(true); return; }
+    if(!CFG.binId){ STATE.records=JSON.parse(JSON.stringify(RECORDS_INIT)); STATE.nextId=NEXT_ID_INIT; LOAD_OK=true; await saveCloud(true); return; }
     const res=await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}/latest`,{headers:{'X-Master-Key':CFG.apiKey}});
     if(!res.ok) throw new Error(res.status);
     const d=await res.json();
     STATE.records=d.record.records||JSON.parse(JSON.stringify(RECORDS_INIT));
     STATE.nextId=d.record.nextId||NEXT_ID_INIT;
     setSyncState('ok','Sincronizado');
+    LOAD_OK=true; // carga verificada: ya es seguro guardar
   }catch(e){
-    setSyncState('err','Error de conexión');
+    LOAD_OK=false; // carga falló: bloquear guardado para no pisar la nube
+    setSyncState('err','Error de carga — guardado bloqueado. Recargá la página.');
     const local=localStorage.getItem('wf_cob_local');
-    if(local){const d=JSON.parse(local);STATE.records=d.records;STATE.nextId=d.nextId;}
+    if(local){const d=JSON.parse(local);STATE.records=d.records||[];STATE.nextId=d.nextId||NEXT_ID_INIT;}
     else{STATE.records=JSON.parse(JSON.stringify(RECORDS_INIT));STATE.nextId=NEXT_ID_INIT;}
+    toast('⚠ No se pudo cargar de la nube. Datos en modo lectura. NO se guardará hasta recargar.','warn');
   }
 }
 
+let _cobSaving=false;
 async function saveCloud(isNew){
+  if(!LOAD_OK && !isNew){ setSyncState('err','Guardado bloqueado: la carga falló. Recargá.'); toast('⚠ No se guardó: la carga inicial no se completó. Recargá la página.','warn'); return; }
+  if(_cobSaving) return; _cobSaving=true;
   setSyncState('loading','Guardando...');
   const payload={records:STATE.records,nextId:STATE.nextId};
   localStorage.setItem('wf_cob_local',JSON.stringify(payload));
+  // Tripwire: no pisar la nube con vacío si la nube tiene datos
+  if(!isNew && CFG.binId){
+    try{
+      const chk=await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}/latest`,{headers:{'X-Master-Key':CFG.apiKey}});
+      if(chk.ok){ const cur=(await chk.json()).record||{}; if((cur.records||[]).length>0 && (STATE.records||[]).length===0){ _cobSaving=false; setSyncState('err','Guardado bloqueado: evitaría borrar datos.'); toast('⛔ Guardado BLOQUEADO: dejaría las cobranzas en cero y la nube tiene datos. Recargá la página.','warn'); return; } }
+    }catch(_){}
+  }
   try{
     let res;
     if(isNew||!CFG.binId){
-      res=await fetch('https://api.jsonbin.io/v3/b',{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':CFG.apiKey,'X-Bin-Name':'winflex-cobranzas','X-Bin-Private':'true'},body:JSON.stringify(payload)});
+      res=await fetch('https://api.jsonbin.io/v3/b',{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':CFG.apiKey,'X-Bin-Name':'winflex-cobranzas','X-Bin-Private':'true','X-Bin-Versioning':'true'},body:JSON.stringify(payload)});
       const d=await res.json();CFG.binId=d.metadata.id;localStorage.setItem('wf_cob_bin',CFG.binId);
     }else{
-      res=await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':CFG.apiKey},body:JSON.stringify(payload)});
+      res=await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':CFG.apiKey,'X-Bin-Versioning':'true'},body:JSON.stringify(payload)});
     }
     if(!res.ok) throw new Error(res.status);
     setSyncState('ok','Guardado ✓');
   }catch(e){setSyncState('err','Error al guardar');toast('Guardado localmente','warn');}
+  finally{_cobSaving=false;}
 }
 
 function setSyncState(s,t){document.getElementById('sync-dot').className='sync-dot '+s;document.getElementById('sync-txt').textContent=t;}
