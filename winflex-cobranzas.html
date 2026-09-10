@@ -69,6 +69,7 @@
   nav button:hover:not(.active){color:var(--text)}
 
   .tab{display:none}.tab.active{display:block;animation:fade .2s}
+body.modo-modulo nav{display:none}
   @keyframes fade{from{opacity:0;transform:translateY(4px)}}
 
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
@@ -222,6 +223,13 @@
   .clicard.fuera{opacity:.93}
   .situ-sel{padding:8px 10px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:12.5px;font-weight:600;cursor:pointer}
   .mini.on-inc{color:#fff;background:var(--inc);border-color:var(--inc)}
+  .lunes-box{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--r);padding:13px 16px;margin:0 0 12px}
+  .lunes-box.pend{border-left-color:var(--venc);background:#fff7f7}
+  .lunes-box .lt{font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .lunes-box .lm{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .lunes-box .la{display:flex;gap:8px;flex-wrap:wrap}
+  .lpill{font-size:10.5px;font-weight:800;letter-spacing:.4px;padding:3px 8px;border-radius:999px}
+  .lpill.bad{background:var(--venc);color:#fff}.lpill.ok{background:#e7f3ec;color:var(--accent-d)}
   .fuera-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 8px}
   .fuera-cell{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
   .fuera-cell:hover{border-color:var(--border2)}
@@ -230,6 +238,38 @@
   .fuera-cell .fv{font-size:19px;font-weight:800}
   .fuera-cell .fn{font-size:11px;color:var(--faint)}
   .fuera-note{font-size:11.5px;color:var(--faint);margin:0 0 16px}
+
+  /* ---- EFECTIVO ---- */
+  .efe-bar{display:flex;height:20px;border-radius:8px;overflow:hidden;background:var(--bg2)}
+  .efe-bar i{display:block;height:100%}
+  .efe-mini{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--bg2);min-width:80px}
+  .efe-mini i{display:block;height:100%}
+  .efe-chips{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+  .efe-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .efe-chip b{width:10px;height:10px;border-radius:3px;display:block}
+  .efe-chip strong{color:var(--text)}
+  .efe-alert{background:#fff8ec;border:1px solid #f0e0bd;border-left:3px solid var(--prox);border-radius:10px;padding:10px 13px;font-size:13px;margin-bottom:8px;line-height:1.5;color:var(--text)}
+  .efe-alert.ok{background:#eefaf3;border-color:#c9e8d8;border-left-color:var(--cobr)}
+  .tag-efe{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.3px;border:1px solid var(--border2);border-radius:5px;padding:1px 6px;color:var(--muted);margin-left:6px;font-weight:700}
+  .tag-efe.w{border-color:var(--prox);color:var(--prox)}
+  .tag-efe.g{border-color:var(--cobr);color:var(--cobr)}
+  .kpi.efe .bar{background:#7a5cd0}
+  .efe-row{cursor:pointer}
+  td.c,th.c{text-align:center}
+  .efe-chk{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:4px}
+  .efe-chk input{width:20px;height:20px;accent-color:var(--cobr);cursor:pointer}
+  .nota-txt{font-size:11.5px;color:var(--faint);margin-top:2px;line-height:1.35}
+  .kpis.k5{grid-template-columns:repeat(5,1fr)}
+  .tag-efe.p{border-color:#7a5cd0;color:#7a5cd0}
+  .efe-split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .efe-line{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px}
+  .efe-line .nm{width:92px;color:var(--muted);font-weight:600;flex:none}
+  .efe-line .tr{flex:1;height:9px;border-radius:5px;background:var(--bg2);overflow:hidden;min-width:40px}
+  .efe-line .tr i{display:block;height:100%;background:var(--accent)}
+  .efe-line .vl{width:104px;text-align:right;font-weight:700}
+  .efe-filtro{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;font-size:12.5px;margin-bottom:14px;color:var(--muted)}
+  .efe-filtro strong{color:var(--text)}
+  @media(max-width:760px){.efe-split{grid-template-columns:1fr}.kpis.k5{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -261,6 +301,8 @@
     <button class="active" data-tab="resumen" onclick="switchTab('resumen')">Cobranza</button>
     <button data-tab="facturas" onclick="switchTab('facturas')">Facturas</button>
     <button data-tab="clientes" onclick="switchTab('clientes')">Clientes</button>
+    <button data-tab="efectivo" id="navEfectivo" onclick="switchTab('efectivo')">Efectivo</button>
+    <button data-tab="total" id="navTotal" onclick="switchTab('total')">Cuenta total</button>
     <button data-tab="importar" onclick="switchTab('importar')">Importar</button>
     <button data-tab="config" onclick="switchTab('config')">Config</button>
   </nav>
@@ -268,6 +310,7 @@
   <!-- COBRANZA (cockpit) -->
   <section class="tab active" id="tab-resumen">
     <div class="kpis" id="kpis"></div>
+    <div id="lunesBox"></div>
     <div id="ncWarnBox"></div>
     <div id="fueraBox"></div>
     <div class="chips" id="cockChips"></div>
@@ -276,6 +319,7 @@
         <input id="cockSearch" placeholder="Buscar cliente…" oninput="renderCockpit()"></div>
       <select class="filter" id="cockVend" onchange="renderCockpit()"></select>
       <button class="btn sm" onclick="exportExcel()" title="Descargar informe Excel">📊 Informe</button>
+      <button class="btn ghost sm" onclick="exportLunes()" title="Listado semanal de Enrique: vencido + a vencer en 15 días">📅 Semanal Enrique</button>
     </div>
     <div id="cockList"></div>
     <div class="grid2" style="margin-top:8px">
@@ -322,6 +366,80 @@
   </section>
 
   <!-- IMPORTAR -->
+  <!-- EFECTIVO (remitos internos) -->
+  <section class="tab" id="tab-efectivo">
+    <div class="kpis k5" id="efeKpis"></div>
+    <div id="efeAlertas" style="margin-bottom:18px"></div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>Antig&uuml;edad del saldo &middot; imputaci&oacute;n FIFO</h3>
+      <div class="efe-bar" id="efeAging"></div>
+      <div class="efe-chips" id="efeChips"></div>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <h3>Composici&oacute;n del pendiente</h3>
+      <div class="efe-split">
+        <div><div class="hint" style="margin:0 0 8px">Por vendedor</div><div id="efeXVend"></div></div>
+        <div><div class="hint" style="margin:0 0 8px">Por tipo de producto</div><div id="efeXProd"></div></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input id="efeSearch" placeholder="Buscar cliente&hellip;" oninput="renderEfectivo()"></div>
+      <select class="filter" id="efeOrden" onchange="renderEfectivo()">
+        <option value="saldo">Ordenar por saldo</option>
+        <option value="viejo">Por deuda m&aacute;s vieja</option>
+        <option value="sinpago">Por d&iacute;as sin pagar</option>
+        <option value="nombre">Por nombre</option>
+      </select>
+      <select class="filter" id="efeVerSaldo" onchange="renderEfectivo()">
+        <option value="saldo">Solo con saldo</option>
+        <option value="todos">Todos los clientes</option>
+      </select>
+      <select class="filter" id="efeFVend" onchange="renderEfectivo()"><option value="">Todos los vendedores</option></select>
+      <select class="filter" id="efeFProd" onchange="renderEfectivo()"><option value="">Todos los productos</option></select>
+      <button class="btn sm" onclick="openEfeMov()">+ Movimiento</button>
+      <label class="btn sm" style="display:inline-flex;align-items:center;gap:4px"><input type="file" accept=".xlsx,.xls" multiple hidden onchange="onEfeRemitos(event)">&#128196; Subir remitos</label>
+      <label class="btn ghost sm" style="display:inline-flex;align-items:center;gap:4px"><input type="file" accept=".xlsx,.xls" hidden onchange="onEfeExcel(event)">&uarr; Importar Excel</label>
+      <button class="btn sm" id="efeBtnInf" onclick="exportEfeExcel()">&#128202; Informe</button>
+      <button class="btn ghost sm" onclick="openCom()">% Comisiones</button>
+      <button class="btn ghost sm" onclick="exportEfeJSON()">&darr; Respaldo</button>
+    </div>
+    <div id="efeFiltroInfo"></div>
+    <div id="efeOcultos"></div>
+    <div id="efePreview"></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Cliente</th><th class="r" id="efeThPend">Pendiente</th><th class="r">%</th><th class="r">D&iacute;as m&aacute;x.</th><th class="r">&Uacute;lt. pago</th><th>Antig&uuml;edad</th></tr></thead>
+      <tbody id="efeBody"></tbody></table></div>
+    <div class="hint">Tocá un cliente para ver sus remitos y pagos. El cheque a fecha se toma como cobrado desde que lo cargás y figura aparte en “Cheques a fecha”; si rebota, marcalo como rechazado y vuelve a ser deuda. Los filtros de vendedor y producto también salen aplicados en el informe.</div>
+  </section>
+
+  <!-- CUENTA TOTAL (oficial + efectivo) -->
+  <section class="tab" id="tab-total">
+    <div class="kpis" id="totKpis"></div>
+    <div class="toolbar">
+      <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input id="totSearch" placeholder="Buscar cliente&hellip;" oninput="renderTotal()"></div>
+      <select class="filter" id="totOrden" onchange="renderTotal()">
+        <option value="total">Ordenar por total</option>
+        <option value="oficial">Por saldo oficial</option>
+        <option value="efectivo">Por efectivo</option>
+        <option value="vencido">Por vencido</option>
+        <option value="nombre">Por nombre</option>
+      </select>
+      <select class="filter" id="totFiltro" onchange="renderTotal()">
+        <option value="saldo">Solo con saldo</option>
+        <option value="todos">Todos los clientes</option>
+      </select>
+      <label class="efe-chip" style="gap:7px;cursor:pointer"><input type="checkbox" id="totSoloMixtos" onchange="renderTotal()"> Solo los que est&aacute;n en las dos cuentas</label>
+      <button class="btn sm" onclick="openCliente(null)">+ Cliente</button>
+      <button class="btn ghost sm" onclick="crearClientesFaltantes()">+ Dar de alta los que faltan</button>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Cliente</th><th class="r">Oficial</th><th class="r">Vencido</th><th class="r">Efectivo</th><th class="r">Total</th></tr></thead>
+      <tbody id="totBody"></tbody></table></div>
+    <div class="hint">Tocá un cliente para ver la cuenta completa: los comprobantes de la cobranza oficial y los movimientos de efectivo, uno abajo del otro.</div>
+  </section>
+
   <section class="tab" id="tab-importar">
     <div class="card" style="margin-bottom:18px">
       <h3>Cargar facturas desde PDF</h3>
@@ -412,6 +530,56 @@
 </div></div>
 
 <!-- MODAL COBRO -->
+<!-- MODAL CUENTA TOTAL -->
+<div class="overlay" id="ovCuenta"><div class="modal" style="max-width:760px">
+  <header><h2 id="cuentaTit">Cuenta</h2><button class="x" onclick="closeOverlay('ovCuenta')">&times;</button></header>
+  <div class="body" id="cuentaBody"></div>
+  <div class="foot"><span id="cuentaFoot" style="margin-right:auto"></span><button class="btn ghost" onclick="closeOverlay('ovCuenta')">Cerrar</button></div>
+</div></div>
+
+<!-- MODAL DETALLE EFECTIVO -->
+<div class="overlay" id="ovEfeCli"><div class="modal" style="max-width:660px">
+  <header><h2 id="efeCliTit">Cliente</h2><button class="x" onclick="closeOverlay('ovEfeCli')">&times;</button></header>
+  <div class="body" id="efeCliBody"></div>
+  <div class="foot"><button class="btn ghost" onclick="closeOverlay('ovEfeCli')">Cerrar</button><button class="btn" onclick="openEfeMov(null,EFE_SEL)">+ Movimiento</button></div>
+</div></div>
+
+<!-- MODAL MOVIMIENTO EFECTIVO -->
+<div class="overlay" id="ovEfeMov"><div class="modal" style="max-width:540px">
+  <header><h2 id="efeMovTit">Nuevo movimiento</h2><button class="x" onclick="closeOverlay('ovEfeMov')">&times;</button></header>
+  <div class="body">
+    <div class="field"><label>Cliente *</label><input id="efeCliente" list="efeClientesList" placeholder="Ej: EL MATACO" oninput="efeRenderAplic();efeAutoVend()"><datalist id="efeClientesList"></datalist></div>
+    <div class="frow">
+      <div class="field"><label>Tipo</label><select id="efeTipo" onchange="efeTipoChange()"><option value="remito">Remito (suma deuda)</option><option value="pago">Pago (cancela)</option></select></div>
+      <div class="field"><label>Fecha *</label><input id="efeFecha" type="date"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Importe *</label><input id="efeImporte" type="number" step="0.01" placeholder="0" oninput="efeImporteInput()"></div>
+      <div class="field" id="efeMedioWrap"><label>Medio</label><select id="efeMedio" onchange="efeTipoChange()">
+        <option value="Efectivo">Efectivo</option><option value="Cheque">Cheque</option>
+        <option value="Transferencia">Transferencia</option><option value="">Sin especificar</option></select></div>
+    </div>
+    <div class="frow">
+      <div class="field" id="efeNumWrap"><label>N&ordm; de remito interno</label><input id="efeNumero" placeholder="Ej: 001"></div>
+      <div class="field"><label>Referencia</label><input id="efeRef" placeholder="WP10, F40, MARAFLEX&hellip;" oninput="efeAutoProd()"></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>Vendedor</label><select id="efeVend" onchange="efeNetoHint()"><option value="">Sin asignar</option><option>Enrique</option><option>Winflex</option><option>Nitopi</option></select></div>
+      <div class="field" id="efeProdWrap"><label>Tipo de producto</label><select id="efeProd"><option value="">Sin asignar</option><option>Flexible</option><option>Bandejas</option><option>Lámina</option></select></div>
+    </div>
+    <div id="efeNetoHint" class="efe-alert" style="display:none;margin:0 0 14px"></div>
+    <div class="field" id="efeChqWrap"><label>Estado del cheque</label><select id="efeChq">
+      <option value="">Sin confirmar</option><option value="1">Acreditado</option><option value="0">Rechazado (vuelve a ser deuda)</option></select></div>
+    <div class="field" id="efeEntWrap"><label>Estado de entrega</label><select id="efeEnt">
+      <option value="1">Entregado / retirado</option>
+      <option value="0">Todav&iacute;a sin entregar (no suma al total a cobrar)</option></select></div>
+    <div id="efeAplicWrap"></div>
+    <div class="field"><label>Observaci&oacute;n</label><input id="efeNota" placeholder="Opcional"></div>
+    <div class="hint" id="efeMovHint">El cheque a fecha descuenta el saldo desde que lo carg&aacute;s: el remito queda dado de baja y el cheque figura como valor todav&iacute;a sin acreditar. El importe va siempre en positivo. En un pago, si es un cheque a fecha, poné la fecha en que se cobra: queda marcado como valor a cobrar y no cancela la antigüedad hasta ese día.</div>
+  </div>
+  <div class="foot"><button class="btn ghost" id="efeDelBtn" onclick="deleteEfeMov()" style="margin-right:auto;color:var(--venc)">Eliminar</button><button class="btn ghost" onclick="closeOverlay('ovEfeMov')">Cancelar</button><button class="btn" onclick="saveEfeMov()">Guardar</button></div>
+</div></div>
+
 <div class="overlay" id="ovCobro"><div class="modal" style="max-width:400px">
   <header><h2>Registrar cobro</h2><button class="x" onclick="closeOverlay('ovCobro')">×</button></header>
   <div class="body">
@@ -443,15 +611,22 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- MODAL COMISIONES -->
+<div class="overlay" id="ovCom"><div class="modal" style="max-width:780px">
+  <header><h2>Comisiones Nitopi</h2><button class="x" onclick="closeOverlay('ovCom')">&times;</button></header>
+  <div class="body" id="comBody"></div>
+  <div class="foot"><button class="btn ghost" onclick="comCSV()">&darr; Descargar CSV</button><button class="btn ghost" onclick="closeOverlay('ovCom')">Cerrar</button></div>
+</div></div>
+
 <script>
 if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const VENDEDORES=['Matías','Enrique','Vicente','Winflex'];
+const VENDEDORES=['Matías','Enrique','Vicente','Winflex','Nitopi'];
 const PINS={'1540':'Matías','0104':'Mirta','2727':'Enrique','0204':'Georgina'};
 const CUIT_WINFLEX='30-61048777';
 const LS={bin:'wfc_bin',key:'wfc_key',user:'wfc_user',data:'wfc_data'};
 
-let STATE={clientes:[],comprobantes:[],meta:{version:1}};
+let STATE={clientes:[],comprobantes:[],efectivo:[],efeLinks:{},meta:{version:1}};
 let CURRENT_USER=null, editingCli=null, editingFac=null, cobroTarget=null, seguimientoTarget=null;
 let saving=false, savePending=false, pdfPending=[];
 let LOAD_OK=false; // true solo si loadFromCloud leyó bien la nube (o modo local); bloquea saveToCloud si la carga falló
@@ -558,32 +733,100 @@ $('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 function logout(){localStorage.removeItem(LS.user);location.reload()}
 function startApp(){
   $('login').style.display='none';$('app').style.display='block';$('whoLabel').textContent=CURRENT_USER;
+  { const ok=puedeEfectivo();['navEfectivo','navTotal'].forEach(id=>{const nb=$(id);if(nb)nb.style.display=ok?'':'none'}); }
   fillVendSelects();
   $('cfgBin').value=localStorage.getItem(LS.bin)||'';$('cfgKey').value=localStorage.getItem(LS.key)||'';
   loadLocal();
   if(localStorage.getItem(LS.bin)) loadFromCloud(true); else {renderAll();setCloud('local','Local')}
-  setInterval(()=>{if(localStorage.getItem(LS.bin)&&!saving)loadFromCloud(false)},60000);
+  setInterval(()=>{
+    if(!localStorage.getItem(LS.bin)||saving)return;
+    if(document.querySelector('.overlay.open'))return; // hay un modal abierto: no pisamos lo que se está editando
+    loadFromCloud(false);
+  },30000);
+  if(ES_HIJA){
+    document.body.classList.add('modo-modulo');
+    try{document.title=(MODULOS[MODULO_VENTANA]||'')+' · Seguimiento Cobranzas';}catch(e){}
+    activarInterno(MODULO_VENTANA);
+  }
 }
 function fillVendSelects(){const o=VENDEDORES.map(v=>`<option>${v}</option>`).join('');$('f_vend').innerHTML=o;$('facVend').innerHTML='<option value="">Todos los vendedores</option>'+o;$('cliVend').innerHTML='<option value="">Todos los vendedores</option>'+o;$('cockVend').innerHTML='<option value="">Todos</option>'+o}
+
+/* ---------- MERGE 3-VÍAS (anti-pisadas) ---------- */
+/* BASE = foto de la última versión de la nube que vio ESTA ventana.
+   Comparando BASE vs local vs nube sabemos quién tocó qué, y nunca
+   pisamos el cambio de otro aunque tengamos la pantalla vieja.       */
+let BASE=null;
+function canon(o){ // JSON canónico: claves ordenadas, para comparar de verdad
+  if(o===null||o===undefined||typeof o!=='object')return JSON.stringify(o===undefined?null:o);
+  if(Array.isArray(o))return '['+o.map(canon).join(',')+']';
+  return '{'+Object.keys(o).sort().map(k=>JSON.stringify(k)+':'+canon(o[k])).join(',')+'}';
+}
+function _byId(arr){const m={};(arr||[]).forEach(x=>{if(x&&x.id)m[x.id]=x});return m}
+function _ts(x){return (x&&x.updatedAt)||''}
+function mergeArr(base,local,cloud){
+  const B=_byId(base),L=_byId(local),C=_byId(cloud);
+  const ids=Object.keys(Object.assign({},B,L,C));
+  const out=[];
+  ids.forEach(id=>{
+    const b=B[id],l=L[id],c=C[id];
+    const lCambio=canon(l||null)!==canon(b||null);
+    const cCambio=canon(c||null)!==canon(b||null);
+    let win;
+    if(lCambio&&!cCambio)      win=l;            // lo tocamos nosotros (o lo borramos)
+    else if(!lCambio&&cCambio) win=c;            // lo tocó otro
+    else if(!lCambio&&!cCambio)win=(l||c||b);    // nadie lo tocó
+    else                       win=(_ts(c)>_ts(l)?c:l); // los dos: gana el más nuevo
+    if(win)out.push(win);
+  });
+  return out;
+}
+function mergeMap(base,local,cloud){
+  base=base||{};local=local||{};cloud=cloud||{};
+  const out=Object.assign({},cloud);
+  Object.keys(Object.assign({},base,local)).forEach(k=>{
+    if(canon(k in local?local[k]:null)!==canon(k in base?base[k]:null)){
+      if(k in local)out[k]=local[k]; else delete out[k];
+    }
+  });
+  return out;
+}
+function mergeStates(local,cloud){
+  const b=BASE||{clientes:[],comprobantes:[],efectivo:[],efeLinks:{}};
+  return {
+    clientes:     mergeArr(b.clientes,     local.clientes,     cloud.clientes),
+    comprobantes: mergeArr(b.comprobantes, local.comprobantes, cloud.comprobantes),
+    efectivo:     mergeArr(b.efectivo,     local.efectivo,     cloud.efectivo),
+    efeLinks:     mergeMap(b.efeLinks,     local.efeLinks,     cloud.efeLinks),
+    meta:         Object.assign({},cloud.meta||{},local.meta||{})
+  };
+}
+function setBase(s){try{BASE=JSON.parse(JSON.stringify(s))}catch(e){BASE=null}}
+function horaCorta(){const d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
 
 /* ---------- PERSISTENCIA ---------- */
 function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS.data));if(d&&d.clientes)STATE=normalizeState(d)}catch(e){}}
 function saveLocal(){localStorage.setItem(LS.data,JSON.stringify(STATE))}
-function normalizeState(d){d.clientes=(d.clientes||[]).map(mapClienteIn);d.comprobantes=(d.comprobantes||d.facturas||[]).map(mapFacturaIn);d.meta=d.meta||{version:1};return d}
+function normalizeState(d){d.clientes=(d.clientes||[]).map(mapClienteIn);d.comprobantes=(d.comprobantes||d.facturas||[]).map(mapFacturaIn);d.efectivo=(d.efectivo||[]).map(mapEfectivoIn);d.efeLinks=d.efeLinks||{};d.meta=d.meta||{version:1};return d}
 function setCloud(s,t){$('cloudStatus').className='cloud '+(s==='ok'?'ok':s==='busy'?'busy':s==='bad'?'bad':'');$('cloudText').textContent=t}
 function binURL(){return 'https://api.jsonbin.io/v3/b/'+localStorage.getItem(LS.bin)}
 function binHeaders(){return {'Content-Type':'application/json','X-Master-Key':localStorage.getItem(LS.key),'X-Bin-Meta':'false'}}
 async function loadFromCloud(show){
   const bin=localStorage.getItem(LS.bin),key=localStorage.getItem(LS.key);
   if(!bin||!key){LOAD_OK=true;setCloud('local','Local');return}
+  if(saving||savePending)return;               // no pisar un guardado en curso
   setCloud('busy','Sincronizando…');
   try{
     const r=await fetch(binURL()+'/latest',{headers:binHeaders()});if(!r.ok)throw new Error('HTTP '+r.status);
     const d=await r.json();const rec=d.record||d;
-    if(rec&&(rec.clientes)){STATE=normalizeState(rec);saveLocal();renderAll()}
+    if(rec&&(rec.clientes)){
+      const nube=normalizeState(rec);
+      if(!BASE) STATE=nube;                    // primera carga de la sesión: manda la nube
+      else      STATE=mergeStates(STATE,nube); // después: fusión, nunca reemplazo
+      setBase(nube);saveLocal();renderAll();
+    }
     LOAD_OK=true;
-    setCloud('ok','En la nube');if(show)toast('Datos cargados de la nube','ok');
-  }catch(e){LOAD_OK=false;setCloud('bad','Error de sync — guardado bloqueado, recargá');if(show)toast('No se pudo conectar: '+e.message+'. No se guardará hasta recargar.','bad')}
+    setCloud('ok','En la nube · '+horaCorta());if(show===true)toast('Datos cargados de la nube','ok');
+  }catch(e){LOAD_OK=false;setCloud('bad','Error de sync — guardado bloqueado, recargá');if(show===true)toast('No se pudo conectar: '+e.message+'. No se guardará hasta recargar.','bad')}
 }
 async function saveToCloud(){
   const bin=localStorage.getItem(LS.bin),key=localStorage.getItem(LS.key);saveLocal();
@@ -592,29 +835,74 @@ async function saveToCloud(){
   if(saving){savePending=true;return}
   saving=true;setCloud('busy','Guardando…');
   try{
-    // Tripwire: no pisar la nube con clientes/comprobantes vacíos si la nube tiene datos
+    /* LEER → FUSIONAR → ESCRIBIR.
+       Antes de subir nada releemos la nube y fusionamos: lo que cargó
+       otro mientras teníamos la pantalla abierta se conserva.          */
+    let cur=null;
     try{
       const chk=await fetch(binURL()+'/latest',{headers:binHeaders()});
-      if(chk.ok){const cd=await chk.json();const cur=cd.record||cd;
-        if(((cur.clientes||[]).length>0 && (STATE.clientes||[]).length===0) || ((cur.comprobantes||[]).length>0 && (STATE.comprobantes||[]).length===0)){
-          saving=false;setCloud('bad','Guardado bloqueado: evitaría borrar datos');toast('⛔ Guardado BLOQUEADO: dejaría clientes/comprobantes en cero y la nube tiene datos. Recargá la página.','bad');return;}
-      }
-    }catch(_){}
+      if(!chk.ok)throw new Error('HTTP '+chk.status);
+      const cd=await chk.json();cur=normalizeState(cd.record||cd);
+    }catch(e){
+      saving=false;setCloud('bad','No se guardó: no se pudo leer la nube');
+      toast('⛔ No se guardó: no se pudo leer la nube antes de escribir ('+e.message+'). Tus cambios siguen acá; probá de nuevo.','bad');
+      return;
+    }
+    // Tripwire: nunca dejar la nube en cero si allá hay datos
+    if(((cur.clientes||[]).length>0 && (STATE.clientes||[]).length===0) || ((cur.comprobantes||[]).length>0 && (STATE.comprobantes||[]).length===0) || ((cur.efectivo||[]).length>0 && (STATE.efectivo||[]).length===0)){
+      saving=false;setCloud('bad','Guardado bloqueado: evitaría borrar datos');
+      toast('⛔ Guardado BLOQUEADO: dejaría clientes/comprobantes en cero y la nube tiene datos. Recargá la página.','bad');return;
+    }
+    const antes=canon(STATE);
+    const merged = BASE ? mergeStates(STATE,cur) : STATE;
+    const ajenos = canon(merged)!==antes;      // ¿entró algo de otra persona?
+    STATE=merged;
     STATE.meta=STATE.meta||{};STATE.meta.lastUpdate=NOW();STATE.meta.lastUser=CURRENT_USER;
-    const r=await fetch(binURL(),{method:'PUT',headers:{...binHeaders(),'X-Bin-Versioning':'true'},body:JSON.stringify(STATE)});if(!r.ok)throw new Error('HTTP '+r.status);
-    setCloud('ok','En la nube');
-  }catch(e){setCloud('bad','Error al guardar');toast('No se pudo guardar: '+e.message,'bad')}
+    /* Versionado APAGADO: el bin llego al tope de 1000 versiones y JSONBin devolvia
+       403 en cada guardado. Con 'false' actualiza el bin sin crear version nueva.  */
+    const r=await fetch(binURL(),{method:'PUT',headers:{...binHeaders(),'X-Bin-Versioning':'false'},body:JSON.stringify(STATE)});
+    if(!r.ok){let det='';try{det=' · '+(await r.text()).slice(0,140)}catch(_){}throw new Error('HTTP '+r.status+det)}
+    setBase(STATE);saveLocal();
+    try{localStorage.setItem('wfc_sync',NOW())}catch(_){}   // avisa a las otras ventanas
+    setCloud('ok','En la nube · '+horaCorta());
+    if(ajenos){renderAll();toast('Guardado · se incorporaron cambios de '+((cur.meta&&cur.meta.lastUser)||'otro usuario'),'ok')}
+  }catch(e){setCloud('bad','Error al guardar: '+String(e.message||'').slice(0,40));toast('No se pudo guardar: '+e.message,'bad')}
   finally{saving=false;if(savePending){savePending=false;saveToCloud()}}
 }
 function saveConfig(){const b=$('cfgBin').value.trim(),k=$('cfgKey').value.trim();if(b)localStorage.setItem(LS.bin,b);else localStorage.removeItem(LS.bin);if(k)localStorage.setItem(LS.key,k);else localStorage.removeItem(LS.key);toast('Configuración guardada');if(b&&k)loadFromCloud(true)}
 function refreshNow(){loadFromCloud(true)}
 
 /* ---------- NAV ---------- */
-function switchTab(t){
+// ── NAVEGACIÓN POR VENTANAS (mismo sistema que Sueldos/Horas) ──────
+const MODULOS={resumen:'📊 Cobranza',facturas:'📄 Facturas',clientes:'👥 Clientes',efectivo:'💵 Efectivo',total:'🧾 Cuenta total',importar:'⬆ Importar',config:'⚙️ Config'};
+const _paramTab=(function(){try{return new URLSearchParams(location.search).get('tab');}catch(_){return null;}})();
+const MODULO_VENTANA=(_paramTab&&MODULOS[_paramTab])?_paramTab:null;
+const ES_HIJA=!!MODULO_VENTANA;
+function activarInterno(t){
+  if(!MODULOS[t])return;
+  if((t==='efectivo'||t==='total')&&!puedeEfectivo()){toast('No tenés acceso a ese módulo','bad');t='resumen'}
+  if(document.body.classList.contains('modo-modulo')&&t!==MODULO_VENTANA){document.body.classList.remove('modo-modulo');}
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+t));
-  if(t==='resumen')renderResumen();if(t==='facturas')renderFacturas();if(t==='clientes')renderClientes();if(t==='config')renderStats();
+  if(t==='resumen')renderResumen();if(t==='facturas')renderFacturas();if(t==='clientes')renderClientes();if(t==='efectivo')renderEfectivo();if(t==='total')renderTotal();if(t==='config')renderStats();
 }
+function abrirModulo(t){
+  if(!MODULOS[t])return;
+  if((t==='efectivo'||t==='total')&&!puedeEfectivo()){toast('No tenés acceso a ese módulo','bad');return}
+  if(ES_HIJA&&t===MODULO_VENTANA)return;
+  try{
+    const aw=(window.screen&&screen.availWidth)||1280,ah=(window.screen&&screen.availHeight)||800;
+    const ww=Math.min(1280,Math.round(aw*0.88)),wh=Math.min(900,Math.round(ah*0.92));
+    const idx=Object.keys(MODULOS).indexOf(t),off=(idx%6)*28;
+    const left=Math.max(0,Math.round((aw-ww)/2)+off-70),top=Math.max(0,Math.round((ah-wh)/2)+off-40);
+    const feats=`popup=yes,toolbar=no,location=no,menubar=no,status=no,resizable=yes,scrollbars=yes,width=${ww},height=${wh},left=${left},top=${top}`;
+    const w=window.open('./winflex-cobranzas.html?tab='+encodeURIComponent(t),'winflexcobseg_'+t,feats);
+    if(w){try{w.focus();}catch(_){ } return;}
+  }catch(_){}
+  activarInterno(t);
+}
+// Compatibilidad: todas las llamadas a switchTab(...) abren ahora una ventana.
+function switchTab(t){ return abrirModulo(t); }
 function goNCsinVincular(){
   const ncMal=ncSinVincular();
   if(!ncMal.length){renderResumen();return}
@@ -622,7 +910,7 @@ function goNCsinVincular(){
   openFactura(ncMal[0].id);
   toast(`${ncMal.length} NC sin vincular — corregí la Fc asociada`,'bad');
 }
-function renderAll(){renderResumen();renderFacturas();renderClientes();renderStats();renderCliList()}
+function renderAll(){renderResumen();renderFacturas();renderClientes();renderStats();renderCliList();if(puedeEfectivo()){renderEfectivo();renderTotal()}}
 
 /* ---------- RESUMEN ---------- */
 function renderResumen(){
@@ -634,6 +922,7 @@ function renderResumen(){
     if(saldo>0.5){porCobrar+=saldo;if(est==='vencida'||est==='parcial-venc')vencido+=saldo;else porVencer+=saldo}
     else if(saldo<-0.5){creditos+=-saldo}});
   porCobrar=Math.max(0,porCobrar-creditos);
+  renderLunesBox();
   $('kpis').innerHTML=`
     <div class="kpi por"><div class="bar"></div><div class="lab">Por cobrar</div><div class="val num">${fmtM(porCobrar)}</div><div class="meta">${fmtFull(porCobrar)}</div></div>
     <div class="kpi venc"><div class="bar"></div><div class="lab">Vencido</div><div class="val num" style="color:var(--venc)">${fmtM(vencido)}</div><div class="meta">${porCobrar?Math.round(vencido/porCobrar*100):0}% del saldo</div></div>
@@ -831,7 +1120,7 @@ function saveFactura(){
   const sp=splitNro($('ff_numero').value);const cobrado=+$('ff_cobrado').value||0;
   const esManual=$('ff_vencManual').checked;
   const obj={clienteId:cli.id,tipo:$('ff_tipo').value,ptoVenta:sp.pto,numero:sp.num,fecha:$('ff_fecha').value||todayISO(),importe:imp,saldo:Math.max(0,imp-cobrado),cobrado:cobrado,asociadaNum:($('ff_tipo').value||'').startsWith('NC_')?$('ff_asociada').value.trim():'',fechaVencimiento:esManual?($('ff_venc').value||''):'',vencManual:esManual,obs:$('ff_obs').value.trim(),updatedAt:NOW()};
-  if(editingFac)Object.assign(editingFac,obj);else STATE.comprobantes.push({id:uid(),pagos:[],createdAt:NOW(),...obj});
+  if(editingFac){const t=STATE.comprobantes.find(x=>x.id===editingFac.id)||editingFac;Object.assign(t,obj);editingFac=t}else STATE.comprobantes.push({id:uid(),pagos:[],createdAt:NOW(),...obj});
   closeOverlay('ovFactura');saveToCloud();renderFacturas();renderResumen();toast('Factura guardada','ok');
 }
 function deleteFactura(id){const fid=id||(editingFac&&editingFac.id);if(!fid)return;if(!confirm('¿Eliminar esta factura?'))return;STATE.comprobantes=STATE.comprobantes.filter(f=>f.id!==fid);closeOverlay('ovFactura');saveToCloud();renderFacturas();renderResumen();toast('Factura eliminada')}
@@ -861,6 +1150,7 @@ function renderClientes(){
     return `<tr onclick="openCliente('${c.id}')" style="cursor:pointer"><td><div class="cli-name">${esc(c.razonSocial)}${(function(){var s=cliSituacion(c);return s?` <span class="badge ${s==='juicio'?'b-jui':'b-mor'}">${SITU[s].ico} ${SITU[s].l}</span>`:''})()}</div><div class="cli-meta">${esc(c.codigo||'')}${c.cuit?' · '+esc(c.cuit):''}</div></td><td class="hide"><span class="vend">${esc(c.vendedor||'—')}</span></td><td class="hide num">${condTxt}</td><td>${contactStr}</td><td class="r num" style="font-weight:700">${salTxt}</td><td><div class="row-acts"><button class="mini" onclick="event.stopPropagation();openCliente('${c.id}')">✎</button></div></td></tr>`}).join(''):'<tr><td colspan="6" class="empty">No hay clientes. Importá el respaldo en Importar o agregá uno.</td></tr>';
 }
 function openCliente(id){
+  EFE_LINK_PENDIENTE=null;
   editingCli=id?STATE.clientes.find(c=>c.id===id):null;$('cliTitle').textContent=editingCli?'Editar cliente':'Nuevo cliente';$('cliDelBtn').style.display=editingCli?'block':'none';
   const c=editingCli||{};$('f_razon').value=c.razonSocial||'';$('f_codigo').value=c.codigo||'';$('f_cuit').value=c.cuit||'';$('f_vend').value=c.vendedor||'Winflex';$('f_plazo').value=c.condicionDias!=null?c.condicionDias:30;$('f_modo').value=c.modoVencimiento||'factura';$('f_cheque').value=(c.diasCheque!=null?c.diasCheque:'');$('f_obs').value=c.obs||'';
   $('f_contado').checked=(+c.condicionDias===0&&c.condicionDias!=null);$('f_plazo').disabled=$('f_contado').checked;
@@ -875,8 +1165,12 @@ function saveCliente(){
   const plazo=$('f_contado').checked?0:(plazoRaw===''?30:Math.max(0,Math.floor(+plazoRaw)||0));
   const chRaw=$('f_cheque').value.trim();const diasCheque=chRaw===''?null:Math.max(0,Math.floor(+chRaw)||0);
   const obj={razonSocial:razon,codigo:$('f_codigo').value.trim(),cuit:$('f_cuit').value.trim(),vendedor:$('f_vend').value,condicionDias:plazo,modoVencimiento:$('f_modo').value,diasCheque,contactos,obs:$('f_obs').value.trim(),updatedAt:NOW()};
-  if(editingCli)Object.assign(editingCli,obj);else STATE.clientes.push({id:uid(),createdAt:NOW(),...obj});
-  closeOverlay('ovCliente');saveToCloud();renderClientes();renderCliList();renderResumen();toast('Cliente guardado','ok');
+  let creado=null;
+  if(editingCli){const t=STATE.clientes.find(x=>x.id===editingCli.id)||editingCli;Object.assign(t,obj);editingCli=t}else{creado={id:uid(),createdAt:NOW(),...obj};STATE.clientes.push(creado)}
+  if(creado&&EFE_LINK_PENDIENTE){efeLinks()[EFE_LINK_PENDIENTE]=creado.id;EFE_LINK_PENDIENTE=null}
+  closeOverlay('ovCliente');saveToCloud();renderClientes();renderCliList();renderResumen();
+  if(puedeEfectivo()){renderEfectivo();renderTotal()}
+  toast('Cliente guardado','ok');
 }
 function deleteCliente(){if(!editingCli)return;const n=STATE.comprobantes.filter(f=>f.clienteId===editingCli.id).length;if(n>0){toast(`No se puede: tiene ${n} factura(s)`,'bad');return}if(!confirm('¿Eliminar este cliente?'))return;STATE.clientes=STATE.clientes.filter(c=>c.id!==editingCli.id);closeOverlay('ovCliente');saveToCloud();renderClientes();renderCliList();toast('Cliente eliminado')}
 
@@ -973,12 +1267,12 @@ function confirmPdf(){
 function mapClienteIn(c){
   let contactos=c.contactos;
   if(!contactos||!contactos.length){if(c.contactoNombre||c.contactoTelefono||c.contactoEmail)contactos=[{nombre:c.contactoNombre||'',telefono:c.contactoTelefono||'',email:c.contactoEmail||''}];else contactos=[]}
-  return {id:c.id||uid(),codigo:c.codigo||'',cuit:c.cuit||'',razonSocial:c.razonSocial||'',vendedor:VENDEDORES.includes(c.vendedor)?c.vendedor:'Winflex',condicionDias:c.condicionDias!=null?+c.condicionDias:30,modoVencimiento:c.modoVencimiento||'factura',condicionDiasFcX:c.condicionDiasFcX!=null?+c.condicionDiasFcX:null,modoVencimientoFcX:c.modoVencimientoFcX||null,diasCheque:(c.diasCheque!=null&&c.diasCheque!=='')?+c.diasCheque:null,contactos,seguimiento:c.seguimiento||null,situacion:(c.situacion==='moroso'||c.situacion==='juicio')?c.situacion:null,obs:c.obs||'',createdAt:c.createdAt||NOW(),updatedAt:NOW()};
+  return {id:c.id||uid(),codigo:c.codigo||'',cuit:c.cuit||'',razonSocial:c.razonSocial||'',vendedor:VENDEDORES.includes(c.vendedor)?c.vendedor:'Winflex',condicionDias:c.condicionDias!=null?+c.condicionDias:30,modoVencimiento:c.modoVencimiento||'factura',condicionDiasFcX:c.condicionDiasFcX!=null?+c.condicionDiasFcX:null,modoVencimientoFcX:c.modoVencimientoFcX||null,diasCheque:(c.diasCheque!=null&&c.diasCheque!=='')?+c.diasCheque:null,contactos,seguimiento:c.seguimiento||null,situacion:(c.situacion==='moroso'||c.situacion==='juicio')?c.situacion:null,obs:c.obs||'',createdAt:c.createdAt||NOW(),updatedAt:c.updatedAt||NOW()};
 }
 function mapFacturaIn(f){
   const imp=+f.importe||0;let cobrado;
   if(f.cobrado!=null)cobrado=+f.cobrado;else if(f.saldo!=null)cobrado=Math.max(0,imp-(+f.saldo||0));else cobrado=0;
-  return {id:f.id||uid(),clienteId:f.clienteId||'',tipo:f.tipo||'FC_A',ptoVenta:f.ptoVenta||'',numero:f.numero||'',fecha:(f.fecha||todayISO()).slice(0,10),fechaRemito:f.fechaRemito||null,importe:imp,cobrado,saldo:Math.max(0,imp-cobrado),asociadaNum:f.asociadaNum||'',condicionOverride:f.condicionOverride!=null?f.condicionOverride:null,modoOverride:f.modoOverride||null,pagos:f.pagos||[],fechaVencimiento:(f.fechaVencimiento||'').slice(0,10),vencManual:!!f.vencManual,incobrable:!!f.incobrable,obs:f.obs||'',origenImport:f.origenImport||{tipo:'import'},createdAt:f.createdAt||NOW(),updatedAt:NOW()};
+  return {id:f.id||uid(),clienteId:f.clienteId||'',tipo:f.tipo||'FC_A',ptoVenta:f.ptoVenta||'',numero:f.numero||'',fecha:(f.fecha||todayISO()).slice(0,10),fechaRemito:f.fechaRemito||null,importe:imp,cobrado,saldo:Math.max(0,imp-cobrado),asociadaNum:f.asociadaNum||'',condicionOverride:f.condicionOverride!=null?f.condicionOverride:null,modoOverride:f.modoOverride||null,pagos:f.pagos||[],fechaVencimiento:(f.fechaVencimiento||'').slice(0,10),vencManual:!!f.vencManual,incobrable:!!f.incobrable,obs:f.obs||'',origenImport:f.origenImport||{tipo:'import'},createdAt:f.createdAt||NOW(),updatedAt:f.updatedAt||NOW()};
 }
 function importJSON(ev,kind){
   const file=ev.target.files[0];if(!file)return;const rd=new FileReader();
@@ -1017,7 +1311,27 @@ function exportBackup(){const blob=new Blob([JSON.stringify(STATE,null,2)],{type
 function renderStats(){const cs=STATE.comprobantes.filter(f=>saldoDe(f)>0.5).length;$('cfgStats').innerHTML=`${STATE.clientes.length} clientes · ${STATE.comprobantes.length} facturas (${cs} con saldo)<br>Última actualización: ${STATE.meta&&STATE.meta.lastUpdate?dShow(STATE.meta.lastUpdate)+' por '+(STATE.meta.lastUser||'?'):'—'}`}
 
 function openOverlay(id){$(id).classList.add('open')}
-function closeOverlay(id){$(id).classList.remove('open')}
+function closeOverlay(id){
+  $(id).classList.remove('open');
+  // al cerrar el último modal, traer lo que cargaron los demás mientras tanto
+  setTimeout(()=>{
+    if(document.querySelector('.overlay.open'))return;
+    if(saving||savePending)return;
+    if(localStorage.getItem(LS.bin))loadFromCloud(false);
+  },1200);
+}
+// Otra ventana/pestaña guardó (los módulos abren ventanas aparte): resincronizar
+window.addEventListener('storage',e=>{
+  if(e.key!=='wfc_sync')return;
+  if(document.querySelector('.overlay.open')||saving||savePending)return;
+  if(localStorage.getItem(LS.bin))loadFromCloud(false);
+});
+// Al volver a la ventana, refrescar
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='visible')return;
+  if(document.querySelector('.overlay.open')||saving||savePending)return;
+  if(localStorage.getItem(LS.bin))loadFromCloud(false);
+});
 /* los modales se cierran solo con la X o Cancelar, para no perder lo cargado al tocar afuera */
 
 const LOGO_B64="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";
@@ -1202,6 +1516,1607 @@ async function exportExcel(){
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Informe-Cobranzas-Winflex-'+todayISO()+'.xlsx';a.click();
     toast('Informe descargado','ok');
   }catch(e){toast('Error al generar el informe: '+e.message,'bad');}
+}
+
+/* ======================= SEMANAL POR VENDEDOR (lunes) ======================= */
+const LUNES_VEND='Enrique', LUNES_DIAS=15, LUNES_LS='wfc_lunes_ok';
+let LUNES_AVISADO=false;
+// lunes de la semana actual (si hoy es lunes, hoy)
+function lunesRef(){const d=new Date(todayISO()+'T00:00:00');const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d.toISOString().slice(0,10)}
+function ultimoSeg(c){const h=(c&&c.seguimiento&&c.seguimiento.historial)||[];return h.length?h[h.length-1]:null}
+function pagosTxt(f){return (f.pagos||[]).map(p=>dShow(p.fecha)+' '+fmt(p.monto)+((p.formas||[]).length?' ('+p.formas.map(x=>x.forma+(x.remito?' '+x.remito:'')).join(', ')+')':'')).join(' | ')}
+function lunesData(v){
+  v=v||LUNES_VEND;
+  const rows=[];const cred={};
+  STATE.comprobantes.forEach(f=>{
+    const c=getCliente(f.clienteId);if(!c||c.vendedor!==v)return;
+    const s=saldoDe(f);
+    if(isNC(f)){if(s<-0.5)cred[c.id]=(cred[c.id]||0)+(-s);return}
+    if(s<=0.5)return;
+    const dd=diasNum(f);if(dd>LUNES_DIAS)return;
+    rows.push({f,c,dd,s,est:estadoDe(f),fc:fueraCartera(f)});
+  });
+  const byC={};
+  rows.forEach(r=>{const g=byC[r.c.id]=byC[r.c.id]||{c:r.c,items:[],venc:0,porV:0,tot:0,maxAtraso:0,proxVto:null,credito:cred[r.c.id]||0};
+    g.items.push(r);g.tot+=r.s;
+    if(r.dd<0){g.venc+=r.s;g.maxAtraso=Math.max(g.maxAtraso,-r.dd)}else{g.porV+=r.s;const vt=vencimientoDe(r.f);if(!g.proxVto||vt<g.proxVto)g.proxVto=vt}});
+  const grupos=Object.values(byC).sort((a,b)=>b.venc-a.venc||b.tot-a.tot);
+  grupos.forEach(g=>g.items.sort((a,b)=>a.dd-b.dd));
+  const venc=grupos.reduce((a,g)=>a+g.venc,0),porV=grupos.reduce((a,g)=>a+g.porV,0);
+  return {rows,grupos,venc,porV,tot:venc+porV};
+}
+function renderLunesBox(){
+  const box=$('lunesBox');if(!box)return;
+  const d=lunesData();const ref=lunesRef();const hecho=localStorage.getItem(LUNES_LS)===ref;
+  if(!d.rows.length){box.innerHTML='';return}
+  const pend=!hecho;
+  box.innerHTML=`<div class="lunes-box${pend?' pend':''}">
+    <div class="li">
+      <div class="lt">📅 Semanal ${LUNES_VEND} · semana del ${dShow(ref)} ${pend?'<span class="lpill bad">PENDIENTE</span>':'<span class="lpill ok">descargado</span>'}</div>
+      <div class="lm">${d.grupos.length} cliente${d.grupos.length===1?'':'s'} · ${d.rows.length} comprob. · vencido <b style="color:var(--venc)">${fmtM(d.venc)}</b> · vence en ≤${LUNES_DIAS} días <b>${fmtM(d.porV)}</b> · total <b>${fmtM(d.tot)}</b></div>
+    </div>
+    <div class="la">
+      <button class="btn sm" onclick="exportLunes()">⬇ Descargar Excel</button>
+      <button class="btn ghost sm" onclick="verLunes()">Ver en pantalla</button>
+    </div></div>`;
+  if(pend&&!LUNES_AVISADO){LUNES_AVISADO=true;toast('📅 Listado semanal de '+LUNES_VEND+' pendiente de descargar','bad');try{document.title='🔴 Semanal pendiente · Seguimiento Cobranzas'}catch(e){}}
+  if(!pend){try{if(document.title.startsWith('🔴'))document.title='Seguimiento Cobranzas'}catch(e){}}
+}
+function verLunes(){try{$('cockVend').value=LUNES_VEND;}catch(e){}setCock('');const el=$('cockList');if(el)el.scrollIntoView({behavior:'smooth'})}
+async function exportLunes(){
+  try{
+    const d=lunesData();
+    if(!d.rows.length){toast('No hay comprobantes vencidos ni por vencer de '+LUNES_VEND,'ok');return}
+    toast('Generando listado semanal…');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js');
+    const VERDE='FF1B7A44', GRIS='FF5C6677', ROJO='FFD83A3A', NAR='FFC97F00', BORDE='FFD9DEE7', ZEBRA='FFF7F9FB';
+    const wb=new ExcelJS.Workbook();wb.creator='Winflex S.A.';wb.created=new Date();
+    const money='"$"#,##0';const thin={style:'thin',color:{argb:BORDE}};const box={top:thin,left:thin,bottom:thin,right:thin};
+    const hdrFill={type:'pattern',pattern:'solid',fgColor:{argb:VERDE}};const hdrFont={bold:true,color:{argb:'FFFFFFFF'},size:11,name:'Calibri'};
+    const ref=lunesRef();
+    function hoja(nombre,cols,frozen){const ws=wb.addWorksheet(nombre,{views:[{state:'frozen',ySplit:frozen||1,showGridLines:false}]});ws.columns=cols.map(c=>({width:c.w}));cols.forEach((c,i)=>{const cell=ws.getCell(frozen||1,i+1);cell.value=c.h;cell.fill=hdrFill;cell.font=hdrFont;cell.border=box;cell.alignment={horizontal:c.r?'right':'left',vertical:'middle',wrapText:true}});ws.getRow(frozen||1).height=22;ws.autoFilter={from:{row:frozen||1,column:1},to:{row:frozen||1,column:cols.length}};return ws}
+    function fila(ws,ri,cols,vals,opts){opts=opts||{};vals.forEach((v,i)=>{const cell=ws.getCell(ri,i+1);cell.value=v;cell.border=box;cell.font={size:10};cell.alignment={vertical:'top',wrapText:!!cols[i].wrap,horizontal:cols[i].r?'right':'left'};if(cols[i].m){cell.numFmt=money}if(opts.rojo&&opts.rojo.includes(i))cell.font={size:10,bold:true,color:{argb:ROJO}};if(opts.nar&&opts.nar.includes(i))cell.font={size:10,bold:true,color:{argb:NAR}};if(opts.bold&&opts.bold.includes(i))cell.font={size:10,bold:true};if(ri%2===0)cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:ZEBRA}}})}
+    const diasTxt=dd=>dd<0?(-dd)+'d vencida':(dd===0?'vence hoy':'vence en '+dd+'d');
+    const situTxt=c=>{const s=cliSituacion(c);return s?SITU[s].l:''};
+    const ctPrin=c=>(c.contactos&&c.contactos[0])||{};
+
+    /* ===== RESUMEN ===== */
+    const ws=wb.addWorksheet('Resumen',{views:[{showGridLines:false}]});
+    ws.columns=[{width:3},{width:34},{width:16},{width:16},{width:16},{width:14},{width:4}];
+    try{const logoId=wb.addImage({base64:'data:image/png;base64,'+LOGO_B64,extension:'png'});ws.addImage(logoId,{tl:{col:1,row:0},ext:{width:176,height:100}})}catch(e){}
+    ws.mergeCells('D2:F2');const t1=ws.getCell('D2');t1.value='SEGUIMIENTO SEMANAL · '+LUNES_VEND.toUpperCase();t1.font={bold:true,size:18,color:{argb:VERDE}};t1.alignment={horizontal:'right',vertical:'middle'};
+    ws.mergeCells('D3:F3');const t2=ws.getCell('D3');t2.value='Vencido + a vencer en los próximos '+LUNES_DIAS+' días';t2.font={size:11,color:{argb:GRIS}};t2.alignment={horizontal:'right'};
+    ws.mergeCells('D4:F4');const t3=ws.getCell('D4');t3.value='Semana del '+dShow(ref)+' · generado el '+dShow(todayISO())+(CURRENT_USER?' · '+CURRENT_USER:'');t3.font={size:10,italic:true,color:{argb:GRIS}};t3.alignment={horizontal:'right'};
+    let r=7;
+    function sec(text){ws.mergeCells(`B${r}:F${r}`);const c=ws.getCell(`B${r}`);c.value=text;c.font={bold:true,size:12,color:{argb:VERDE}};c.border={bottom:{style:'medium',color:{argb:VERDE}}};r+=2}
+    function kv(k,v,fmtM_,color){const lc=ws.getCell(`B${r}`);lc.value=k;lc.font={color:{argb:GRIS},size:11};const vc=ws.getCell(`C${r}`);vc.value=v;if(fmtM_)vc.numFmt=money;vc.font={bold:true,size:11,color:{argb:color||'FF1B2233'}};vc.alignment={horizontal:'right'};r++}
+    sec('Situación de la cartera de '+LUNES_VEND);
+    kv('Vencido',d.venc,true,ROJO);kv('A vencer en ≤'+LUNES_DIAS+' días',d.porV,true,NAR);kv('Total a gestionar',d.tot,true);
+    kv('Clientes',d.grupos.length);kv('Comprobantes',d.rows.length);
+    const credTot=d.grupos.reduce((a,g)=>a+g.credito,0);if(credTot>0.5)kv('Créditos NC a favor (sin aplicar)',credTot,true,'FF2B8FD6');
+    r++;
+    sec('Antigüedad');
+    const ag={a:0,b:0,c:0,d:0,h:0,s:0,q:0};
+    d.rows.forEach(x=>{if(x.dd<0){const v=-x.dd;if(v<=30)ag.a+=x.s;else if(v<=60)ag.b+=x.s;else if(v<=90)ag.c+=x.s;else ag.d+=x.s}else if(x.dd===0)ag.h+=x.s;else if(x.dd<=7)ag.s+=x.s;else ag.q+=x.s});
+    [['Vencido +90 días',ag.d,ROJO],['Vencido 61-90 días',ag.c,ROJO],['Vencido 31-60 días',ag.b,ROJO],['Vencido 1-30 días',ag.a,ROJO],['Vence hoy',ag.h,NAR],['Vence en 1-7 días',ag.s,NAR],['Vence en 8-'+LUNES_DIAS+' días',ag.q,NAR]].forEach(k=>kv(k[0],k[1],true,k[2]));
+    r++;
+    sec('Ranking por cliente');
+    ['Cliente','Vencido','A vencer','Total','Mayor atraso'].forEach((h,i)=>{const c=ws.getCell(r,i+2);c.value=h;c.fill=hdrFill;c.font=hdrFont;c.border=box;c.alignment={horizontal:i?'right':'left'}});r++;
+    d.grupos.forEach(g=>{const vals=[g.c.razonSocial+(situTxt(g.c)?' ('+situTxt(g.c)+')':''),g.venc,g.porV,g.tot,g.maxAtraso?g.maxAtraso+'d':'—'];vals.forEach((v,i)=>{const c=ws.getCell(r,i+2);c.value=v;c.border=box;c.font={size:10,bold:i===3,color:{argb:(i===1&&g.venc>0.5)?ROJO:'FF1B2233'}};c.alignment={horizontal:i?'right':'left'};if(i>=1&&i<=3)c.numFmt=money});r++});
+    const tr=r;ws.getCell(tr,2).value='TOTAL';ws.getCell(tr,2).font={bold:true};[[3,d.venc],[4,d.porV],[5,d.tot]].forEach(([col,val])=>{const c=ws.getCell(tr,col);c.value=val;c.numFmt=money;c.font={bold:true,color:{argb:VERDE}};c.alignment={horizontal:'right'};c.border={top:{style:'double',color:{argb:VERDE}}}});
+
+    /* ===== POR CLIENTE ===== */
+    const cc=[{h:'Cliente',w:32},{h:'CUIT',w:14},{h:'Código',w:9},{h:'Situación',w:11},{h:'Condición',w:10},{h:'Contacto',w:18},{h:'Teléfono',w:16},{h:'Email',w:26},
+      {h:'Vencido',w:14,r:1,m:1},{h:'A vencer ≤'+LUNES_DIAS+'d',w:14,r:1,m:1},{h:'Total',w:14,r:1,m:1},{h:'Crédito NC',w:12,r:1,m:1},{h:'Neto',w:14,r:1,m:1},
+      {h:'Comprob.',w:9,r:1},{h:'Mayor atraso',w:11,r:1},{h:'Próx. vto',w:11},{h:'Cheque a',w:9,r:1},{h:'Último seguimiento',w:48,wrap:1},{h:'Obs. cliente',w:32,wrap:1}];
+    const wc=hoja('Por cliente',cc);let ri=2;
+    d.grupos.forEach(g=>{const c=g.c,ct=ctPrin(c),sg=ultimoSeg(c);
+      const vals=[c.razonSocial,c.cuit||'',c.codigo||'',situTxt(c),condLabel(c.condicionDias),ct.nombre||'',ct.telefono||'',ct.email||'',g.venc,g.porV,g.tot,g.credito,g.tot-g.credito,g.items.length,g.maxAtraso?g.maxAtraso+'d':'—',g.proxVto?dShow(g.proxVto):'—',(c.diasCheque!=null&&c.diasCheque!=='')?c.diasCheque+'d':'',sg?(dShow(sg.f)+(sg.user?' ('+sg.user+')':'')+': '+sg.texto):'',c.obs||''];
+      fila(wc,ri,cc,vals,{rojo:g.venc>0.5?[8]:[],bold:[0,12],nar:g.porV>0.5?[9]:[]});ri++});
+    const tc=ri;wc.getCell(tc,8).value='TOTAL';wc.getCell(tc,8).font={bold:true};wc.getCell(tc,8).alignment={horizontal:'right'};
+    [[9,d.venc],[10,d.porV],[11,d.tot],[12,credTot],[13,d.tot-credTot]].forEach(([col,val])=>{const c=wc.getCell(tc,col);c.value=val;c.numFmt=money;c.font={bold:true,color:{argb:VERDE}};c.alignment={horizontal:'right'};c.border={top:{style:'double',color:{argb:VERDE}}}});
+
+    /* ===== DETALLE ===== */
+    const dc=[{h:'Cliente',w:32},{h:'Situación',w:11},{h:'Tipo',w:9},{h:'Número',w:16},{h:'Emisión',w:11},{h:'F. remito',w:11},{h:'Vencimiento',w:12},{h:'Días',w:14},{h:'Estado',w:13},
+      {h:'Importe',w:14,r:1,m:1},{h:'Cobrado',w:14,r:1,m:1},{h:'NC aplicada',w:12,r:1,m:1},{h:'Saldo',w:14,r:1,m:1},{h:'Cond. aplicada',w:12},{h:'Cheque est.',w:11},{h:'Pagos parciales',w:40,wrap:1},{h:'Observación',w:36,wrap:1}];
+    const wd=hoja('Detalle',dc);ri=2;
+    d.grupos.forEach(g=>g.items.forEach(x=>{const f=x.f,c=g.c;const ce=condicionEfectiva(f);const m=EM[x.est]||EM.pendiente;const fch=fechaChequeDe(f);
+      const vals=[c.razonSocial,situTxt(c),tipoLabel(f.tipo),(f.ptoVenta?f.ptoVenta+'-':'')+(f.numero||''),f.fecha?dShow(f.fecha):'',f.fechaRemito?dShow(f.fechaRemito):'',dShow(vencimientoDe(f)),diasTxt(x.dd),m.l,+f.importe||0,(+f.importe||0)-x.s-ncAplicadaA(f),ncAplicadaA(f),x.s,ce.dias+'d '+(ce.modo==='remito'?'desde remito':'desde factura')+(f.vencManual?' (vto manual)':''),fch?dShow(fch):'',pagosTxt(f),f.obs||''];
+      fila(wd,ri,dc,vals,{rojo:x.dd<0?[7]:[],nar:x.dd>=0?[7]:[],bold:[12]});ri++}));
+    const td=ri;wd.getCell(td,9).value='TOTAL';wd.getCell(td,9).font={bold:true};wd.getCell(td,9).alignment={horizontal:'right'};
+    const totImp=d.rows.reduce((a,x)=>a+(+x.f.importe||0),0);
+    [[10,totImp],[13,d.tot]].forEach(([col,val])=>{const c=wd.getCell(td,col);c.value=val;c.numFmt=money;c.font={bold:true,color:{argb:VERDE}};c.alignment={horizontal:'right'};c.border={top:{style:'double',color:{argb:VERDE}}}});
+
+    /* ===== CONTACTOS ===== */
+    const kc=[{h:'Cliente',w:32},{h:'Nombre',w:22},{h:'Teléfono',w:18},{h:'WhatsApp',w:30},{h:'Email',w:30},{h:'Total a gestionar',w:16,r:1,m:1}];
+    const wk=hoja('Contactos',kc);ri=2;
+    d.grupos.forEach(g=>{const cs=(g.c.contactos&&g.c.contactos.length)?g.c.contactos:[{}];cs.forEach(ct=>{const wa=waLink(ct.telefono);fila(wk,ri,kc,[g.c.razonSocial,ct.nombre||'',ct.telefono||'',wa,ct.email||'',g.tot],{bold:[0]});if(wa){const c=wk.getCell(ri,4);c.value={text:wa,hyperlink:wa};c.font={size:10,color:{argb:'FF2B8FD6'},underline:true}}ri++})});
+
+    /* ===== SEGUIMIENTO ===== */
+    const obsRows=[];d.grupos.forEach(g=>{const h=(g.c.seguimiento&&g.c.seguimiento.historial)||[];h.forEach(x=>obsRows.push({cli:g.c.razonSocial,f:x.f,user:x.user||'',texto:x.texto}))});
+    const oc=[{h:'Cliente',w:32},{h:'Fecha',w:12},{h:'Usuario',w:14},{h:'Observación',w:70,wrap:1}];
+    const wo=hoja('Seguimiento',oc);ri=2;
+    if(obsRows.length){obsRows.sort((a,b)=>(b.f||'').localeCompare(a.f||''));obsRows.forEach(o=>{fila(wo,ri,oc,[o.cli,dShow(o.f),o.user,o.texto]);ri++})}
+    else{wo.getCell(2,1).value='Sin seguimiento cargado para estos clientes';wo.getCell(2,1).font={italic:true,color:{argb:GRIS}}}
+
+    const buf=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Semanal-'+LUNES_VEND+'-'+ref+'.xlsx';a.click();
+    localStorage.setItem(LUNES_LS,ref);renderLunesBox();
+    toast('Listado semanal de '+LUNES_VEND+' descargado','ok');
+  }catch(e){toast('Error al generar el listado: '+e.message,'bad');}
+}
+
+/* ======================= EFECTIVO · remitos internos ======================= */
+const EFE_USERS=['Matías','Mirta','Georgina'];
+function puedeEfectivo(){return EFE_USERS.includes(CURRENT_USER)}
+const EFE_BUCKETS=[{k:'0-30 días',c:'var(--cobr)',max:30},{k:'31-60 días',c:'var(--prox)',max:60},{k:'61-90 días',c:'#e0620a',max:90},{k:'+90 días',c:'var(--venc)',max:1e9},{k:'Sin fecha',c:'#9aa0ab',max:null}];
+const EFE_SF=4; // índice del balde "sin fecha"
+const EFE_VENDEDORES=['Enrique','Winflex','Nitopi'];
+/* Comisi\u00f3n del vendedor: el remito se carga por el precio total y se guarda neto.
+   El bruto original queda en m.bruto para poder mostrar el desglose. */
+const NIT_VEND='Nitopi', NIT_PCT=0.05;
+function nitR2(n){return Math.round((+n||0)*100)/100}
+function nitBruto(m){return (+m.bruto>0)?+m.bruto:m.importe}
+function nitCom(m){return (m.importe>0&&+m.bruto>0)?nitR2(m.bruto-m.importe):0}
+const EFE_PRODUCTOS=['Flexible','Bandejas','Lámina'];
+/* Mapa de referencia -> tipo de producto. Ajustalo si alguna ref no corresponde. */
+const EFE_REF_PROD={
+  'WP':'Flexible','WP08':'Flexible','WP10':'Flexible','WP12':'Flexible','RR':'Flexible','MARAFLEX':'Flexible','SURLYN':'Flexible',
+  'F40':'Bandejas','F41':'Bandejas','F63':'Bandejas','ENSALADERA':'Bandejas',
+  'LAMINA':'Lámina','LAMINAPET':'Lámina','PET':'Lámina'};
+function efeProdDeRef(ref){
+  let r=(ref||'').toString().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  if(!r)return '';
+  const k=r.replace(/[^A-Z0-9]/g,'');
+  if(EFE_REF_PROD[k])return EFE_REF_PROD[k];
+  if(/^WP|MARA|SURLYN|^RR/.test(k))return 'Flexible';
+  if(/^F\d|ENSALAD/.test(k))return 'Bandejas';
+  if(/LAMIN|PET/.test(k))return 'Lámina';
+  return '';
+}
+function efeVendDeCliente(nombre){
+  const m=efeList().slice().reverse().find(x=>x.cliente===nombre&&x.vendedor);
+  if(m)return m.vendedor;
+  const c=getCliente(efeLinkDe(nombre));
+  if(c&&EFE_VENDEDORES.indexOf(c.vendedor)>=0)return c.vendedor;
+  return '';
+}
+function efeVendDe(m,nombre){return m.vendedor||efeVendDeCliente(nombre||m.cliente)||''}
+const EFE_XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+let EFE_SEL=null, EFE_EDIT=null, EFE_IMPORT=null, EFE_CACHE=[];
+
+function mapEfectivoIn(m){return {id:m.id||uid(),cliente:(m.cliente||'').toString().trim(),ref:m.ref||'',numero:(m.numero==null?'':String(m.numero)).trim(),aplic:Array.isArray(m.aplic)?m.aplic.map(a=>({r:a.r,m:Math.round((+a.m||0)*100)/100})).filter(a=>a.r&&a.m>0):[],items:Array.isArray(m.items)?m.items.map(x=>({d:String(x.d||x.desc||''),i:Math.round((+(x.i||x.importe)||0)*100)/100})):[],fecha:(m.fecha||'').slice(0,10)||null,importe:+m.importe||0,medio:m.medio||'',nota:m.nota||'',
+  vendedor:EFE_VENDEDORES.indexOf(m.vendedor)>=0?m.vendedor:'',
+  producto:EFE_PRODUCTOS.indexOf(m.producto)>=0?m.producto:efeProdDeRef(m.ref),
+  entregado:(m.entregado===false?false:(m.entregado===true?true:!/(no se entreg|sin entregar|pendiente de entrega|falta entregar)/i.test(m.nota||''))),
+  fechaEntrega:(m.fechaEntrega||'').slice(0,10)||null,
+  chequeOk:(m.chequeOk===true?true:(m.chequeOk===false?false:null)),
+  bruto:(+m.bruto>0?Math.round((+m.bruto)*100)/100:null),
+  createdAt:m.createdAt||NOW(),updatedAt:m.updatedAt||NOW()}}
+function efeList(){if(!STATE.efectivo)STATE.efectivo=[];return STATE.efectivo}
+function efeDias(f){if(!f)return null;return Math.floor((new Date(todayISO()+'T00:00:00')-new Date(f+'T00:00:00'))/864e5)}
+function efeFuturo(m){return m.importe<0 && !!m.fecha && m.fecha>todayISO()}
+function efeNorm(s){return (s||'').toString().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9]/g,'')}
+/* Saca sufijos societarios para comparar razones sociales. */
+function efeBase(s){return efeNorm(s).replace(/(SA|SRL|SAS|SACIF|SACIFI|SCA|SH|EIRL|SASU|SRLU)$/,'')}
+function efeMatchOficial(nombre){
+  const n=efeNorm(nombre); if(n.length<4)return null;
+  const b=efeBase(nombre); if(b.length<4)return null;
+  /* Sólo coincidencia exacta (ignorando SA/SRL/etc). El "contiene" de antes
+     enganchaba mal, p.ej. FABRICA (EX DISBELL) con DISBELL. */
+  return STATE.clientes.find(c=>{const r=efeNorm(c.razonSocial);return r&&r===n})
+      || STATE.clientes.find(c=>{const r=efeBase(c.razonSocial);return r&&r===b})
+      || null;
+}
+
+/* ---------- cálculo ---------- */
+function efeCalc(){
+  const hoy=todayISO(), by={};
+  efeList().forEach(m=>{const k=m.cliente||'(sin cliente)';(by[k]=by[k]||[]).push(m)});
+  return Object.keys(by).map(nombre=>{
+    const movs=by[nombre].slice().sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?-1:1);
+    const remitos=movs.filter(m=>m.importe>0&&m.entregado!==false);
+    const porEntregarMovs=movs.filter(m=>m.importe>0&&m.entregado===false);
+    const porEntregar=porEntregarMovs.reduce((s,m)=>s+m.importe,0);
+    const pagos=movs.filter(m=>m.importe<0);
+    const rechazados=pagos.filter(m=>m.chequeOk===false);
+    /* Los cheques a fecha descuentan el saldo igual que en la planilla: el remito
+       queda dado de baja y el cheque figura aparte como valor todavía sin acreditar.
+       Sólo un cheque rechazado vuelve a ser deuda. */
+    const cobrados=pagos.filter(m=>m.chequeOk!==false);
+    const aFecha=cobrados.filter(m=>efeFuturo(m)&&m.chequeOk!==true);
+    const acreditados=cobrados.filter(m=>!aFecha.includes(m));
+    /* cheques cuya fecha ya pasó y nadie confirmó que se acreditaron */
+    const chequesPorConfirmar=pagos.filter(m=>m.chequeOk==null&&(m.medio||'')==='Cheque'&&!!m.fecha&&m.fecha<=todayISO());
+    // 1) lo que se imputó a mano a un remito puntual  2) el resto, al más viejo primero
+    let porImputar=cobrados.reduce((s,m)=>s-m.importe,0);
+    const apl={};
+    const entregadosSet=new Set(movs.filter(m=>m.importe>0&&m.entregado!==false).map(m=>m.id));
+    cobrados.forEach(p=>(p.aplic||[]).forEach(a=>{if(!entregadosSet.has(a.r))return;apl[a.r]=(apl[a.r]||0)+a.m;porImputar-=a.m}));
+    porImputar=Math.max(0,porImputar);
+    const sinAplicar=cobrados.reduce((s,p)=>s+Math.max(0,-p.importe-(p.aplic||[]).reduce((x,a)=>x+a.m,0)),0);
+    const abiertos=[];
+    remitos.forEach(r=>{let resto=Math.max(0,r.importe-(apl[r.id]||0));
+      const usa=Math.min(resto,porImputar);porImputar-=usa;resto-=usa;
+      if(resto>0.5)abiertos.push({id:r.id,numero:r.numero,fecha:r.fecha,monto:resto,dias:efeDias(r.fecha),ref:r.ref,explicito:!!apl[r.id]})});
+    const pendiente=remitos.reduce((s,m)=>s+m.importe,0)-cobrados.reduce((s,m)=>s-m.importe,0);
+    const valores=aFecha.reduce((s,m)=>s-m.importe,0);
+    const agg=[0,0,0,0,0];
+    abiertos.forEach(a=>{agg[a.dias==null?EFE_SF:EFE_BUCKETS.findIndex(b=>b.max!=null&&a.dias<=b.max)]+=a.monto});
+    const fp=acreditados.map(p=>p.fecha).filter(Boolean).sort();
+    const ultPago=fp.length?fp[fp.length-1]:null;
+    return {nombre,movs,remitos,porEntregarMovs,porEntregar,pagos,cobrados,rechazados,chequesPorConfirmar,aFecha,valores,pendiente,abiertos,agg,sinAplicar,
+      aFavor:Math.max(0,porImputar),
+      diasMax:(function(){const d=abiertos.map(a=>a.dias).filter(x=>x!=null);return d.length?Math.max.apply(null,d):null})(),
+      ultPago,diasSinPago:ultPago?efeDias(ultPago):null,
+      cobrado:acreditados.reduce((s,m)=>s-m.importe,0),
+      descontado:cobrados.reduce((s,m)=>s-m.importe,0),
+      oficial:getCliente(efeLinkDe(nombre))||null};
+  });
+}
+
+/* ---------- render ---------- */
+/* Cliente "vivo": tiene saldo o algo sin resolver. Los saldados en cero no se
+   listan salvo que elijas "Todos los clientes". */
+function efeVivo(c){
+  return Math.abs(c.pendiente)>0.5
+    || c.porEntregar>0.5
+    || c.valores>0.5
+    || (c.chequesPorConfirmar||[]).length>0
+    || (c.rechazados||[]).length>0
+    || (c.sinAplicar>0.5 && c.remitos.length>0);
+}
+function renderEfectivo(){
+  if(!$('efeBody'))return;
+  const C=efeCalc();
+  const total=C.reduce((s,c)=>s+Math.max(0,c.pendiente),0);
+  const valores=C.reduce((s,c)=>s+c.valores,0);
+  const nChq=C.reduce((s,c)=>s+c.aFecha.length,0);
+  const conSaldo=C.filter(c=>c.pendiente>0.5);
+  const agg=[0,0,0,0,0];C.forEach(c=>c.agg.forEach((v,i)=>agg[i]+=v));
+  const vencido=agg[2]+agg[3];
+  const abiertos=C.reduce((s,c)=>s+c.abiertos.length,0);
+  const porEntregar=C.reduce((s,c)=>s+c.porEntregar,0);
+  const nPorEnt=C.reduce((s,c)=>s+c.porEntregarMovs.length,0);
+
+  $('efeKpis').innerHTML=`
+    <div class="kpi por"><div class="bar"></div><div class="lab">Pendiente de cobro</div><div class="val num">${fmtM(total)}</div><div class="meta">${conSaldo.length} clientes · ${abiertos} remitos</div></div>
+    <div class="kpi efe"><div class="bar"></div><div class="lab">Cheques a fecha</div><div class="val num">${fmtM(valores)}</div><div class="meta">${valores?nChq+' cheque(s) ya descontados del saldo, todavía sin acreditar':'sin cheques diferidos'}</div></div>
+    <div class="kpi cobr"><div class="bar"></div><div class="lab">Sin entrar todavía</div><div class="val num">${fmtM(total+valores)}</div><div class="meta">pendiente + cheques a fecha</div></div>
+    <div class="kpi venc"><div class="bar"></div><div class="lab">Vencido +60 días</div><div class="val num" style="color:var(--venc)">${fmtM(vencido)}</div><div class="meta">${total?Math.round(vencido/total*100):0}% del pendiente</div></div>
+    <div class="kpi por"><div class="bar"></div><div class="lab">Por entregar</div><div class="val num" style="color:var(--prox)">${fmtM(porEntregar)}</div><div class="meta">${nPorEnt} remito${nPorEnt===1?'':'s'} · no suma al total</div></div>`;
+
+  const al=[];
+  C.filter(c=>c.valores>0).forEach(c=>al.push(`<b>${esc(c.nombre)}</b>: ${fmt(c.valores)} descontados con cheques a ${c.aFecha.map(m=>dShow(m.fecha)).join(', ')}. El saldo ya baj\u00f3, pero la plata todav\u00eda no entr\u00f3.`));
+  C.filter(c=>c.porEntregar>0.5).forEach(c=>al.push(`<b>${esc(c.nombre)}</b>: ${fmt(c.porEntregar)} en ${c.porEntregarMovs.length} remito(s) cargado(s) pero todavía sin entregar. No suman al total a cobrar hasta que los marques como entregados.`));
+  C.filter(c=>c.porEntregar>0.5&&c.pendiente<-0.5).forEach(c=>al.push(`<b>${esc(c.nombre)}</b> pagó por adelantado: hay ${fmt(Math.min(-c.pendiente,c.porEntregar))} cobrados de material que todavía no salió.`));
+  C.forEach(c=>c.chequesPorConfirmar.forEach(m=>al.push(
+    `<b>${esc(c.nombre)}</b>: el cheque de ${fmt(-m.importe)} con fecha ${dShow(m.fecha)} ya está descontado del saldo, pero nadie confirmó que se acreditó.
+     <button class="mini" style="margin-left:8px" onclick="efeChequeEstado('${m.id}',true)">Se acreditó</button>
+     <button class="mini" style="margin-left:6px" onclick="efeChequeEstado('${m.id}',false)">Rebotó</button>`)));
+  C.filter(c=>c.rechazados.length).forEach(c=>al.push(`<b>${esc(c.nombre)}</b>: ${c.rechazados.length} cheque(s) rechazado(s) por ${fmt(c.rechazados.reduce((s,m)=>s-m.importe,0))}. Vuelven a figurar como deuda.`));
+  C.filter(c=>c.pendiente<-0.5).forEach(c=>al.push(`<b>${esc(c.nombre)}</b> quedó con ${fmt(-c.pendiente)} a favor (pagó de más o falta cargar el remito).`));
+  const top=C.slice().sort((a,b)=>b.pendiente-a.pendiente)[0];
+  if(top&&total&&top.pendiente/total>0.3)al.push(`Concentración: <b>${esc(top.nombre)}</b> es el ${Math.round(top.pendiente/total*100)}% del pendiente (${fmt(top.pendiente)}).`);
+  const sinFecha=efeList().filter(m=>!m.fecha);
+  if(sinFecha.length)al.push(`${sinFecha.length} movimiento(s) sin fecha — no entran en la antigüedad.`);
+  const nitCand=comNetearCand();
+  if(nitCand.libres.length)al.push(`<b>${NIT_VEND}</b>: ${nitCand.libres.length} remito(s) sin cobrar por ${fmt(nitCand.libres.reduce((s,r)=>s+r.m.importe,0))} están cargados por el precio total, sin descontar la comisión del ${(NIT_PCT*100)}%. El saldo que ves no coincide con la plata que te rinden.
+     <button class="mini" style="margin-left:8px" onclick="openCom()">Ver y netear</button>`);
+  $('efeAlertas').innerHTML=al.map(a=>`<div class="efe-alert">${a}</div>`).join('');
+
+  const sum=agg.reduce((a,b)=>a+b,0)||1;
+  $('efeAging').innerHTML=agg.map((v,i)=>`<i style="background:${EFE_BUCKETS[i].c};width:${v/sum*100}%" title="${EFE_BUCKETS[i].k}"></i>`).join('');
+  $('efeChips').innerHTML=agg.map((v,i)=>`<span class="efe-chip"><b style="background:${EFE_BUCKETS[i].c}"></b>${EFE_BUCKETS[i].k} · <strong class="num">${fmt(v)}</strong> (${Math.round(v/sum*100)}%)</span>`).join('');
+
+  /* --- composición del pendiente por vendedor y por producto --- */
+  const movById={};efeList().forEach(m=>movById[m.id]=m);
+  const xv={},xp={};
+  C.forEach(c=>c.abiertos.forEach(a=>{const m=movById[a.id]||{};
+    const v=efeVendDe(m,c.nombre)||'Sin asignar', pr=m.producto||'Sin asignar';
+    xv[v]=(xv[v]||0)+a.monto; xp[pr]=(xp[pr]||0)+a.monto}));
+  function efeLineas(obj,tot){
+    const ks=Object.keys(obj).sort((a,b)=>obj[b]-obj[a]);
+    if(!ks.length)return '<div class="hint">Sin saldo pendiente.</div>';
+    return ks.map(k=>`<div class="efe-line"><span class="nm">${esc(k)}</span><span class="tr"><i style="width:${tot?Math.max(2,obj[k]/tot*100):0}%"></i></span><span class="vl num">${fmt(obj[k])}</span></div>`).join('');
+  }
+  if($('efeXVend')){$('efeXVend').innerHTML=efeLineas(xv,total);$('efeXProd').innerHTML=efeLineas(xp,total)}
+
+  /* --- filtros por vendedor / producto --- */
+  if($('efeFVend')&&$('efeFVend').options.length<=1){
+    $('efeFVend').innerHTML='<option value="">Todos los vendedores</option>'+EFE_VENDEDORES.map(v=>`<option>${v}</option>`).join('')+'<option value="__sin__">Sin asignar</option>';
+    $('efeFProd').innerHTML='<option value="">Todos los productos</option>'+EFE_PRODUCTOS.map(v=>`<option>${v}</option>`).join('')+'<option value="__sin__">Sin asignar</option>';
+  }
+  const fv=$('efeFVend')?$('efeFVend').value:'', fp=$('efeFProd')?$('efeFProd').value:'';
+  function efeOkMov(m,nombre){
+    const v=efeVendDe(m,nombre), pr=m.producto||'';
+    if(fv&&(fv==='__sin__'?!!v:v!==fv))return false;
+    if(fp&&(fp==='__sin__'?!!pr:pr!==fp))return false;
+    return true;
+  }
+  C.forEach(c=>{
+    c.filtrado=c.abiertos.reduce((s,a)=>s+(efeOkMov(movById[a.id]||{},c.nombre)?a.monto:0),0);
+    c.filtEnt=c.porEntregarMovs.reduce((s,m)=>s+(efeOkMov(m,c.nombre)?m.importe:0),0);
+  });
+  if($('efeFiltroInfo')){
+    if(fv||fp){
+      const tf=C.reduce((s,c)=>s+c.filtrado,0), te=C.reduce((s,c)=>s+c.filtEnt,0);
+      const et=[fv?(fv==='__sin__'?'sin vendedor':fv):null,fp?(fp==='__sin__'?'sin producto':fp):null].filter(Boolean).join(' · ');
+      $('efeFiltroInfo').innerHTML=`<div class="efe-filtro">Filtrando por <strong>${esc(et)}</strong> &middot; pendiente de cobro <strong class="num">${fmt(tf)}</strong>${te>0.5?` &middot; por entregar <strong class="num">${fmt(te)}</strong>`:''} <button class="mini" style="margin-left:8px" onclick="$('efeFVend').value='';$('efeFProd').value='';renderEfectivo()">Limpiar</button></div>`;
+    } else $('efeFiltroInfo').innerHTML='';
+  }
+
+  if($('efeThPend'))$('efeThPend').textContent=(fv||fp)?'Pendiente (filtro)':'Pendiente';
+  if($('efeBtnInf')){const et=efeFiltro().etiqueta;
+    $('efeBtnInf').innerHTML='\uD83D\uDCCA Informe'+(et?' · '+esc(et):'');
+    $('efeBtnInf').title=et?'El informe sale sólo con '+et:'El informe sale con todo. Filtrá arriba por vendedor o producto para individualizarlo.'}
+  const q=($('efeSearch').value||'').toLowerCase(), ord=$('efeOrden').value;
+  let lista=C.filter(c=>c.nombre.toLowerCase().includes(q));
+  if(fv||fp)lista=lista.filter(c=>c.filtrado>0.5||c.filtEnt>0.5);
+  const verTodos=$('efeVerSaldo')&&$('efeVerSaldo').value==='todos';
+  const ocultos=verTodos?0:lista.filter(c=>!efeVivo(c)).length;
+  if(!verTodos)lista=lista.filter(efeVivo);
+  if($('efeOcultos'))$('efeOcultos').innerHTML=ocultos
+    ? `<div class="hint" style="margin:6px 0 0">${ocultos} cliente(s) en cero no se muestran. <button class="mini" onclick="$('efeVerSaldo').value='todos';renderEfectivo()">Ver todos</button></div>` : '';
+  lista.sort((a,b)=> ord==='nombre'?a.nombre.localeCompare(b.nombre)
+    : ord==='viejo'?(b.diasMax==null?-1:b.diasMax)-(a.diasMax==null?-1:a.diasMax)
+    : ord==='sinpago'?(b.diasSinPago==null?9999:b.diasSinPago)-(a.diasSinPago==null?9999:a.diasSinPago)
+    : b.pendiente-a.pendiente);
+  EFE_CACHE=lista;
+
+  if(!efeList().length){
+    $('efeBody').innerHTML=`<tr><td colspan="6" class="empty">Todavía no hay movimientos cargados.
+      <div class="hint" style="margin-top:10px">Importá el Excel de remitos internos, subí las planillas de remito o cargalos a mano con “+ Movimiento”.</div></td></tr>`;
+  } else if(!lista.length){
+    $('efeBody').innerHTML=`<tr><td colspan="6" class="empty">Ningún cliente con saldo pendiente.
+      <div class="hint" style="margin-top:10px">${ocultos?ocultos+' cliente(s) saldado(s) ocultos. ':''}Elegí “Todos los clientes” en el filtro de arriba para verlos igual.</div></td></tr>`;
+  } else {
+    $('efeBody').innerHTML=lista.map((c,i)=>{
+      const s=c.agg.reduce((a,b)=>a+b,0)||1;
+      const tags=(c.pendiente<-0.5?'<span class="tag-efe g">a favor</span>':'')
+        +(c.valores>0?'<span class="tag-efe w">cheques a fecha</span>':'')
+        +((Math.abs(c.pendiente)<1&&c.porEntregar<0.5)?'<span class="tag-efe">saldado</span>':'')
+        +(c.sinAplicar>0.5&&c.remitos.length?'<span class="tag-efe">pagos sin aplicar</span>':'')
+        +(c.porEntregar>0.5?'<span class="tag-efe w">por entregar</span>':'')
+        +(c.oficial?'<span class="tag-efe g">en cartera</span>':'');
+      const nEnt=c.porEntregarMovs.length;
+      const meta=`${c.remitos.length+nEnt} remito${(c.remitos.length+nEnt)===1?'':'s'}${nEnt?' ('+nEnt+' por entregar)':''} · ${c.pagos.length} pagos`
+        +(c.porEntregar>0.5?` · <span style="color:var(--prox)">${fmt(c.porEntregar)} sin entregar</span>`:'')
+        +((fv||fp)?` · <span class="cli-meta">total del cliente ${fmt(c.pendiente)}</span>`:'');
+      const pendCol=(fv||fp)?c.filtrado:c.pendiente;
+      return `<tr class="efe-row" onclick="openEfeCli(${i})">
+        <td><span class="cli-name">${esc(c.nombre)}</span>${tags}<div class="cli-meta">${meta}</div></td>
+        <td class="r num" style="font-weight:700${pendCol<0?';color:var(--cobr)':''}">${fmt(pendCol)}</td>
+        <td class="r num">${total?(Math.max(0,pendCol)/total*100).toFixed(1)+'%':'—'}</td>
+        <td class="r num">${c.diasMax!=null?c.diasMax+' d':'—'}</td>
+        <td class="r num">${c.diasSinPago!=null?c.diasSinPago+' d':'nunca'}</td>
+        <td><div class="efe-mini">${c.agg.map((v,j)=>`<i style="background:${EFE_BUCKETS[j].c};width:${v/s*100}%"></i>`).join('')}</div></td></tr>`;
+    }).join('');
+  }
+  const nombres=[...new Set(efeList().map(m=>m.cliente).concat(STATE.clientes.map(c=>c.razonSocial)))].filter(Boolean).sort();
+  $('efeClientesList').innerHTML=nombres.map(n=>`<option value="${esc(n)}">`).join('');
+}
+
+/* ---------- detalle por cliente ---------- */
+function openEfeCli(i){
+  const c=EFE_CACHE[i]; if(!c)return;
+  EFE_SEL=c.nombre;
+  $('efeCliTit').textContent=c.nombre;
+  let acum=0;
+  const filas=c.movs.map(m=>{
+    const noEnt=(m.importe>0&&m.entregado===false);
+    if(!noEnt)acum+=m.importe; // un remito sin entregar todavía no mueve el saldo
+    const fut=efeFuturo(m);
+    const et=m.importe>0?(m.numero?'Remito '+m.numero:(m.ref||'Remito')):(m.medio||'Pago');
+    let extra='';
+    if(m.importe>0&&m.numero&&m.ref)extra=`<span class="tag-efe">${esc(m.ref)}</span>`;
+    if(m.importe>0){
+      if(m.entregado===false)extra+='<span class="tag-efe w">sin entregar</span>';
+      else if(m.fechaEntrega)extra+=`<span class="tag-efe g">entregado ${dShow(m.fechaEntrega)}</span>`;
+      if(m.entregado!==false){
+        const ab=c.abiertos.find(x=>x.id===m.id);
+        if(!ab)extra+='<span class="tag-efe g">cancelado</span>';
+        else{
+          extra+=(ab.monto<m.importe-0.5)?`<span class="tag-efe w">parcial &middot; queda ${fmt(ab.monto)}</span>`:'<span class="tag-efe">pendiente</span>';
+          extra+=` <button class="mini go" onclick="event.stopPropagation();efeCobrarRemito('${m.id}')">Cobrar</button>`;
+        }
+      }
+      if(m.producto)extra+=`<span class="tag-efe p">${esc(m.producto)}</span>`;
+      if(m.vendedor)extra+=`<span class="tag-efe g">${esc(m.vendedor)}</span>`;
+      if(nitCom(m))extra+=`<div class="nota-txt">Venta ${fmt(nitBruto(m))} \u2212 comisi\u00f3n ${esc(NIT_VEND)} ${fmt(nitCom(m))}</div>`;
+    }
+    if(m.importe<0&&m.chequeOk===false)extra+='<span class="tag-efe" style="border-color:var(--venc);color:var(--venc)">rechazado</span>';
+    if(m.importe<0&&m.chequeOk===true)extra+='<span class="tag-efe g">acreditado</span>';
+    if(m.importe<0){
+      const ap=(m.aplic||[]);
+      const nums=ap.map(a=>{const r=efeList().find(x=>x.id===a.r);return r?efeRemitoLabel(r).replace('Remito ','N\u00ba '):''}).filter(Boolean);
+      const usa=ap.reduce((x,a)=>x+a.m,0), resto=Math.round((-m.importe-usa)*100)/100;
+      if(nums.length)extra+=`<span class="tag-efe g">${esc(nums.join(', '))}</span>`;
+      if(resto>0.5&&nums.length)extra+=`<span class="tag-efe">a cuenta ${fmt(resto)}</span>`;
+      else if(!nums.length)extra+='<span class="tag-efe">sin aplicar</span>';
+    }
+    return `<tr onclick="openEfeMov('${m.id}')" style="cursor:pointer">
+      <td>${m.fecha?dShow(m.fecha):'s/f'}</td>
+      <td>${esc(et)}${fut?'<span class="tag-efe w">a fecha</span>':''}${extra}${m.nota?`<div class="nota-txt">${esc(m.nota)}</div>`:''}</td>
+      <td class="r num"${m.importe<0?' style="color:var(--cobr)"':''}>${fmt(m.importe)}</td>
+      <td class="r num"${noEnt?' style="color:var(--faint)"':''}>${noEnt?'—':fmt(acum)}</td>
+      <td class="c" onclick="event.stopPropagation()">${m.importe>0?`<label class="efe-chk" title="Destildá si todavía no se entregó"><input type="checkbox" ${m.entregado===false?'':'checked'} onchange="efeToggleEntrega('${m.id}')"></label>`:''}</td></tr>${(m.items&&m.items.length)?`<tr><td></td><td colspan="4" class="cli-meta" style="padding-top:0">${esc(m.items.map(x=>x.d+' · '+fmt(x.i)).join('  |  '))}</td></tr>`:''}`}).join('');
+  const ofi=c.oficial?`<div class="efe-alert ok" style="margin-bottom:14px">En cartera oficial como <b>${esc(c.oficial.razonSocial)}</b> · saldo facturado ${fmt(saldoCliente(c.oficial.id))} · <b>total combinado ${fmt(saldoCliente(c.oficial.id)+Math.max(0,c.pendiente))}</b></div>`
+    :`<div class="hint" style="margin-bottom:14px">No está en la cartera oficial: sólo tiene remitos internos.</div>`;
+  $('efeCliBody').innerHTML=`${ofi}
+    <div class="efe-chips" style="margin:0 0 14px">
+      <span class="efe-chip">Pendiente <strong class="num">${fmt(c.pendiente)}</strong></span>
+      <span class="efe-chip">Remitado <strong class="num">${fmt(c.remitos.reduce((s,m)=>s+m.importe,0))}</strong></span>
+      <span class="efe-chip">Cobrado <strong class="num">${fmt(c.cobrado)}</strong></span>
+      ${(c.descontado-c.cobrado)>0.5?`<span class="efe-chip">Con cheques a fecha <strong class="num">${fmt(c.descontado-c.cobrado)}</strong></span>`:''}
+      ${(function(){const k=c.movs.reduce((s,m)=>s+nitCom(m),0);
+        return k?`<span class="efe-chip">Comisi\u00f3n ${esc(NIT_VEND)} <strong class="num">${fmt(k)}</strong></span>`:''})()}
+      ${c.valores?`<span class="efe-chip">Cheques a fecha <strong class="num">${fmt(c.valores)}</strong></span>`:''}
+      ${c.porEntregar>0.5?`<span class="efe-chip">Por entregar <strong class="num" style="color:var(--prox)">${fmt(c.porEntregar)}</strong></span>`:''}
+      ${(function(){const asignados=[...new Set(c.movs.filter(m=>m.vendedor).map(m=>m.vendedor))];
+        if(asignados.length)return `<span class="efe-chip">Vendedor <strong>${esc(asignados.join(' / '))}</strong></span>`;
+        const vv=efeVendDeCliente(c.nombre);
+        return vv?`<span class="efe-chip">Vendedor <strong>${esc(vv)}</strong> (supuesto)</span>`:'<span class="efe-chip">Vendedor <strong>sin asignar</strong></span>'})()}
+    </div>
+    <div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Concepto</th><th class="r">Importe</th><th class="r">Saldo</th><th class="c">Entregado</th></tr></thead><tbody>${filas}</tbody></table></div>
+    ${c.abiertos.length?`<div class="hint"><b>Sin cobrar:</b> ${c.abiertos.map(a=>(a.numero?'N\u00ba '+a.numero+' · ':'')+dShow(a.fecha)+' · '+fmt(a.monto)+' · '+a.dias+' d').join(' — ')}</div>`:'<div class="hint">Sin saldo pendiente de cobro.</div>'}
+    ${c.sinAplicar>0.5&&c.remitos.length?`<div class="efe-alert" style="margin-top:12px">Hay <b>${fmt(c.sinAplicar)}</b> en pagos que todav\u00eda no est\u00e1n aplicados a ning\u00fan remito. Se descuentan igual del saldo, pero si los aplic\u00e1s queda registrado qu\u00e9 pag\u00f3 cada uno.
+      <div style="margin-top:8px"><button class="btn sm" onclick="efeImputarAuto(${JSON.stringify(c.nombre).replace(/"/g,'&quot;')})">Aplicar autom\u00e1tico, del m\u00e1s viejo al m\u00e1s nuevo</button></div></div>`:''}
+    ${c.porEntregar>0.5?`<div class="efe-alert" style="margin-top:12px"><b>${fmt(c.porEntregar)}</b> en remitos cargados que todavía no se entregaron: ${c.porEntregarMovs.map(m=>(m.numero?'Nº '+m.numero+' · ':'')+(m.fecha?dShow(m.fecha):'s/f')+' · '+fmt(m.importe)).join(' — ')}. No suman al pendiente hasta que los marques como entregados.</div>`:''}
+    <div class="hint">Tocá cualquier línea para editarla. La tilde de la derecha marca si el material ya se entregó: destildala y ese remito deja de sumar al pendiente.</div>
+    <div class="card" style="padding:14px;margin-top:14px;background:var(--surface2)"><h3>Vendedor y tipo de producto</h3>
+      <div class="frow">
+        <div class="field"><label>Vendedor</label><select class="filter" id="efeBulkVend"><option value="">Elegir…</option>${EFE_VENDEDORES.map(v=>`<option>${v}</option>`).join('')}</select></div>
+        <div class="field"><label>Tipo de producto</label><select class="filter" id="efeBulkProd"><option value="">Elegir…</option>${EFE_PRODUCTOS.map(v=>`<option>${v}</option>`).join('')}</select></div>
+      </div>
+      <button class="btn sm" onclick="efeBulkAsignar(false)">Asignar a los que están sin asignar</button>
+      <button class="btn ghost sm" style="margin-left:8px" onclick="efeBulkAsignar(true)">Asignar a todos</button>
+      <div class="hint">Aplica a los movimientos de este cliente. El producto sólo se asigna a los remitos.</div></div>
+    <div class="card" style="padding:14px;margin-top:14px;background:var(--surface2)"><h3>Vínculo con la cartera oficial</h3>
+      <div class="field">${efeLinkSelect(c.nombre)}</div>
+      ${c.oficial?`<button class="btn ghost sm" onclick="closeOverlay('ovEfeCli');openCliente('${c.oficial.id}')">Editar ficha del cliente</button>`
+        :`<button class="btn sm" onclick="nuevoClienteDesdeEfectivo(${JSON.stringify(c.nombre).replace(/"/g,'&quot;')})">Dar de alta en la cartera</button>`}
+      <div class="hint">Vinculalo para que en Cuenta total las dos cuentas de este cliente se sumen juntas.</div></div>`;
+  openOverlay('ovEfeCli');
+}
+
+/* ---------- estado de entrega y clasificación ---------- */
+let EFE_SAVE_T=null;
+function efeSaveDiferido(){ if(EFE_SAVE_T)clearTimeout(EFE_SAVE_T); EFE_SAVE_T=setTimeout(()=>{EFE_SAVE_T=null;saveToCloud()},2000) }
+window.addEventListener('beforeunload',e=>{
+  if(EFE_SAVE_T){clearTimeout(EFE_SAVE_T);EFE_SAVE_T=null;saveToCloud()}
+  /* Un guardado en curso NO sobrevive al cierre de la ventana (es lectura+fusion+escritura
+     asincronica). Si esta guardando, frenamos la salida y avisamos. */
+  if(saving||savePending){e.preventDefault();e.returnValue='Hay cambios guardandose. Espera a que diga "En la nube" antes de cerrar.';return e.returnValue}
+});
+/* reabre la ficha del cliente conservando la posición del scroll */
+function efeReabrirCli(i){
+  const cont=$('efeCliBody')?$('efeCliBody').closest('.body'):null;
+  const sc=cont?cont.scrollTop:0;
+  openEfeCli(i);
+  const c2=$('efeCliBody')?$('efeCliBody').closest('.body'):null;
+  if(c2)c2.scrollTop=sc;
+}
+function efeChequeEstado(id,ok){
+  const m=efeList().find(x=>x.id===id); if(!m)return;
+  m.chequeOk=ok; m.updatedAt=NOW();
+  saveToCloud(); renderEfectivo(); renderTotal();
+  toast(ok?'Cheque marcado como acreditado':'Cheque marcado como rechazado: vuelve a sumar al saldo','ok');
+  if(EFE_SEL){const i=EFE_CACHE.findIndex(c=>c.nombre===EFE_SEL); if(i>=0)efeReabrirCli(i)}
+}
+function efeToggleEntrega(id){
+  const m=efeList().find(x=>x.id===id); if(!m)return;
+  const n=EFE_SEL;
+  m.entregado=(m.entregado===false);
+  m.fechaEntrega=m.entregado?todayISO():null;
+  m.updatedAt=NOW();
+  saveToCloud();renderEfectivo();renderTotal();
+  toast(m.entregado?'Marcado como entregado':'Marcado como pendiente de entrega','ok');
+  const i=EFE_CACHE.findIndex(c=>c.nombre===n); if(i>=0)efeReabrirCli(i);
+}
+function efeBulkAsignar(todos){
+  const n=EFE_SEL; if(!n)return;
+  const v=$('efeBulkVend')?$('efeBulkVend').value:'', pr=$('efeBulkProd')?$('efeBulkProd').value:'';
+  if(!v&&!pr){toast('Elegí un vendedor o un producto','bad');return}
+  let k=0;
+  efeList().filter(m=>m.cliente===n).forEach(m=>{
+    let t=false;
+    if(v&&(todos||!m.vendedor)){m.vendedor=v;t=true}
+    if(pr&&m.importe>0&&(todos||!m.producto)){m.producto=pr;t=true}
+    if(t){m.updatedAt=NOW();k++}
+  });
+  if(!k){toast('No había movimientos para actualizar');return}
+  saveToCloud();renderEfectivo();renderTotal();
+  toast(k+' movimiento'+(k===1?'':'s')+' actualizado'+(k===1?'':'s'),'ok');
+  const i=EFE_CACHE.findIndex(c=>c.nombre===n); if(i>=0)efeReabrirCli(i);
+}
+function efeAutoVend(){
+  if(EFE_EDIT)return;
+  const cli=$('efeCliente').value.trim(); if(!cli)return;
+  if(!$('efeVend').value)$('efeVend').value=efeVendDeCliente(cli)||'';
+}
+function efeAutoProd(){
+  if($('efeTipo').value==='pago')return;
+  const g=efeProdDeRef($('efeRef').value);
+  if(g&&(!$('efeProd').value||!EFE_EDIT))$('efeProd').value=g;
+}
+
+/* ---------- alta / edición ---------- */
+function efeTipoChange(){const esPago=$('efeTipo').value==='pago';
+  $('efeMedioWrap').style.display=esPago?'':'none';
+  $('efeNumWrap').style.display=esPago?'none':'';
+  if($('efeProdWrap'))$('efeProdWrap').style.display=esPago?'none':'';
+  if($('efeEntWrap'))$('efeEntWrap').style.display=esPago?'none':'';
+  if($('efeChqWrap'))$('efeChqWrap').style.display=(esPago&&$('efeMedio').value==='Cheque')?'':'none';
+  efeNetoHint();efeRenderAplic()}
+function efeNetoHint(){
+  const el=$('efeNetoHint'); if(!el)return;
+  const imp=Math.abs(+$('efeImporte').value||0);
+  const on=$('efeTipo').value!=='pago' && $('efeVend').value===NIT_VEND && imp>0;
+  el.style.display=on?'':'none';
+  if(on){const c=nitR2(imp*NIT_PCT);
+    el.innerHTML=`Venta <b>${fmt(imp)}</b> &nbsp;\u2212&nbsp; comisi\u00f3n ${NIT_VEND} ${(NIT_PCT*100)}% <b>${fmt(c)}</b> &nbsp;=&nbsp; a cobrar <b>${fmt(imp-c)}</b>. En la cuenta del cliente queda el neto.`}
+}
+function openEfeMov(id,cliente){
+  if(!id)EFE_MOV_LINK=null;
+  EFE_IMP_AUTO=false;
+  EFE_EDIT=id?efeList().find(m=>m.id===id):null;
+  const m=EFE_EDIT;
+  $('efeMovTit').textContent=m?'Editar movimiento':'Nuevo movimiento';
+  $('efeCliente').value=m?m.cliente:(cliente||'');
+  $('efeTipo').value=m?(m.importe<0?'pago':'remito'):'remito';
+  $('efeFecha').value=(m&&m.fecha)||todayISO();
+  $('efeImporte').value=m?Math.abs(m.bruto||m.importe):'';
+  $('efeMedio').value=m?(m.medio||''):'Efectivo';
+  $('efeRef').value=m?m.ref:'';
+  $('efeNumero').value=m?(m.numero||''):efeProxNumero();
+  $('efeNota').value=m?m.nota:'';
+  $('efeVend').value=m?(m.vendedor||''):(cliente?efeVendDeCliente(cliente):'');
+  $('efeProd').value=m?(m.producto||''):'';
+  $('efeEnt').value=(m&&m.entregado===false)?'0':'1';
+  $('efeChq').value=(m&&m.chequeOk===true)?'1':((m&&m.chequeOk===false)?'0':'');
+  $('efeDelBtn').style.display=m?'':'none';
+  efeTipoChange();efeNetoHint();
+  if(id)closeOverlay('ovEfeCli');
+  openOverlay('ovEfeMov');
+}
+function saveEfeMov(){
+  const cli=$('efeCliente').value.trim();
+  const imp=Math.abs(+$('efeImporte').value||0);
+  const fecha=$('efeFecha').value;
+  if(!cli){toast('Falta el cliente','bad');return}
+  if(!imp){toast('Falta el importe','bad');return}
+  if(!fecha){toast('Falta la fecha','bad');return}
+  const conocido = efeList().some(m=>m.cliente===cli) || STATE.clientes.some(c=>c.razonSocial===cli);
+  if(!conocido && !EFE_MOV_LINK && !confirm('"'+cli+'" no figura entre los clientes. Se va a abrir una cuenta de efectivo nueva con ese nombre.\n\nSi es un cliente que ya existe, cancelá y elegilo de la lista para no duplicarlo.\n\n¿Crear la cuenta nueva?'))return;
+  if(!EFE_EDIT){
+    const imp2=($('efeTipo').value==='pago'?-imp:imp);
+    const dup=efeList().filter(m=>m.cliente===cli&&m.fecha===fecha&&Math.abs(m.importe-imp2)<0.5);
+    if(dup.length&&!confirm('Ya hay '+dup.length+' movimiento(s) de "'+cli+'" con la misma fecha y el mismo importe.\n\n¿Cargarlo igual?'))return;
+  }
+  const esPago=$('efeTipo').value==='pago';
+  let aplic=[];
+  if(esPago){
+    aplic=efeAplicInputs().map(i=>({r:i.id.slice(4),m:Math.round((+i.value||0)*100)/100})).filter(a=>a.m>0);
+    const usa=aplic.reduce((s,a)=>s+a.m,0);
+    if(usa>imp+0.5){toast('Estás aplicando más de lo que dice el importe del pago','bad');return}
+  }
+  const entregado=esPago?true:($('efeEnt').value==='1');
+  let fechaEntrega=EFE_EDIT?(EFE_EDIT.fechaEntrega||null):null;
+  if(!entregado)fechaEntrega=null;
+  else if(EFE_EDIT&&EFE_EDIT.entregado===false)fechaEntrega=todayISO();
+  const neteaCom=(!esPago)&&$('efeVend').value===NIT_VEND;
+  const impNeto=neteaCom?nitR2(imp*(1-NIT_PCT)):imp;
+  const datos={cliente:cli,fecha,importe:esPago?-imp:impNeto,bruto:neteaCom?imp:null,medio:esPago?$('efeMedio').value:'',numero:esPago?'':$('efeNumero').value.trim(),aplic,ref:$('efeRef').value.trim(),nota:$('efeNota').value.trim(),
+    vendedor:$('efeVend').value,producto:esPago?'':$('efeProd').value,entregado,fechaEntrega,
+    chequeOk:(esPago&&$('efeMedio').value==='Cheque')?($('efeChq').value===''?null:$('efeChq').value==='1'):null,
+    updatedAt:NOW()};
+  if(EFE_EDIT){const t=efeList().find(m=>m.id===EFE_EDIT.id)||EFE_EDIT;Object.assign(t,datos);EFE_EDIT=t}
+  else efeList().push(mapEfectivoIn({...datos,createdAt:NOW()}));
+  if(EFE_MOV_LINK){efeLinks()[cli]=EFE_MOV_LINK;EFE_MOV_LINK=null}
+  closeOverlay('ovEfeMov');saveToCloud();renderEfectivo();renderTotal();
+  toast(EFE_EDIT?'Movimiento actualizado':'Movimiento agregado','ok');
+  EFE_EDIT=null;
+}
+function deleteEfeMov(){
+  if(!EFE_EDIT)return;
+  if(!confirm('¿Borrar este movimiento?'))return;
+  STATE.efectivo=efeList().filter(m=>m.id!==EFE_EDIT.id);
+  EFE_EDIT=null;closeOverlay('ovEfeMov');saveToCloud();renderEfectivo();toast('Movimiento borrado','ok');
+}
+
+/* ---------- importar Excel ---------- */
+function efeSerialISO(n){const d=new Date(Date.UTC(1899,11,30)+Math.round(n)*864e5);return d.toISOString().slice(0,10)}
+function efeParseWB(wb){
+  const TOT=['total','saldo','total adeudado'], out=[];
+  wb.SheetNames.forEach(sn=>{
+    if(sn.trim().toUpperCase()==='TOTALES')return;
+    const ws=wb.Sheets[sn]; if(!ws||!ws['!ref'])return;
+    // Algunas hojas arrancan en la columna B; forzamos el rango desde A para que
+    // las columnas siempre caigan en ref / fecha / importe / nota.
+    const rg=XLSX.utils.decode_range(ws['!ref']); rg.s.c=0; rg.s.r=0;
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,range:rg});
+    rows.forEach(r=>{
+      if(!r)return;
+      const a=r[0],b=r[1],c=r[2],d=r[3];
+      if(typeof c!=='number')return;
+      let fecha=null,medio='';
+      if(typeof b==='number'){fecha=efeSerialISO(b)}
+      else if(typeof b==='string'){
+        const t=b.trim(); if(!t||TOT.indexOf(t.toLowerCase())>=0)return;
+        if(/transf/i.test(t))medio='Transferencia';
+        else if(/cheque/i.test(t))medio='Cheque';
+        else if(/efectivo/i.test(t))medio='Efectivo';
+        else return;
+        const mm=t.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
+        if(mm){let y=mm[3]?(+mm[3]<100?2000+ +mm[3]:+mm[3]):new Date().getFullYear();
+          fecha=y+'-'+String(+mm[2]).padStart(2,'0')+'-'+String(+mm[1]).padStart(2,'0')}
+      } else return;
+      let nota=(typeof d==='string'&&d.trim())?d.trim():'';
+      if(!medio){const low=nota.toLowerCase();
+        if(low.indexOf('efectivo')>=0)medio='Efectivo';
+        else if(low.indexOf('cheque')>=0)medio='Cheque';
+        else if(low.indexOf('transf')>=0)medio='Transferencia'}
+      if(medio&&['efectivo','cheque','transf','transferencia'].indexOf(nota.toLowerCase())>=0)nota='';
+      out.push({cliente:sn.trim(),ref:(typeof a==='string'?a.trim():''),fecha,importe:Math.round(c*100)/100,medio:c<0?medio:'',nota});
+    });
+  });
+  return out;
+}
+function onEfeExcel(ev){
+  const file=ev.target.files[0];ev.target.value='';if(!file)return;
+  toast('Leyendo el Excel…');
+  loadScript(EFE_XLSX_URL).then(()=>{
+    const rd=new FileReader();
+    rd.onload=()=>{try{
+      const wb=XLSX.read(new Uint8Array(rd.result),{type:'array'});
+      const movs=efeParseWB(wb);
+      if(!movs.length){toast('No encontré movimientos en ese archivo','bad');return}
+      EFE_IMPORT=movs;
+      const clientes=[...new Set(movs.map(m=>m.cliente))];
+      const nuevos=clientes.filter(n=>!efeList().some(m=>m.cliente===n));
+      $('efePreview').innerHTML=`<div class="card" style="margin-bottom:18px">
+        <h3>Importar desde ${esc(file.name)}</h3>
+        <div class="efe-chips" style="margin:0 0 12px">
+          <span class="efe-chip">Movimientos <strong class="num">${movs.length}</strong></span>
+          <span class="efe-chip">Clientes <strong class="num">${clientes.length}</strong></span>
+          <span class="efe-chip">Nuevos <strong class="num">${nuevos.length}</strong></span>
+          <span class="efe-chip">Ya cargados <strong class="num">${efeList().length}</strong></span>
+        </div>
+        <div class="hint" style="margin-bottom:12px">${esc(clientes.join(' · '))}</div>
+        <button class="btn sm" onclick="aplicarEfeImport('clientes')">Actualizar los clientes del archivo</button>
+        <button class="btn ghost sm" style="margin-left:8px" onclick="aplicarEfeImport('all')">Reemplazar todo</button>
+        <button class="btn ghost sm" style="margin-left:8px" onclick="EFE_IMPORT=null;document.getElementById('efePreview').innerHTML=''">Cancelar</button>
+        <div class="hint">“Actualizar los clientes del archivo” pisa sólo las hojas que vienen en el Excel y deja intacto lo que cargaste a mano de otros clientes. “Reemplazar todo” borra lo que hay y deja exactamente el archivo.</div>
+      </div>`;
+    }catch(e){toast('No se pudo leer el archivo: '+e.message,'bad')}};
+    rd.readAsArrayBuffer(file);
+  }).catch(e=>toast(e.message,'bad'));
+}
+/* clave para reconocer el mismo movimiento entre el Excel y lo que ya está cargado */
+function efeClave(m){return [(m.cliente||'').trim().toUpperCase(),m.fecha||'s/f',Math.round((+m.importe||0)*100)].join('|')}
+/* Toma los movimientos del Excel y les devuelve lo que se cargó a mano en la app
+   (nº de remito, imputaciones, vendedor, producto, estado de entrega, cheques). */
+function efeMergeImport(nuevos,viejos){
+  const idx={};
+  viejos.forEach(v=>{const k=efeClave(v);(idx[k]=idx[k]||[]).push(v)});
+  let recuperados=0;
+  const out=nuevos.map(n=>{
+    const k=efeClave(n), lista=idx[k];
+    const v=lista&&lista.length?lista.shift():null;
+    if(!v)return mapEfectivoIn(n);
+    recuperados++;
+    return mapEfectivoIn({...n,
+      id:v.id,numero:v.numero||n.numero,aplic:v.aplic,items:(v.items&&v.items.length)?v.items:n.items,
+      ref:n.ref||v.ref,nota:n.nota||v.nota,vendedor:v.vendedor,producto:v.producto,
+      entregado:v.entregado,fechaEntrega:v.fechaEntrega,chequeOk:v.chequeOk,
+      createdAt:v.createdAt});
+  });
+  return {out,recuperados};
+}
+function aplicarEfeImport(modo){
+  if(!EFE_IMPORT)return;
+  let res;
+  if(modo==='all'){
+    if(!confirm('Esto borra los '+efeList().length+' movimientos actuales y deja los '+EFE_IMPORT.length+' del archivo.\n\nLo que hayas cargado a mano (nº de remito, imputaciones, vendedor, producto, estado de entrega) se conserva en los movimientos que coincidan en cliente, fecha e importe.\n\n¿Seguir?'))return;
+    res=efeMergeImport(EFE_IMPORT,efeList());
+    STATE.efectivo=res.out;
+  } else {
+    const dentro=new Set(EFE_IMPORT.map(m=>m.cliente));
+    const afectados=efeList().filter(m=>dentro.has(m.cliente));
+    res=efeMergeImport(EFE_IMPORT,afectados);
+    STATE.efectivo=efeList().filter(m=>!dentro.has(m.cliente)).concat(res.out);
+  }
+  const perdidos=EFE_IMPORT.length-res.recuperados;
+  EFE_IMPORT=null;$('efePreview').innerHTML='';
+  saveToCloud();renderEfectivo();renderTotal();
+  toast('Efectivo actualizado · '+res.recuperados+' movimiento(s) conservaron lo cargado a mano'+(perdidos?' · '+perdidos+' entraron como nuevos':''),'ok');
+}
+function exportEfeJSON(){
+  const blob=new Blob([JSON.stringify({efectivo:efeList()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='winflex-efectivo-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+
+/* ================= CUENTA TOTAL · oficial + efectivo (Caja 2) ================= */
+let TOT_CACHE=[], TOT_SEL=null;
+
+function efeLinks(){if(!STATE.efeLinks)STATE.efeLinks={};return STATE.efeLinks}
+/* id del cliente oficial al que corresponde un nombre de efectivo.
+   Un vínculo cargado a mano manda sobre el match automático por nombre. */
+function efeLinkDe(nombre){
+  const L=efeLinks();
+  if(Object.prototype.hasOwnProperty.call(L,nombre))return L[nombre]||null;
+  const m=efeMatchOficial(nombre);
+  return m?m.id:null;
+}
+function setEfeLink(nombre,val){
+  const L=efeLinks();
+  if(val==='__auto__')delete L[nombre];
+  else if(val==='__none__')L[nombre]=null;
+  else L[nombre]=val;
+  saveToCloud();renderEfectivo();renderTotal();
+  if(TOT_SEL)openCuentaKey(TOT_SEL);
+  toast('Vínculo actualizado','ok');
+}
+function efeLinkSelect(nombre){
+  const L=efeLinks(), actual=Object.prototype.hasOwnProperty.call(L,nombre)?(L[nombre]||'__none__'):'__auto__';
+  const auto=efeMatchOficial(nombre);
+  const ops=[`<option value="__auto__"${actual==='__auto__'?' selected':''}>Automático${auto?' — '+esc(auto.razonSocial):' (sin coincidencia)'}</option>`,
+             `<option value="__none__"${actual==='__none__'?' selected':''}>Sin vincular</option>`]
+    .concat(STATE.clientes.slice().sort((a,b)=>a.razonSocial.localeCompare(b.razonSocial))
+      .map(c=>`<option value="${c.id}"${actual===c.id?' selected':''}>${esc(c.razonSocial)}</option>`));
+  return `<select class="filter" style="max-width:100%" onchange="setEfeLink(${JSON.stringify(nombre).replace(/"/g,'&quot;')},this.value)">${ops.join('')}</select>`;
+}
+
+/* vencido de la cartera oficial de un cliente */
+function vencidoCliente(id){
+  return STATE.comprobantes.filter(f=>f.clienteId===id&&!isNC(f))
+    .reduce((s,f)=>{const e=estadoDe(f);return s+((e==='vencida'||e==='parcial-venc')?saldoDe(f):0)},0);
+}
+
+function totCalc(todos){
+  const efe=efeCalc(), usados=new Set(), filas=[];
+  STATE.clientes.forEach(c=>{
+    const míos=efe.filter(e=>efeLinkDe(e.nombre)===c.id);
+    míos.forEach(e=>usados.add(e.nombre));
+    const oficial=saldoCliente(c.id);
+    const efectivo=míos.reduce((s,e)=>s+e.pendiente,0);
+    const valores=míos.reduce((s,e)=>s+e.valores,0);
+    const porEnt=míos.reduce((s,e)=>s+e.porEntregar,0);
+    if(!todos&&Math.abs(oficial)<0.5&&Math.abs(efectivo)<0.5)return;
+    filas.push({key:'c:'+c.id,nombre:c.razonSocial,cli:c,efes:míos,oficial,
+      vencido:vencidoCliente(c.id),efectivo,valores,porEnt,total:oficial+efectivo});
+  });
+  efe.filter(e=>!usados.has(e.nombre)&&(todos||Math.abs(e.pendiente)>0.5)).forEach(e=>{
+    filas.push({key:'e:'+e.nombre,nombre:e.nombre,cli:null,efes:[e],oficial:0,vencido:0,
+      efectivo:e.pendiente,valores:e.valores,porEnt:e.porEntregar,total:e.pendiente});
+  });
+  return filas;
+}
+
+function renderTotal(){
+  if(!$('totBody'))return;
+  const filas=totCalc($('totFiltro').value==='todos');
+  const of=filas.reduce((s,f)=>s+f.oficial,0);
+  const ef=filas.reduce((s,f)=>s+f.efectivo,0);
+  const va=filas.reduce((s,f)=>s+f.valores,0);
+  const ve=filas.reduce((s,f)=>s+f.vencido,0);
+  const pe=filas.reduce((s,f)=>s+(f.porEnt||0),0);
+  const mixtos=filas.filter(f=>Math.abs(f.oficial)>0.5&&Math.abs(f.efectivo)>0.5);
+
+  $('totKpis').innerHTML=`
+    <div class="kpi tot"><div class="bar"></div><div class="lab">Total por cobrar</div><div class="val num">${fmtM(of+ef)}</div><div class="meta">las dos cuentas juntas</div></div>
+    <div class="kpi por"><div class="bar"></div><div class="lab">Cobranza oficial</div><div class="val num">${fmtM(of)}</div><div class="meta">facturado</div></div>
+    <div class="kpi efe"><div class="bar"></div><div class="lab">Efectivo (Caja 2)</div><div class="val num">${fmtM(ef)}</div><div class="meta">${pe?fmtM(pe)+' más sin entregar':(va?fmtM(va)+' con cheques a fecha':'remitos internos')}</div></div>
+    <div class="kpi venc"><div class="bar"></div><div class="lab">Vencido oficial</div><div class="val num" style="color:var(--venc)">${fmtM(ve)}</div><div class="meta">${mixtos.length} clientes en las dos cuentas</div></div>`;
+
+  const q=($('totSearch').value||'').toLowerCase(), ord=$('totOrden').value;
+  let lista=filas.filter(f=>f.nombre.toLowerCase().includes(q));
+  if($('totSoloMixtos').checked)lista=lista.filter(f=>Math.abs(f.oficial)>0.5&&Math.abs(f.efectivo)>0.5);
+  lista.sort((a,b)=> ord==='nombre'?a.nombre.localeCompare(b.nombre)
+    : ord==='oficial'?b.oficial-a.oficial
+    : ord==='efectivo'?b.efectivo-a.efectivo
+    : ord==='vencido'?b.vencido-a.vencido
+    : b.total-a.total);
+  TOT_CACHE=lista;
+
+  $('totBody').innerHTML=lista.length?lista.map((f,i)=>{
+    const tags=(f.cli&&f.efes.length?'<span class="tag-efe g">las dos cuentas</span>':'')
+      +(!f.cli?'<span class="tag-efe w">solo efectivo</span>':'')
+      +(f.valores?'<span class="tag-efe w">cheques a fecha</span>':'')
+      +(Math.abs(f.total)<0.5?'<span class="tag-efe">en cero</span>':'');
+    return `<tr class="efe-row" onclick="openCuenta(${i})">
+      <td><span class="cli-name">${esc(f.nombre)}</span>${tags}${f.cli?`<div class="cli-meta">${esc(f.cli.vendedor||'')} · ${condLabel(f.cli.condicionDias)}</div>`:''}</td>
+      <td class="r num">${f.oficial?fmt(f.oficial):'—'}</td>
+      <td class="r num"${f.vencido?' style="color:var(--venc)"':''}>${f.vencido?fmt(f.vencido):'—'}</td>
+      <td class="r num">${f.efectivo?fmt(f.efectivo):'—'}</td>
+      <td class="r num" style="font-weight:700">${fmt(f.total)}</td></tr>`;
+  }).join('')
+   :`<tr><td colspan="5" class="empty">No hay clientes con saldo para mostrar.</td></tr>`;
+}
+
+/* ---------- ficha combinada ---------- */
+function openCuenta(i){const f=TOT_CACHE[i];if(!f)return;TOT_SEL=f.key;pintarCuenta(f);openOverlay('ovCuenta')}
+function openCuentaKey(key){const f=totCalc(true).find(x=>x.key===key);if(f)pintarCuenta(f)}
+function pintarCuenta(f){
+  $('cuentaTit').textContent=f.nombre;
+  const comps=f.cli?STATE.comprobantes.filter(c=>c.clienteId===f.cli.id&&saldoDe(c)>0.5)
+      .sort((a,b)=>(vencimientoDe(a)<vencimientoDe(b)?-1:1)):[];
+  const filasOf=comps.map(c=>{
+    const e=estadoDe(c),badge=EM[e]||EM.pendiente;
+    return `<tr><td>${dShow(c.fecha)}</td><td>${tipoLabel(c.tipo)} ${esc(c.numero||'')}</td>
+      <td>${dShow(vencimientoDe(c))}</td><td class="r num">${fmt(c.importe)}</td>
+      <td class="r num" style="font-weight:600">${fmt(saldoDe(c))}</td>
+      <td><span class="tag-efe${e==='vencida'||e==='parcial-venc'?' w':''}">${badge.l}</span></td></tr>`}).join('');
+  let filasEf='';
+  f.efes.forEach(e=>{let acum=0;
+    filasEf+=e.movs.map(m=>{acum+=m.importe;
+      const fut=efeFuturo(m);
+      return `<tr><td>${m.fecha?dShow(m.fecha):'s/f'}</td>
+        <td>${esc(m.importe>0?(m.ref||'Remito'):(m.medio||'Pago'))}${fut?'<span class="tag-efe w">a fecha</span>':''}${(m.importe>0&&m.entregado===false)?'<span class="tag-efe w">sin entregar</span>':''}${(m.importe>0&&m.producto)?`<span class="tag-efe p">${esc(m.producto)}</span>`:''}${m.nota?`<div class="nota-txt">${esc(m.nota)}</div>`:''}</td>
+        <td class="r num"${m.importe<0?' style="color:var(--cobr)"':''}>${fmt(m.importe)}</td>
+        <td class="r num">${fmt(acum)}</td></tr>`}).join('')});
+
+  const vinculos=f.efes.map(e=>`<div class="field" style="margin-bottom:8px"><label>Cuenta de efectivo &ldquo;${esc(e.nombre)}&rdquo; vinculada a</label>${efeLinkSelect(e.nombre)}</div>`).join('');
+
+  const cuentaEfe=f.efes.length?f.efes[0].nombre:(f.cli?f.cli.razonSocial:f.nombre);
+  $('cuentaFoot').innerHTML =
+    `<button class="btn ghost" onclick="movDesdeCuenta(${JSON.stringify(cuentaEfe).replace(/"/g,'&quot;')},'${f.cli?f.cli.id:''}')">+ Movimiento de efectivo</button> `
+    + (f.cli
+      ? `<button class="btn ghost" onclick="closeOverlay('ovCuenta');openCliente('${f.cli.id}')">Editar cliente</button>`
+      : `<button class="btn" onclick="nuevoClienteDesdeEfectivo(${JSON.stringify(f.efes[0].nombre).replace(/"/g,'&quot;')})">Dar de alta en la cartera</button>`);
+  $('cuentaBody').innerHTML=`
+    <div class="efe-chips" style="margin:0 0 16px">
+      <span class="efe-chip">Total <strong class="num" style="font-size:15px">${fmt(f.total)}</strong></span>
+      <span class="efe-chip">Oficial <strong class="num">${fmt(f.oficial)}</strong></span>
+      <span class="efe-chip">Efectivo <strong class="num">${fmt(f.efectivo)}</strong></span>
+      ${f.porEnt>0.5?`<span class="efe-chip">Por entregar <strong class="num" style="color:var(--prox)">${fmt(f.porEnt)}</strong></span>`:''}
+      ${f.vencido?`<span class="efe-chip">Vencido oficial <strong class="num" style="color:var(--venc)">${fmt(f.vencido)}</strong></span>`:''}
+      ${f.valores?`<span class="efe-chip">Cheques a fecha <strong class="num">${fmt(f.valores)}</strong></span>`:''}
+    </div>
+    <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:0 0 8px">Cobranza oficial</h3>
+    ${comps.length?`<div class="tablewrap" style="margin-bottom:18px"><table><thead><tr><th>Fecha</th><th>Comprob.</th><th>Vence</th><th class="r">Importe</th><th class="r">Saldo</th><th>Estado</th></tr></thead><tbody>${filasOf}</tbody></table></div>`
+      :`<div class="hint" style="margin-bottom:18px">${f.cli?'Sin comprobantes con saldo.':'Este cliente no está en la cartera oficial.'}</div>`}
+    <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:0 0 8px">Efectivo (Caja 2)</h3>
+    ${filasEf?`<div class="tablewrap" style="margin-bottom:18px"><table><thead><tr><th>Fecha</th><th>Concepto</th><th class="r">Importe</th><th class="r">Saldo</th></tr></thead><tbody>${filasEf}</tbody></table></div>`
+      :`<div class="hint" style="margin-bottom:18px">Sin movimientos de efectivo.</div>`}
+    ${vinculos?`<div class="card" style="padding:14px;background:var(--surface2)"><h3>Vínculo entre cuentas</h3>${vinculos}
+      <div class="hint">Si un cliente figura con distinto nombre en el Excel de efectivo, vinculalo acá para que las dos cuentas se sumen juntas.</div></div>`
+      :(f.cli?`<div class="card" style="padding:14px;background:var(--surface2)"><h3>Vínculo entre cuentas</h3>
+        <div class="field"><label>Agregar una cuenta de efectivo a este cliente</label>
+        <select class="filter" style="max-width:100%" onchange="if(this.value)setEfeLink(this.value,'${f.cli.id}')">
+        <option value="">Elegir una cuenta de efectivo…</option>
+        ${[...new Set(efeList().map(m=>m.cliente))].sort().map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}
+        </select></div></div>`:'')}`;
+}
+
+
+/* ---------- base de datos conjunta: alta y edición de clientes ---------- */
+let EFE_LINK_PENDIENTE=null;
+
+/* Abre la ficha de cliente en blanco, con la razón social precargada.
+   Al guardar, el cliente nuevo queda vinculado a esa cuenta de efectivo. */
+function nuevoClienteDesdeEfectivo(nombre){
+  closeOverlay('ovCuenta');closeOverlay('ovEfeCli');
+  openCliente(null);
+  $('f_razon').value=nombre;
+  EFE_LINK_PENDIENTE=nombre;
+  $('cliTitle').textContent='Dar de alta en la cartera';
+}
+
+/* Crea de una vez los clientes que hoy sólo existen en efectivo. */
+function crearClientesFaltantes(){
+  const faltan=totCalc(true).filter(f=>!f.cli);
+  if(!faltan.length){toast('Ya están todos en la cartera','ok');return}
+  if(!confirm('Se van a dar de alta '+faltan.length+' clientes en la cartera oficial con el nombre que tienen en efectivo.\n\nQuedan con vendedor Winflex y plazo 30 días: después conviene repasar la ficha de cada uno.\n\n¿Seguir?'))return;
+  faltan.forEach(f=>{
+    const id=uid();
+    STATE.clientes.push(mapClienteIn({id,razonSocial:f.nombre,vendedor:'Winflex',condicionDias:30}));
+    f.efes.forEach(e=>efeLinks()[e.nombre]=id);
+  });
+  saveToCloud();renderClientes();renderCliList();renderTotal();renderEfectivo();
+  toast(faltan.length+' clientes dados de alta','ok');
+}
+
+
+/* Abre un movimiento de efectivo desde la ficha combinada de un cliente.
+   Si el cliente todavía no tiene cuenta de efectivo, se le abre una con su
+   razón social y queda vinculada sola. */
+let EFE_MOV_LINK=null;
+function movDesdeCuenta(nombreCuenta,cliId){
+  closeOverlay('ovCuenta');
+  openEfeMov(null,nombreCuenta);
+  if(cliId)EFE_MOV_LINK=cliId;
+}
+
+
+/* ---------- números de remito e imputación de pagos ---------- */
+function efeProxNumero(){
+  const nums=efeList().filter(m=>m.importe>0&&m.numero).map(m=>String(m.numero).trim());
+  const n=nums.map(x=>parseInt(x.replace(/\D/g,''),10)).filter(x=>!isNaN(x));
+  if(!n.length)return '';
+  const prox=String(Math.max.apply(null,n)+1);
+  const ancho=Math.max.apply(null,nums.map(x=>x.replace(/\D/g,'').length)); // respeta el 00001
+  return prox.length<ancho?prox.padStart(ancho,'0'):prox;
+}
+function efeRemitoLabel(r){return r.numero?('Remito '+r.numero):(r.ref||'Remito')}
+/* cuánto de ese remito ya está imputado por OTROS pagos */
+function efeAplicadoPorOtros(remId,pagoId){
+  return efeList().filter(m=>m.importe<0&&m.id!==pagoId)
+    .reduce((s,p)=>s+(p.aplic||[]).filter(a=>a.r===remId).reduce((x,a)=>x+a.m,0),0);
+}
+/* saldo sin cobrar de un remito, sin contar lo que aplica el pago que estoy editando */
+function efeRemSaldo(r,pagoId){return Math.max(0,Math.round((r.importe-efeAplicadoPorOtros(r.id,pagoId))*100)/100)}
+let EFE_IMP_AUTO=false; /* true cuando el importe del pago lo calculo la app al tildar remitos */
+
+function efeImporteInput(){EFE_IMP_AUTO=false;efeNetoHint();efeAplicTotal()}
+
+function efeRenderAplic(){
+  const w=$('efeAplicWrap'); if(!w)return;
+  if($('efeTipo').value!=='pago'){w.innerHTML='';return}
+  const cli=$('efeCliente').value.trim();
+  const yo=EFE_EDIT?EFE_EDIT.id:null;
+  const todos=efeList().filter(m=>m.cliente===cli&&m.importe>0);
+  const entregados=todos.filter(m=>m.entregado!==false)
+    .sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?-1:1);
+  const sinEnt=todos.length-entregados.length;
+  const datos=entregados.map(r=>{
+    const mio=EFE_EDIT?((EFE_EDIT.aplic||[]).filter(a=>a.r===r.id).reduce((x,a)=>x+a.m,0)):0;
+    return {r,saldo:efeRemSaldo(r,yo),mio};
+  });
+  const abiertos=datos.filter(d=>d.saldo>0.5||d.mio>0.5);
+  const cerrados=datos.length-abiertos.length;
+  if(!abiertos.length){
+    w.innerHTML='<div class="hint">'+(sinEnt?'Los remitos de este cliente todav&iacute;a figuran sin entregar, as&iacute; que no se pueden dar de baja: el pago va a quedar a cuenta.'
+      :(cerrados?'Todos los remitos de este cliente ya est&aacute;n cancelados: el pago va a quedar a favor.'
+      :'Este cliente todav&iacute;a no tiene remitos cargados: el pago va a quedar a cuenta.'))+'</div>';
+    return;
+  }
+  const filas=abiertos.map(d=>{
+    const r=d.r, dias=efeDias(r.fecha);
+    const meta=[(r.fecha?dShow(r.fecha):'s/f'),(r.ref||''),(dias!=null?dias+' d':'')].filter(Boolean).join(' &middot; ');
+    return `<tr id="aplrow_${r.id}">
+      <td style="width:30px;padding-right:0"><input type="checkbox" id="chk_${r.id}" onchange="efeAplicToggle('${r.id}')" style="width:18px;height:18px"></td>
+      <td><label for="chk_${r.id}" style="cursor:pointer"><b>${esc(efeRemitoLabel(r))}</b><div class="cli-meta">${meta}</div></label></td>
+      <td class="r num">${fmt(d.saldo)}</td>
+      <td class="r"><input type="number" step="0.01" min="0" id="apl_${r.id}" data-saldo="${d.saldo}" value="${d.mio||''}" placeholder="0"
+        oninput="efeAplicInput('${r.id}')" style="width:100px;text-align:right;padding:6px 8px;border:1px solid var(--border);border-radius:8px"></td>
+      <td class="r"><span class="tag-efe" id="est_${r.id}">&mdash;</span></td></tr>`}).join('');
+  w.innerHTML=`<div class="card" style="padding:13px;margin-top:6px;background:var(--surface2)">
+    <h3 style="margin-bottom:4px">Dar de baja remitos con este pago</h3>
+    <div class="hint" style="margin:0 0 9px">Tild&aacute; el remito que est&aacute;s cobrando: se cancela entero. Si el pago no alcanza, o cobr&aacute;s una parte, escrib&iacute; el importe en la &uacute;ltima columna y queda como baja parcial.</div>
+    <div class="tablewrap"><table><thead><tr><th></th><th>Remito</th><th class="r">Debe</th><th class="r">Se cobra</th><th class="r">Estado</th></tr></thead><tbody>${filas}</tbody></table></div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
+      <button class="btn ghost sm" onclick="efeAplicFIFO()">Cancelar del m&aacute;s viejo al m&aacute;s nuevo</button>
+      <button class="btn ghost sm" onclick="efeAplicLimpiar()">Destildar todo</button>
+      <span class="hint" id="efeAplicResto" style="margin:0;margin-left:auto"></span>
+    </div>
+    <div class="hint">Si no tild&aacute;s nada, el pago se descuenta igual del saldo del cliente, empezando por el remito m&aacute;s viejo.${cerrados?' '+cerrados+' remito(s) ya cancelado(s) no se muestran.':''}${sinEnt?' <b>'+sinEnt+' remito(s) figuran sin entregar y no aparecen ac&aacute;: marcalos como entregados para poder darlos de baja.</b>':''}</div>
+  </div>`;
+  efeAplicTotal();
+}
+function efeAplicInputs(){return [...document.querySelectorAll('#efeAplicWrap input[id^=apl_]')]}
+function efeAplicSaldo(inp){return Math.round((+(inp.dataset.saldo||0))*100)/100}
+/* lo que todavía queda libre del importe del pago, sin contar lo cargado en este remito */
+function efeAplicLibre(exceptoId){
+  const imp=Math.abs(+$('efeImporte').value||0);
+  const usa=efeAplicInputs().filter(i=>i.id!=='apl_'+exceptoId).reduce((s,i)=>s+(+i.value||0),0);
+  return Math.max(0,Math.round((imp-usa)*100)/100);
+}
+/* tilde = baja total del remito (o de lo que alcance el pago) */
+function efeAplicToggle(id){
+  const inp=$('apl_'+id), chk=$('chk_'+id); if(!inp)return;
+  if(chk.checked){
+    const saldo=efeAplicSaldo(inp);
+    const imp=Math.abs(+$('efeImporte').value||0);
+    const usa=(!imp||EFE_IMP_AUTO)?saldo:Math.min(saldo,efeAplicLibre(id));
+    inp.value=usa>0.005?usa:'';
+    if(usa<saldo-0.5&&usa>0.005)toast('El pago no alcanza para cancelarlo entero: queda como baja parcial','warn');
+  }else inp.value='';
+  efeAplicSyncImporte();efeAplicTotal();
+}
+/* importe escrito a mano en una fila = baja parcial */
+function efeAplicInput(id){
+  const inp=$('apl_'+id); if(!inp)return;
+  const saldo=efeAplicSaldo(inp);
+  if((+inp.value||0)>saldo+0.5){inp.value=saldo;toast('Ese remito debe '+fmt(saldo),'warn')}
+  efeAplicSyncImporte();efeAplicTotal();
+}
+/* si el importe del pago todavía no lo escribió el usuario, lo va armando con lo tildado */
+function efeAplicSyncImporte(){
+  const imp=$('efeImporte'); if(!imp)return;
+  const usa=Math.round(efeAplicInputs().reduce((s,i)=>s+(+i.value||0),0)*100)/100;
+  if(!imp.value||EFE_IMP_AUTO){imp.value=usa>0.005?usa:'';EFE_IMP_AUTO=usa>0.005;efeNetoHint()}
+}
+function efeAplicTotal(){
+  const imp=Math.abs(+$('efeImporte').value||0);
+  let usa=0;
+  efeAplicInputs().forEach(i=>{
+    const v=Math.round((+i.value||0)*100)/100; usa+=v;
+    const id=i.id.slice(4), saldo=efeAplicSaldo(i);
+    const chk=$('chk_'+id), est=$('est_'+id), row=$('aplrow_'+id);
+    if(chk)chk.checked=v>0.005;
+    if(est){
+      if(v<=0.005){est.className='tag-efe';est.innerHTML='&mdash;'}
+      else if(v>=saldo-0.5){est.className='tag-efe g';est.textContent='cancelado'}
+      else {est.className='tag-efe w';est.textContent='queda '+fmt(saldo-v)}
+    }
+    if(row)row.style.background=(v>0.005&&v>=saldo-0.5)?'rgba(21,164,99,.10)':(v>0.005?'rgba(224,98,10,.08)':'');
+  });
+  usa=Math.round(usa*100)/100;
+  const el=$('efeAplicResto'); if(!el)return usa;
+  const resto=Math.round((imp-usa)*100)/100;
+  el.innerHTML = usa>imp+0.5
+    ? `<b style="color:var(--venc)">Est&aacute;s dando de baja ${fmt(usa)} y el pago es de ${fmt(imp)}</b>`
+    : (resto>0.5?`Aplicado <b>${fmt(usa)}</b> &middot; queda a cuenta <b>${fmt(resto)}</b>`
+               :(usa>0.005?'<b style="color:var(--cobr)">Pago aplicado por completo</b>':'Sin aplicar: el pago queda a cuenta'));
+  return usa;
+}
+function efeAplicFIFO(){
+  let disp=Math.abs(+$('efeImporte').value||0);
+  const libre=!disp||EFE_IMP_AUTO;
+  efeAplicInputs().forEach(i=>{
+    const saldo=efeAplicSaldo(i);
+    const usa=libre?saldo:Math.min(disp,saldo); disp-=usa;
+    i.value=usa>0.005?Math.round(usa*100)/100:'';
+  });
+  efeAplicSyncImporte();efeAplicTotal();
+}
+function efeAplicLimpiar(){efeAplicInputs().forEach(i=>i.value='');efeAplicSyncImporte();efeAplicTotal()}
+
+/* Cobrar un remito puntual desde la ficha del cliente: abre el pago ya tildado. */
+function efeCobrarRemito(id){
+  const r=efeList().find(m=>m.id===id); if(!r)return;
+  closeOverlay('ovEfeCli');
+  openEfeMov(null,r.cliente);
+  $('efeTipo').value='pago';
+  $('efeImporte').value='';
+  efeTipoChange();
+  const inp=$('apl_'+id);
+  if(inp){const chk=$('chk_'+id);if(chk)chk.checked=true;efeAplicToggle(id)}
+  else toast('Ese remito no se puede imputar (revisá el estado de entrega)','warn');
+}
+
+/* Convierte la imputación automática en imputación explícita, para los pagos ya cargados. */
+function efeImputarAuto(nombre){
+  const movs=efeList().filter(m=>m.cliente===nombre);
+  const rem=movs.filter(m=>m.importe>0).sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?-1:1);
+  const pag=movs.filter(m=>m.importe<0).sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?-1:1);
+  if(!rem.length||!pag.length){toast('No hay remitos y pagos para cruzar','bad');return}
+  if(!confirm('Se van a aplicar los '+pag.length+' pagos de '+nombre+' a sus remitos, del más viejo al más nuevo.\n\nLo que ya hayas imputado a mano se rehace. ¿Seguir?'))return;
+  const saldos=rem.map(r=>({id:r.id,resto:r.importe}));
+  pag.forEach(p=>{
+    p.aplic=[];
+    let disp=-p.importe;
+    for(const sd of saldos){
+      if(disp<=0.5)break;
+      if(sd.resto<=0.5)continue;
+      const m=Math.min(disp,sd.resto);
+      p.aplic.push({r:sd.id,m:Math.round(m*100)/100});
+      sd.resto-=m; disp-=m;
+    }
+    p.updatedAt=NOW();
+  });
+  saveToCloud();renderEfectivo();renderTotal();
+  if(EFE_SEL===nombre){const i=EFE_CACHE.findIndex(c=>c.nombre===nombre);if(i>=0){EFE_CACHE=efeCalc();openEfeCli(EFE_CACHE.findIndex(c=>c.nombre===nombre))}}
+  toast('Pagos imputados','ok');
+}
+
+
+/* ---------- filtro activo (vendedor / tipo de producto) ---------- */
+function efeFiltro(){
+  const v=$('efeFVend')?$('efeFVend').value:'', p=$('efeFProd')?$('efeFProd').value:'';
+  const et=[v?(v==='__sin__'?'sin vendedor':v):null,p?(p==='__sin__'?'sin producto':p):null].filter(Boolean).join(' · ');
+  return {v,p,activo:!!(v||p),etiqueta:et};
+}
+function efeMovPasa(m,nombre,f){
+  if(!f.activo)return true;
+  const v=efeVendDe(m,nombre), pr=m.producto||'';
+  if(f.v&&(f.v==='__sin__'?!!v:v!==f.v))return false;
+  if(f.p&&(f.p==='__sin__'?!!pr:pr!==f.p))return false;
+  return true;
+}
+/* Recorta el cálculo a los remitos que pasan el filtro: los pagos entran por lo
+   que tienen imputado a esos remitos. */
+function efeVista(C,f){
+  if(!f.activo)return C;
+  const byId={};efeList().forEach(m=>byId[m.id]=m);
+  return C.map(c=>{
+    const ok=m=>efeMovPasa(m,c.nombre,f);
+    const remitos=c.remitos.filter(ok);
+    const porEntregarMovs=c.porEntregarMovs.filter(ok);
+    const ids=new Set(remitos.map(r=>r.id));
+    const abiertos=c.abiertos.filter(a=>ids.has(a.id));
+    const pagos=c.pagos.filter(p=>(p.aplic||[]).some(a=>ids.has(a.r)));
+    const impDe=p=>(p.aplic||[]).filter(a=>ids.has(a.r)).reduce((s,a)=>s+a.m,0);
+    const pendiente=abiertos.reduce((s,a)=>s+a.monto,0);
+    const valores=pagos.filter(p=>efeFuturo(p)&&p.chequeOk!==true&&p.chequeOk!==false).reduce((s,p)=>s+impDe(p),0);
+    const agg=[0,0,0,0,0];
+    abiertos.forEach(a=>{agg[a.dias==null?EFE_SF:EFE_BUCKETS.findIndex(b=>b.max!=null&&a.dias<=b.max)]+=a.monto});
+    const movs=remitos.concat(porEntregarMovs).concat(pagos).sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?-1:1);
+    const d=abiertos.map(a=>a.dias).filter(x=>x!=null);
+    return {...c,remitos,porEntregarMovs,porEntregar:porEntregarMovs.reduce((s,m)=>s+m.importe,0),
+      abiertos,pagos,pendiente,valores,agg,movs,impDe,
+      cobrado:remitos.reduce((s,r)=>s+r.importe,0)-pendiente,
+      diasMax:d.length?Math.max.apply(null,d):null};
+  }).filter(c=>c.remitos.length||c.porEntregarMovs.length);
+}
+
+/* ---------- informe Excel de efectivo ---------- */
+async function exportEfeExcel(){
+  try{
+    toast('Generando informe…');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js');
+    const VERDE='FF1B7A44', GRIS='FF5C6677', ROJO='FFD83A3A', BORDE='FFD9DEE7';
+    const money='"$"#,##0';
+    const thin={style:'thin',color:{argb:BORDE}};
+    const box={top:thin,left:thin,bottom:thin,right:thin};
+    const hdrFill={type:'pattern',pattern:'solid',fgColor:{argb:VERDE}};
+    const hdrFont={bold:true,color:{argb:'FFFFFFFF'},size:11,name:'Calibri'};
+    const wb=new ExcelJS.Workbook();
+    wb.creator='Winflex S.A.';wb.created=new Date();
+
+    const F=efeFiltro();
+    const C=efeVista(efeCalc(),F);
+    if(!C.length){toast('El filtro no deja ningún remito para informar','bad');return}
+    const total=C.reduce((s,c)=>s+Math.max(0,c.pendiente),0);
+    const valores=C.reduce((s,c)=>s+c.valores,0);
+    const agg=[0,0,0,0,0];C.forEach(c=>c.agg.forEach((v,i)=>agg[i]+=v));
+    const porEntregar=C.reduce((s,c)=>s+c.porEntregar,0);
+
+    /* mapa remito -> saldo pendiente, y quién lo pagó */
+    const saldoRem={}, pagoDe={};
+    C.forEach(c=>{
+      c.abiertos.forEach(a=>saldoRem[a.id]=a.monto);
+      const idsC=new Set(c.remitos.map(x=>x.id));
+      c.pagos.forEach(p=>(p.aplic||[]).forEach(a=>{
+        if(F.activo&&!idsC.has(a.r))return;
+        (pagoDe[a.r]=pagoDe[a.r]||[]).push((p.fecha?dShow(p.fecha):'s/f')+' '+(p.medio||'pago')+' '+fmt(a.m));
+      }));
+    });
+    const remPorId={};efeList().filter(m=>m.importe>0).forEach(r=>remPorId[r.id]=r);
+
+    function hoja(nombre,cols){
+      const w=wb.addWorksheet(nombre,{views:[{state:'frozen',ySplit:1,showGridLines:false}]});
+      w.columns=cols.map(c=>({width:c[1]}));
+      cols.forEach((c,i)=>{const cell=w.getCell(1,i+1);cell.value=c[0];cell.fill=hdrFill;cell.font=hdrFont;cell.border=box;
+        cell.alignment={horizontal:c[2]==='r'?'right':'left',vertical:'middle'}});
+      w.getRow(1).height=20;
+      w.autoFilter={from:{row:1,column:1},to:{row:1,column:cols.length}};
+      return w;
+    }
+    function fila(w,ri,vals,cols){
+      vals.forEach((v,i)=>{const cell=w.getCell(ri,i+1);cell.value=v;cell.border=box;cell.font={size:10};
+        if(cols[i][2]==='r'){cell.alignment={horizontal:'right'};if(typeof v==='number')cell.numFmt=money}});
+      if(ri%2===0)vals.forEach((v,i)=>{const cell=w.getCell(ri,i+1);
+        if(!cell.fill||!cell.fill.fgColor)cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF7F9FB'}}});
+    }
+
+    /* ====== RESUMEN ====== */
+    const ws=wb.addWorksheet('Resumen',{views:[{showGridLines:false}]});
+    ws.columns=[{width:3},{width:30},{width:16},{width:16},{width:16},{width:16},{width:4}];
+    try{const logoId=wb.addImage({base64:'data:image/png;base64,'+LOGO_B64,extension:'png'});
+      ws.addImage(logoId,{tl:{col:1,row:0},ext:{width:176,height:100}});}catch(e){}
+    ws.mergeCells('D2:F2');const t1=ws.getCell('D2');t1.value='EFECTIVO · REMITOS INTERNOS'+(F.activo?' · '+F.etiqueta.toUpperCase():'');t1.font={bold:true,size:16,color:{argb:VERDE}};t1.alignment={horizontal:'right',vertical:'middle'};
+    ws.mergeCells('D3:F3');const t2=ws.getCell('D3');t2.value='Winflex S.A. · Envases Especiales';t2.font={size:11,color:{argb:GRIS}};t2.alignment={horizontal:'right'};
+    ws.mergeCells('D4:F4');const t3=ws.getCell('D4');t3.value='Generado el '+dShow(todayISO())+(CURRENT_USER?' · '+CURRENT_USER:'');t3.font={size:10,italic:true,color:{argb:GRIS}};t3.alignment={horizontal:'right'};
+
+    let r=7;
+    function titulo(row,text){ws.mergeCells(`B${row}:F${row}`);const c=ws.getCell(`B${row}`);c.value=text;c.font={bold:true,size:12,color:{argb:VERDE}};c.border={bottom:{style:'medium',color:{argb:VERDE}}}}
+    if(F.activo){ws.mergeCells(`B${r}:F${r}`);const fc=ws.getCell(`B${r}`);
+      fc.value='Informe filtrado por '+F.etiqueta+' — sólo los remitos que cumplen el filtro y los pagos imputados a esos remitos.';
+      fc.font={bold:true,size:11,color:{argb:ROJO}};r+=2}
+    titulo(r,'Situación general');r+=2;
+    [['Pendiente de cobro',total],['Cheques a fecha (ya descontados)',valores],['Sin entrar todavía',total+valores],
+     ['Vencido +60 días',agg[2]+agg[3]],['Por entregar (no suma)',porEntregar]].forEach((k,i)=>{
+      const row=r+i;const lc=ws.getCell(`B${row}`);lc.value=k[0];lc.font={color:{argb:GRIS},size:11};
+      const vc=ws.getCell(`C${row}`);vc.value=k[1];vc.numFmt=money;vc.alignment={horizontal:'right'};
+      vc.font={bold:true,size:11,color:{argb:k[0]==='Vencido +60 días'?ROJO:'FF1B2233'}}});
+    r+=6;
+    titulo(r,'Antigüedad de saldos');r+=2;
+    ['0 a 30 días','31 a 60 días','61 a 90 días','Más de 90 días','Sin fecha'].forEach((k,i)=>{
+      const row=r+i;ws.getCell(`B${row}`).value=k;ws.getCell(`B${row}`).font={color:{argb:GRIS},size:11};
+      const vc=ws.getCell(`C${row}`);vc.value=agg[i];vc.numFmt=money;vc.alignment={horizontal:'right'};vc.font={bold:true,size:11}});
+    r+=6;
+    /* --- pendiente por vendedor y por tipo de producto --- */
+    const movByIdX={};efeList().forEach(m=>movByIdX[m.id]=m);
+    const xvX={},xpX={};
+    C.forEach(c=>c.abiertos.forEach(a=>{const m=movByIdX[a.id]||{};
+      const v=efeVendDe(m,c.nombre)||'Sin asignar', pr=m.producto||'Sin asignar';
+      xvX[v]=(xvX[v]||0)+a.monto; xpX[pr]=(xpX[pr]||0)+a.monto}));
+    function bloque(tit,obj){
+      titulo(r,tit);r+=2;
+      const ks=Object.keys(obj).sort((a,b)=>obj[b]-obj[a]);
+      if(!ks.length){ws.getCell(`B${r}`).value='Sin saldo pendiente';ws.getCell(`B${r}`).font={color:{argb:GRIS},size:11};r+=2;return}
+      ks.forEach((k,i)=>{const row=r+i;
+        ws.getCell(`B${row}`).value=k;ws.getCell(`B${row}`).font={color:{argb:GRIS},size:11};
+        const vc=ws.getCell(`C${row}`);vc.value=obj[k];vc.numFmt=money;vc.alignment={horizontal:'right'};vc.font={bold:true,size:11}});
+      r+=ks.length+2;
+    }
+    bloque('Pendiente por vendedor',xvX);
+    bloque('Pendiente por tipo de producto',xpX);
+    titulo(r,'Saldo por cliente');r+=2;
+    [['Cliente','l'],['Pendiente','r'],['Cheques a fecha','r'],['Días más viejo','r'],['Último pago','r']]
+      .forEach((h,i)=>{const cell=ws.getCell(r,i+2);cell.value=h[0];cell.fill=hdrFill;cell.font=hdrFont;cell.border=box;
+        cell.alignment={horizontal:h[1]==='r'?'right':'left'}});
+    r++;
+    C.slice().sort((a,b)=>b.pendiente-a.pendiente).forEach((c,i)=>{
+      const row=r+i;
+      const vals=[c.nombre,c.pendiente,c.valores,c.diasMax!=null?c.diasMax:'',c.ultPago?dShow(c.ultPago):'nunca'];
+      vals.forEach((v,j)=>{const cell=ws.getCell(row,j+2);cell.value=v;cell.border=box;cell.font={size:10};
+        if(j===1||j===2){cell.numFmt=money;cell.alignment={horizontal:'right'}}
+        if(j>=3)cell.alignment={horizontal:'right'}})});
+
+    /* ====== REMITOS ====== */
+    const colsR=[['Cliente',30,'l'],['Nº',10,'l'],['Fecha',12,'l'],['Ref.',12,'l'],['Vendedor',14,'l'],['Producto',13,'l'],['Importe',14,'r'],
+                 ['Cobrado',14,'r'],['Saldo',14,'r'],['Días',9,'r'],['Estado',14,'l'],['F. entrega',12,'l'],['Cancelado por',42,'l'],['Detalle',46,'l'],['Observación',30,'l']];
+    const wr=hoja('Remitos',colsR);
+    let ri=2;
+    C.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(c=>{
+      c.remitos.concat(c.porEntregarMovs).slice().sort((a,b)=>(a.fecha||'')<(b.fecha||'')?-1:1).forEach(rm=>{
+        const sinEnt=rm.entregado===false;
+        const saldo=sinEnt?'':(saldoRem[rm.id]||0), cob=sinEnt?'':rm.importe-(saldoRem[rm.id]||0);
+        const est=sinEnt?'Por entregar':((saldoRem[rm.id]||0)<0.5?'Cobrado':(rm.importe-(saldoRem[rm.id]||0)>0.5?'Parcial':'Pendiente'));
+        fila(wr,ri,[c.nombre,rm.numero||'',rm.fecha?dShow(rm.fecha):'',rm.ref||'',efeVendDe(rm,c.nombre),rm.producto||'',rm.importe,cob,saldo,
+          (!sinEnt&&(saldoRem[rm.id]||0)>0.5&&efeDias(rm.fecha)!=null)?efeDias(rm.fecha):'',est,rm.fechaEntrega?dShow(rm.fechaEntrega):'',(pagoDe[rm.id]||[]).join(' · '),
+          (rm.items||[]).map(x=>x.d+' ('+fmt(x.i)+')').join(' · '),rm.nota||''],colsR);
+        if(!sinEnt&&(saldoRem[rm.id]||0)>0.5&&efeDias(rm.fecha)!=null&&efeDias(rm.fecha)>60){const cell=wr.getCell(ri,10);cell.font={size:10,bold:true,color:{argb:ROJO}}}
+        ri++})});
+
+    /* ====== PAGOS ====== */
+    const colsP=[['Cliente',30,'l'],['Fecha',12,'l'],['Medio',15,'l'],['Importe',14,'r'],
+                 ['Aplicado a',34,'l'],['A cuenta',14,'r'],['Situación',14,'l'],['Observación',30,'l']];
+    const wp=hoja('Pagos',colsP);
+    let pi=2;
+    C.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(c=>{
+      c.pagos.slice().sort((a,b)=>(a.fecha||'')<(b.fecha||'')?-1:1).forEach(p=>{
+        const ap=(p.aplic||[]), usa=ap.reduce((x,a)=>x+a.m,0);
+        const destino=ap.map(a=>{const rm=remPorId[a.r];return rm?((rm.numero?'Nº '+rm.numero:'remito')+' del '+(rm.fecha?dShow(rm.fecha):'s/f')+' · '+fmt(a.m)):''}).filter(Boolean).join(' · ');
+        fila(wp,pi,[c.nombre,p.fecha?dShow(p.fecha):'s/f',p.medio||'Sin especificar',-p.importe,
+          destino,Math.max(0,-p.importe-usa),p.chequeOk===false?'RECHAZADO':(efeFuturo(p)?'Cheque a fecha':'Cobrado'),p.nota||''],colsP);
+        pi++})});
+
+    /* ====== MOVIMIENTOS (historial) ====== */
+    const colsM=[['Cliente',30,'l'],['Fecha',12,'l'],['Concepto',26,'l'],['Debe',14,'r'],['Haber',14,'r'],['Saldo',14,'r'],['Observación',30,'l']];
+    const wm=hoja('Movimientos',colsM);
+    let mi=2;
+    C.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(c=>{
+      let acum=0;
+      c.movs.forEach(m=>{
+        const haber=m.importe<0?((F.activo&&c.impDe)?c.impDe(m):-m.importe):0;
+        acum+=(m.importe>0?m.importe:-haber);
+        const con=m.importe>0?(m.numero?'Remito Nº '+m.numero:(m.ref||'Remito')):((m.medio||'Pago')+(efeFuturo(m)?' a fecha':''));
+        fila(wm,mi,[c.nombre,m.fecha?dShow(m.fecha):'s/f',con,m.importe>0?m.importe:'',haber||'',acum,m.nota||''],colsM);
+        mi++});
+      const cell=wm.getCell(mi,3);cell.value='Saldo '+c.nombre;cell.font={bold:true,size:10,color:{argb:VERDE}};
+      const cs=wm.getCell(mi,6);cs.value=c.pendiente;cs.numFmt=money;cs.alignment={horizontal:'right'};
+      cs.font={bold:true,color:{argb:VERDE}};cs.border={top:{style:'double',color:{argb:VERDE}}};
+      mi+=2});
+
+    /* ====== POR VENDEDOR Y PRODUCTO ====== */
+    const colsX=[['Vendedor',18,'l'],['Tipo de producto',18,'l'],['Remitos',10,'r'],['Clientes',10,'r'],
+                 ['Remitado',16,'r'],['Cobrado',16,'r'],['Pendiente',16,'r'],['Vencido +60',16,'r']];
+    const wx=hoja('Por vendedor y producto',colsX);
+    const pivot={};
+    C.forEach(c=>{
+      const sal={};c.abiertos.forEach(a=>sal[a.id]=a.monto);
+      c.remitos.forEach(rm=>{
+        const k=(efeVendDe(rm,c.nombre)||'Sin asignar')+'||'+(rm.producto||'Sin asignar');
+        const x=pivot[k]=pivot[k]||{v:k.split('||')[0],p:k.split('||')[1],q:0,cli:new Set(),rem:0,cob:0,pen:0,ven:0};
+        const sd=sal[rm.id]||0, dd=efeDias(rm.fecha);
+        x.q++;x.cli.add(c.nombre);x.rem+=rm.importe;x.cob+=rm.importe-sd;x.pen+=sd;
+        if(sd>0.5&&dd!=null&&dd>60)x.ven+=sd;
+      });
+    });
+    const pk=Object.keys(pivot).sort((a,b)=>pivot[b].pen-pivot[a].pen);
+    let xi=2;
+    pk.forEach(k=>{const x=pivot[k];fila(wx,xi,[x.v,x.p,x.q,x.cli.size,x.rem,x.cob,x.pen,x.ven],colsX);xi++});
+    if(pk.length){
+      const tt=['TOTAL','',pk.reduce((s,k)=>s+pivot[k].q,0),'',
+        pk.reduce((s,k)=>s+pivot[k].rem,0),pk.reduce((s,k)=>s+pivot[k].cob,0),
+        pk.reduce((s,k)=>s+pivot[k].pen,0),pk.reduce((s,k)=>s+pivot[k].ven,0)];
+      tt.forEach((v,i)=>{const cell=wx.getCell(xi,i+1);cell.value=v;
+        if(typeof v==='number'){cell.numFmt=money;cell.alignment={horizontal:'right'}}
+        cell.font={bold:true,color:{argb:VERDE}};cell.border={top:{style:'double',color:{argb:VERDE}}}});
+    }
+
+    /* ====== CUENTA TOTAL ====== */
+    const filasT=F.activo?[]:totCalc(true);
+    if(filasT.length){
+      const colsT=[['Cliente',32,'l'],['Cobranza oficial',16,'r'],['Vencido oficial',16,'r'],
+                   ['Efectivo',16,'r'],['Cheques a fecha',16,'r'],['Total',16,'r']];
+      const wt=hoja('Cuenta total',colsT);
+      let ti=2;
+      filasT.slice().sort((a,b)=>b.total-a.total).forEach(f=>{
+        fila(wt,ti,[f.nombre,f.oficial,f.vencido,f.efectivo,f.valores,f.total],colsT);ti++});
+      const tot=[1,2,3,4,5].map(i=>filasT.reduce((s,f)=>s+[0,f.oficial,f.vencido,f.efectivo,f.valores,f.total][i],0));
+      wt.getCell(ti,1).value='TOTAL';wt.getCell(ti,1).font={bold:true};
+      tot.forEach((v,i)=>{const cell=wt.getCell(ti,i+2);cell.value=v;cell.numFmt=money;cell.alignment={horizontal:'right'};
+        cell.font={bold:true,color:{argb:VERDE}};cell.border={top:{style:'double',color:{argb:VERDE}}}});
+    }
+
+    const buf=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    const suf=F.activo?('-'+F.etiqueta.replace(/[^A-Za-z0-9]+/g,'-')):'';
+    a.download='Informe-Efectivo-Winflex'+suf+'-'+todayISO()+'.xlsx';a.click();
+    toast('Informe descargado'+(F.activo?' · '+F.etiqueta:''),'ok');
+  }catch(e){toast('Error al generar el informe: '+e.message,'bad')}
+}
+
+
+/* ---------- subir remitos internos (planilla de movimiento interno) ---------- */
+let EFE_RTOS=null;
+
+function efeParseRemito(wb,archivo){
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  if(!ws||!ws['!ref'])return null;
+  const rg=XLSX.utils.decode_range(ws['!ref']); rg.s.c=0; rg.s.r=0;
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null,range:rg});
+  const txt=v=>(typeof v==='string')?v.trim():'';
+  let numero='',fecha=null,cliente='',declarado=0;
+  const items=[];
+  rows.forEach(r=>{
+    if(!r)return;
+    r.forEach((v,ci)=>{
+      const t=txt(v); if(!t)return;
+      const m=t.match(/NRO\.?\s*[:\-]?\s*([0-9]+)/i);
+      if(m&&!numero)numero=m[1];
+      if(/^se(ñ|n)ores/i.test(t)&&!cliente){
+        for(let j=ci+1;j<r.length;j++){if(txt(r[j])){cliente=txt(r[j]).replace(/\s+/g,' ').trim();break}}
+      }
+      if(!fecha){
+        if(v instanceof Date){fecha=v.toISOString().slice(0,10)}
+        else{const d=t.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/);
+          if(d){let y=+d[3];y=y<100?2000+y:y;
+            fecha=y+'-'+String(+d[2]).padStart(2,'0')+'-'+String(+d[1]).padStart(2,'0')}}
+      }
+    });
+    const nums=r.map(v=>v).filter(v=>typeof v==='number');
+    const desc=r.map(v=>txt(v)).filter(t=>t.length>4&&!/^se(ñ|n)ores/i.test(t))[0]||'';
+    if(desc&&nums.length){
+      const imp=nums[nums.length-1];
+      if(imp>0&&/\d/.test(desc))items.push({d:desc.replace(/\s+/g,' ').trim(),i:Math.round(imp*100)/100});
+    }else if(!desc&&nums.length===1&&nums[0]>0){declarado=Math.max(declarado,nums[0])}
+  });
+  const total=Math.round(items.reduce((s,i)=>s+i.i,0)*100)/100;
+  if(!items.length&&!declarado)return null;
+  return {archivo,numero,fecha,cliente,items,total:total||declarado,declarado};
+}
+
+/* nombre de cuenta de efectivo que mejor coincide con el del remito */
+function efeCuentaSugerida(nombre){
+  const n=efeNorm(nombre); if(n.length<3)return null;
+  const cuentas=[...new Set(efeList().map(m=>m.cliente))];
+  let hit=cuentas.find(c=>efeNorm(c)===n)
+       || cuentas.find(c=>{const r=efeNorm(c);return r&&(r.includes(n)||n.includes(r))});
+  if(hit)return hit;
+  const cli=efeMatchOficial(nombre);
+  return cli?cli.razonSocial:null;
+}
+
+function onEfeRemitos(ev){
+  const files=[...ev.target.files]; ev.target.value=''; if(!files.length)return;
+  toast('Leyendo '+files.length+' remito'+(files.length>1?'s':'')+'…');
+  loadScript(EFE_XLSX_URL).then(async()=>{
+    const out=[];
+    for(const f of files){
+      try{
+        const buf=await f.arrayBuffer();
+        const r=efeParseRemito(XLSX.read(new Uint8Array(buf),{type:'array',cellDates:true}),f.name);
+        if(r){r.cuenta=efeCuentaSugerida(r.cliente)||r.cliente;r.usar=true;out.push(r)}
+        else out.push({archivo:f.name,error:'No pude leer los datos del remito'});
+      }catch(e){out.push({archivo:f.name,error:e.message})}
+    }
+    EFE_RTOS=out; efeRenderRtos();
+  }).catch(e=>toast(e.message,'bad'));
+}
+
+function efeSetRto(i,campo,val){
+  if(!EFE_RTOS||!EFE_RTOS[i])return;
+  EFE_RTOS[i][campo]= (campo==='usar'||campo==='entregado') ? !!val : val;
+  if(campo!=='usar')efeRenderRtos();
+}
+
+function efeRenderRtos(){
+  if(!EFE_RTOS){$('efePreview').innerHTML='';return}
+  const cuentas=[...new Set(efeList().map(m=>m.cliente).concat(STATE.clientes.map(c=>c.razonSocial)))].filter(Boolean).sort();
+  const filas=EFE_RTOS.map((r,i)=>{
+    if(r.error)return `<tr><td colspan="7" style="color:var(--venc)">${esc(r.archivo)} — ${esc(r.error)}</td></tr>`;
+    const dup=efeList().some(m=>m.importe>0&&String(m.numero)===String(r.numero)&&m.numero);
+    const nueva=!cuentas.some(c=>c===r.cuenta);
+    const avisos=[dup?'<span class="tag-efe w">Nº repetido</span>':'',
+                  nueva?'<span class="tag-efe">cuenta nueva</span>':'',
+                  (r.declarado&&Math.abs(r.declarado-r.total)>1)?`<span class="tag-efe w">el total del remito dice ${fmt(r.declarado)}</span>`:'',
+                  !r.fecha?'<span class="tag-efe w">sin fecha</span>':''].join('');
+    const ops=[`<option value="${esc(r.cliente)}"${r.cuenta===r.cliente?' selected':''}>${esc(r.cliente)} (como viene)</option>`]
+      .concat(cuentas.map(c=>`<option value="${esc(c)}"${r.cuenta===c?' selected':''}>${esc(c)}</option>`)).join('');
+    return `<tr>
+      <td><input type="checkbox" ${r.usar?'checked':''} onchange="efeSetRto(${i},'usar',this.checked)"></td>
+      <td><b>${esc(r.numero||'s/n')}</b><div class="cli-meta">${esc(r.archivo)}</div></td>
+      <td>${r.fecha?dShow(r.fecha):'—'}</td>
+      <td><select class="filter" style="max-width:210px" onchange="efeSetRto(${i},'cuenta',this.value)">${ops}</select>${avisos}</td>
+      <td class="r num" style="font-weight:700">${fmt(r.total)}</td>
+      <td><select class="filter" style="max-width:150px" onchange="efeSetRto(${i},'entregado',this.value==='1')">
+        <option value="1"${r.entregado===false?'':' selected'}>Entregado</option>
+        <option value="0"${r.entregado===false?' selected':''}>Sin entregar</option></select></td>
+      <td class="cli-meta">${esc(r.items.map(x=>x.d).join(' · '))}</td></tr>`;
+  }).join('');
+  const ok=EFE_RTOS.filter(r=>!r.error&&r.usar);
+  const suma=ok.reduce((s,r)=>s+r.total,0);
+  $('efePreview').innerHTML=`<div class="card" style="margin-bottom:18px">
+    <h3>Remitos le&iacute;dos</h3>
+    <div class="efe-chips" style="margin:0 0 12px">
+      <span class="efe-chip">A cargar <strong class="num">${ok.length}</strong></span>
+      <span class="efe-chip">Total <strong class="num">${fmt(suma)}</strong></span>
+    </div>
+    <div class="tablewrap"><table><thead><tr><th style="width:34px"></th><th>N&ordm;</th><th>Fecha</th><th>Cliente</th><th class="r">Importe</th><th>Entrega</th><th>Detalle</th></tr></thead><tbody>${filas}</tbody></table></div>
+    <div style="margin-top:12px">
+      <button class="btn sm" onclick="cargarEfeRtos()">Cargar ${ok.length} remito${ok.length===1?'':'s'}</button>
+      <button class="btn ghost sm" style="margin-left:8px" onclick="EFE_RTOS=null;efeRenderRtos()">Cancelar</button>
+    </div>
+    <div class="hint">Revis&aacute; que el cliente sea el correcto: si el remito trae un nombre nuevo se abre una cuenta de efectivo con ese nombre. Eleg&iacute; uno de la lista para que quede en la cuenta que ya existe.</div>
+  </div>`;
+}
+
+function cargarEfeRtos(){
+  const ok=(EFE_RTOS||[]).filter(r=>!r.error&&r.usar);
+  if(!ok.length){toast('No hay remitos seleccionados','bad');return}
+  const dups=ok.filter(r=>r.numero&&efeList().some(m=>m.importe>0&&String(m.numero)===String(r.numero)));
+  if(dups.length&&!confirm('Hay '+dups.length+' remito(s) con un número que ya está cargado (Nº '+dups.map(r=>r.numero).join(', ')+').\n\n¿Cargarlos igual?'))return;
+  ok.forEach(r=>{
+    efeList().push(mapEfectivoIn({cliente:r.cuenta,numero:r.numero,fecha:r.fecha,
+      importe:r.total,ref:'',items:r.items,nota:'',vendedor:efeVendDeCliente(r.cuenta),
+      producto:'',entregado:r.entregado!==false,createdAt:NOW()}));
+  });
+  EFE_RTOS=null;$('efePreview').innerHTML='';
+  saveToCloud();renderEfectivo();renderTotal();
+  toast(ok.length+' remito'+(ok.length===1?'':'s')+' cargado'+(ok.length===1?'':'s'),'ok');
+}
+
+/* ================= comisiones Nitopi ================= */
+let COM_MES='';
+function comMes(f){return (f||'').slice(0,7)}
+function comMesShow(k){return (!k||k==='sin fecha')?'Sin fecha':k.slice(5)+'/'+k.slice(0,4)}
+
+function comDatos(){
+  const rows=[];
+  efeCalc().forEach(c=>{
+    const ab={};c.abiertos.forEach(a=>ab[a.id]=a.monto);
+    c.movs.forEach(m=>{
+      if(!(m.importe>0))return;
+      if(efeVendDe(m,c.nombre)!==NIT_VEND)return;
+      const ent=m.entregado!==false;
+      const saldo=Math.max(0,Math.min(m.importe,ent?(ab[m.id]||0):m.importe));
+      const cobrado=nitR2(m.importe-saldo);
+      const com=nitCom(m);
+      rows.push({cliente:c.nombre,fecha:m.fecha||'',numero:m.numero||'',ref:m.ref||'',ent:ent,
+        venta:nitBruto(m), com:com, neto:m.importe,
+        cobrado:cobrado, saldo:saldo,
+        comCob:m.importe?nitR2(com*cobrado/m.importe):0,
+        comPend:m.importe?nitR2(com*saldo/m.importe):0,
+        neteado:com>0});
+    });
+  });
+  rows.sort((a,b)=>(a.fecha||'0000')<(b.fecha||'0000')?1:-1);
+  return rows;
+}
+function comFil(){return comDatos().filter(r=>!COM_MES||comMes(r.fecha)===COM_MES)}
+
+/* Candidatos a netear: remitos de Nitopi cargados por el precio total (sin bruto
+   guardado). Se separan los que todavía no tienen ningún cobro imputado — esos se
+   netean solos — de los que ya cobraron algo, que no se tocan: bajarles el saldo
+   ahora descuadraría los pagos ya cargados. */
+function comNetearCand(){
+  const libres=[], tocados=[];
+  efeCalc().forEach(c=>{
+    const ab={}; c.abiertos.forEach(a=>ab[a.id]=a.monto);
+    c.movs.forEach(m=>{
+      if(!(m.importe>0))return;
+      if(+m.bruto>0)return;                                   // ya neteado
+      if(efeVendDe(m,c.nombre)!==NIT_VEND)return;
+      const saldo=(m.entregado===false)?m.importe:(ab[m.id]||0);
+      const cobrado=nitR2(m.importe-saldo);
+      (cobrado>0.5?tocados:libres).push({m,cliente:c.nombre,cobrado,saldo});
+    });
+  });
+  return {libres,tocados};
+}
+function comNetearPend(){
+  const cand=comNetearCand(), libres=cand.libres, tocados=cand.tocados;
+  if(!libres.length){
+    toast(tocados.length?'Los '+tocados.length+' que quedan ya tienen cobros: hay que revisarlos a mano':'No hay remitos para netear','ok');
+    return;
+  }
+  const tot=libres.reduce((s,r)=>s+r.m.importe,0), com=nitR2(tot*NIT_PCT);
+  if(!confirm('Hay '+libres.length+' remito(s) de '+NIT_VEND+' todav\u00eda sin cobrar, cargados por el precio total ('+fmt(tot)+').\n\nSe les descuenta el '+(NIT_PCT*100)+'% ('+fmt(com)+') y quedan por el neto a cobrar ('+fmt(tot-com)+'). El importe original queda guardado para el detalle.'
+    +(tocados.length?'\n\nOJO: hay '+tocados.length+' remito(s) que ya tienen cobros imputados. A esos no se les toca nada, quedan listados aparte para que los revises a mano.':'')
+    +'\n\n\u00bfSeguir?'))return;
+  libres.forEach(r=>{const m=r.m;m.bruto=nitR2(m.importe);m.importe=nitR2(m.importe*(1-NIT_PCT));m.updatedAt=NOW()});
+  saveToCloud();renderEfectivo();renderTotal();comRender();
+  toast(libres.length+' remito(s) neteado(s) \u00b7 '+fmt(com)+' de comisi\u00f3n','ok');
+}
+
+function comRender(){
+  const todas=comDatos(), fil=comFil().filter(r=>r.ent);
+  const S=(a,k)=>a.reduce((s,r)=>s+(+r[k]||0),0);
+  const meses=[...new Set(todas.map(r=>comMes(r.fecha)).filter(Boolean))].sort().reverse();
+  if(COM_MES&&meses.indexOf(COM_MES)<0)COM_MES='';
+  const cand=comNetearCand();
+
+  const porMes={};
+  todas.filter(r=>r.ent).forEach(r=>{const k=comMes(r.fecha)||'sin fecha';
+    porMes[k]=porMes[k]||{v:0,c:0,n:0,cob:0,sal:0,q:0};const x=porMes[k];
+    x.v+=r.venta;x.c+=r.com;x.n+=r.neto;x.cob+=r.cobrado;x.sal+=r.saldo;x.q++});
+  const porCli={};
+  fil.forEach(r=>{porCli[r.cliente]=porCli[r.cliente]||{v:0,c:0,n:0,cob:0,sal:0,q:0};const x=porCli[r.cliente];
+    x.v+=r.venta;x.c+=r.com;x.n+=r.neto;x.cob+=r.cobrado;x.sal+=r.saldo;x.q++});
+
+  const th='style="text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px"';
+  const thr=th.replace('text-align:left','text-align:right');
+  const td='style="padding:7px 8px;border-bottom:1px solid var(--border)"';
+  const tdr='style="padding:7px 8px;border-bottom:1px solid var(--border);text-align:right"';
+  const tabla=h=>'<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">'+h+'</table>';
+  const opts=['<option value="">Todos los meses</option>']
+    .concat(meses.map(m=>`<option value="${m}"${COM_MES===m?' selected':''}>${comMesShow(m)}</option>`)).join('');
+
+  const filasMes=Object.keys(porMes).sort().reverse().map(k=>{const v=porMes[k];
+    return `<tr><td ${td}>${comMesShow(k)}</td><td ${tdr}>${v.q}</td><td ${tdr}>${fmt(v.v)}</td>`+
+      `<td ${tdr}>${fmt(v.c)}</td><td ${tdr}>${fmt(v.n)}</td><td ${tdr}>${fmt(v.cob)}</td>`+
+      `<td ${tdr}><strong>${v.sal?fmt(v.sal):'\u2014'}</strong></td></tr>`}).join('');
+  const filasCli=Object.keys(porCli).sort((a,b)=>porCli[b].n-porCli[a].n).map(k=>{const v=porCli[k];
+    return `<tr><td ${td}>${esc(k)}</td><td ${tdr}>${v.q}</td><td ${tdr}>${fmt(v.v)}</td>`+
+      `<td ${tdr}>${fmt(v.c)}</td><td ${tdr}>${fmt(v.n)}</td><td ${tdr}>${fmt(v.cob)}</td>`+
+      `<td ${tdr}><strong>${v.sal?fmt(v.sal):'\u2014'}</strong></td></tr>`}).join('');
+  const filasDet=comFil().map(r=>`<tr><td ${td}>${dShow(r.fecha)}</td><td ${td}>${esc(r.cliente)}</td>`+
+    `<td ${td}>${esc(r.numero)||'\u2014'}</td><td ${tdr}>${fmt(r.venta)}</td>`+
+    `<td ${tdr}>${r.com?fmt(r.com):'<span style="color:var(--venc)">sin netear</span>'}</td>`+
+    `<td ${tdr}>${fmt(r.neto)}</td><td ${tdr}>${r.cobrado?fmt(r.cobrado):'\u2014'}</td>`+
+    `<td ${tdr}><strong>${r.saldo?fmt(r.saldo):'\u2014'}</strong></td>`+
+    `<td ${td}>${r.ent?(r.saldo?(r.cobrado?'parcial':'abierto'):'cobrado'):'<span style="color:var(--prox)">sin entregar</span>'}</td></tr>`).join('');
+
+  $('comBody').innerHTML=`
+    ${(cand.libres.length||cand.tocados.length)?`<div class="efe-alert" style="margin-bottom:16px">
+      ${cand.libres.length?`Hay <b>${cand.libres.length}</b> remito(s) de ${NIT_VEND} <b>todav\u00eda sin cobrar</b> cargados por el precio total (${fmt(cand.libres.reduce((s,r)=>s+r.m.importe,0))}). Al netearlos, la cuenta del cliente pasa a mostrar el neto que te rinde ${NIT_VEND}.
+      <div style="margin-top:8px"><button class="btn sm" onclick="comNetearPend()">Descontarles el ${(NIT_PCT*100)}% ahora</button></div>`:''}
+      ${cand.tocados.length?`<div style="margin-top:${cand.libres.length?'12px':'0'}">Estos <b>${cand.tocados.length}</b> remito(s) ya tienen cobros imputados, as\u00ed que no se tocan autom\u00e1ticamente (descuadrar\u00eda lo ya cargado). Revisalos a mano:
+        <ul style="margin:6px 0 0;padding-left:18px">${cand.tocados.map(r=>`<li>${esc(r.cliente)} \u00b7 ${r.m.numero?'N\u00ba '+esc(r.m.numero)+' \u00b7 ':''}${dShow(r.m.fecha)} \u00b7 remito ${fmt(r.m.importe)} \u00b7 cobrado ${fmt(r.cobrado)}${r.saldo>0.5?' \u00b7 falta '+fmt(r.saldo):''}</li>`).join('')}</ul></div>`:''}
+    </div>`:''}
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px">
+      <div class="kpi"><div class="lab">Vendido por ${NIT_VEND}</div><div class="val num">${fmt(S(fil,'venta'))}</div><div class="meta">${fil.length} remito${fil.length===1?'':'s'} \u00b7 precio de lista</div></div>
+      <div class="kpi"><div class="lab">Comisi\u00f3n ${(NIT_PCT*100)}%</div><div class="val num">${fmt(S(fil,'com'))}</div><div class="meta">se la lleva ${NIT_VEND}</div></div>
+      <div class="kpi"><div class="lab">Cobr\u00e9</div><div class="val num" style="color:var(--cobr)">${fmt(S(fil,'cobrado'))}</div><div class="meta">de ${fmt(S(fil,'neto'))} netos a cobrar</div></div>
+      <div class="kpi"><div class="lab">Me falta cobrar</div><div class="val num" style="color:var(--prox)">${fmt(S(fil,'saldo'))}</div><div class="meta">comisi\u00f3n pendiente ${fmt(S(fil,'comPend'))}</div></div>
+    </div>
+    <div class="field" style="max-width:220px;margin-bottom:16px"><label>Per\u00edodo</label>
+      <select onchange="COM_MES=this.value;comRender()">${opts}</select></div>
+
+    <div class="hint" style="margin-bottom:6px"><strong>Mes a mes</strong></div>
+    ${tabla(`<tr><th ${th}>Mes</th><th ${thr}>Rem.</th><th ${thr}>Vendido</th><th ${thr}>Comisi\u00f3n</th><th ${thr}>A cobrar</th><th ${thr}>Cobrado</th><th ${thr}>Falta</th></tr>${filasMes||`<tr><td ${td} colspan="7">Sin datos</td></tr>`}`)}
+
+    <div class="hint" style="margin-bottom:6px"><strong>Por cliente</strong>${COM_MES?' \u00b7 '+comMesShow(COM_MES):''}</div>
+    ${tabla(`<tr><th ${th}>Cliente</th><th ${thr}>Rem.</th><th ${thr}>Vendido</th><th ${thr}>Comisi\u00f3n</th><th ${thr}>A cobrar</th><th ${thr}>Cobrado</th><th ${thr}>Falta</th></tr>${filasCli||`<tr><td ${td} colspan="7">Sin datos</td></tr>`}`)}
+
+    <div class="hint" style="margin-bottom:6px"><strong>Detalle por remito</strong></div>
+    ${tabla(`<tr><th ${th}>Fecha</th><th ${th}>Cliente</th><th ${th}>N\u00ba</th><th ${thr}>Venta</th><th ${thr}>Comisi\u00f3n</th><th ${thr}>A cobrar</th><th ${thr}>Cobrado</th><th ${thr}>Falta</th><th ${th}></th></tr>${filasDet||`<tr><td ${td} colspan="9">Sin datos</td></tr>`}`)}
+    <div class="hint">El remito se carga por el precio de lista y queda en la cuenta del cliente por el neto, ya descontada la comisi\u00f3n. Los remitos sin entregar no cuentan hasta que se entreguen.</div>`;
+}
+
+function openCom(){comRender();openOverlay('ovCom')}
+
+function comCSV(){
+  const f=comFil(), q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const n=v=>q((+v||0).toFixed(2).replace('.',','));
+  const L=[['Fecha','Cliente','Numero','Ref','Venta','Comision Nitopi','Neto a cobrar','Cobrado','Falta cobrar','Estado'].map(q).join(';')];
+  f.forEach(r=>L.push([q(r.fecha),q(r.cliente),q(r.numero),q(r.ref),n(r.venta),n(r.com),n(r.neto),
+    n(r.cobrado),n(r.saldo),q(r.ent?(r.saldo?(r.cobrado?'parcial':'abierto'):'cobrado'):'sin entregar')].join(';')));
+  const e=f.filter(r=>r.ent), S=k=>e.reduce((s,r)=>s+(+r[k]||0),0);
+  L.push([q('TOTAL'),q(''),q(''),q(''),n(S('venta')),n(S('com')),n(S('neto')),n(S('cobrado')),n(S('saldo')),q('')].join(';'));
+  const blob=new Blob(['\ufeff'+L.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='comisiones-nitopi-'+(COM_MES||'todo')+'.csv';a.click();URL.revokeObjectURL(a.href);
 }
 
 (function init(){const u=localStorage.getItem(LS.user);if(u&&Object.values(PINS).includes(u)){CURRENT_USER=u;startApp()}else $('pinInput').focus()})();
