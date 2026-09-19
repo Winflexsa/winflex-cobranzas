@@ -226,6 +226,10 @@ html.celu .modal-title{font-size:18px}
 html.celu .modal-close{font-size:28px;padding:0 8px}
 html.celu .modal-box .tbl-wrap{overflow-x:auto}
 html.celu .toast{left:14px;right:14px;bottom:calc(96px + env(safe-area-inset-bottom,0px));text-align:center;font-size:14.5px;padding:13px 15px;border-radius:14px}
+html.celu .c-chart{position:relative;width:100%;height:230px;overflow:hidden}
+html.celu .c-chart canvas{max-width:100%!important;max-height:230px!important}
+html.celu #chart-clientes{max-height:300px!important}
+html.celu .c-chart:has(#chart-clientes){height:300px}
 .vista-sw{display:block;margin:20px auto;padding:10px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer}
 html.celu .month-tabs{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 14px;padding:0 14px 4px;scrollbar-width:none}
 html.celu .month-tabs::-webkit-scrollbar{display:none}
@@ -1207,6 +1211,10 @@ function wfVista(v){try{localStorage.setItem('wf_vista',v);}catch(e){}const u=ne
   const marcar=pg=>{ACT=pg;$('c-tit').textContent=NOM[pg]||'Cobranzas';const enBajo=BAJO.some(x=>x[0]===pg);
     nav.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.pg===pg||(!enBajo&&b.dataset.pg==='__mas')));};
   const _ai=activarInterno; activarInterno=function(name,btn){try{_ai.apply(this,arguments);}finally{if(MODULOS[name])marcar(name);}}; marcar('resumen');
+  /* graficos: alto fijo y contenido, para que no se agranden en el celular */
+  try{ if(window.Chart){ Chart.defaults.maintainAspectRatio=false; Chart.defaults.devicePixelRatio=Math.min(window.devicePixelRatio||1,2); } }catch(_){}
+  document.querySelectorAll('.main canvas').forEach(cv=>{ if(cv.parentElement.classList.contains('c-chart'))return;
+    const w=document.createElement('div'); w.className='c-chart'; cv.parentNode.insertBefore(w,cv); w.appendChild(cv); cv.removeAttribute('height'); });
   /* Resumen en dos pantallas: Totales / Graficos */
   const res=$('pg-resumen');
   if(res){
