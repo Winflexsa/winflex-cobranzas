@@ -12,6 +12,30 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* === MODO CELULAR: solo en telefonos (tactil + lado menor < 600px). Tablets y PC no cambian. === */
+(function(){try{
+  var p=new URLSearchParams(location.search).get('vista');
+  if(p==='celu'||p==='full')localStorage.setItem('wf_vista',p);
+  if(p==='auto')localStorage.removeItem('wf_vista');
+  var pref=localStorage.getItem('wf_vista');
+  var lado=Math.min(screen.width||9999,screen.height||9999);
+  var tactil=(navigator.maxTouchPoints>0)||(window.matchMedia&&matchMedia('(pointer:coarse)').matches);
+  var esTel=!!tactil&&lado<600;
+  window.WF_ES_TEL=esTel;
+  if(pref==='celu'||(esTel&&pref!=='full')){var de=document.documentElement;de.classList.add('celu');
+    /* si el navegador fuerza "sitio de escritorio" (ventana virtual ~980px) se agranda todo a tamano real */
+    var ajusta=function(){try{
+      var land=window.matchMedia&&matchMedia('(orientation:landscape)').matches;
+      var sw=land?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height), iw=window.innerWidth||0;
+      var z=(sw&&iw>sw*1.2)?(iw/sw):1;
+      de.style.zoom=z>1?z:'';
+      if(z>1){de.style.setProperty('--wfh',Math.floor(window.innerHeight/z)+'px');de.classList.add('celu-zoom')}
+      else{de.style.removeProperty('--wfh');de.classList.remove('celu-zoom')}
+    }catch(e){}};
+    ajusta();window.addEventListener('resize',ajusta);window.addEventListener('orientationchange',function(){setTimeout(ajusta,250)});}
+}catch(e){}})();
+</script>
 <style>
 :root{--bg:#f4f3f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--text:#1a1916;--text2:#6b6860;--text3:#a8a69a;--accent:#1f8b4c;--accent-dark:#137a3c;--accent-light:#e7f4ec;--accent-text:#15633a;--wf-grad:linear-gradient(135deg,#43b649 0%,#1f8b4c 52%,#137a3c 100%);--wf-gray:#58595b;--warn:#92400e;--warn-light:#fef3c7;--danger:#991b1b;--danger-light:#fee2e2;--success:#14532d;--success-light:#dcfce7;--info:#1e40af;--info-light:#dbeafe;--radius:10px;--radius-sm:6px;--shadow:0 1px 3px rgba(0,0,0,.06)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -109,6 +133,108 @@ tbody tr:hover td{background:var(--surface2)}
 .chip{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:12px;font-family:'DM Mono',monospace}
 .cli-row-actions{display:flex;gap:4px}
 @media(max-width:768px){.sidebar{width:100%;position:relative;height:auto}.main{margin-left:0;padding:14px}.card-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.pin-card{width:300px}}
+
+/* ================= MODO CELULAR (todo bajo html.celu: no afecta tablet ni PC) ================= */
+#c-top,#c-nav,#c-sub{display:none}
+html.celu{--g1:#15a463;--g2:#0e7a49;--accent:#15a463;--accent-text:#0e7a49;--accent-light:#e4f6ec}
+html.celu body{font-size:15px}
+html.celu input,html.celu select,html.celu textarea{font-size:16px!important}
+html.celu .shell{display:block}
+html.celu .sidebar{display:none!important}
+html.celu .main,html.celu body.modo-modulo .main{margin:0;max-width:none;padding:14px 14px calc(160px + env(safe-area-inset-bottom,0px))}
+/* barra superior */
+html.celu #c-top{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:3px solid var(--g1);padding:10px 12px;box-shadow:0 2px 10px rgba(20,40,25,.07)}
+html.celu #c-top img{height:32px;width:auto;flex:none}
+html.celu #c-top h1{font-size:16.5px;font-weight:700;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.celu #c-top .sync-pill{flex:none;max-width:120px;overflow:hidden;white-space:nowrap;font-size:10.5px;border:1px solid var(--border);border-radius:20px;padding:5px 8px}
+html.celu #c-top .c-ref{width:40px;height:40px;flex:none;border-radius:12px;border:1px solid var(--border,#cccab8);background:var(--surface);color:var(--g2);font-size:17px;cursor:pointer}
+/* barra de modulos abajo */
+html.celu #c-nav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--border);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(20,40,25,.08)}
+html.celu #c-nav button{flex:1 1 0;min-width:0;border:0;background:none;font-family:inherit;font-size:10.5px;font-weight:600;color:var(--text3);display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;cursor:pointer}
+html.celu #c-nav button span{font-size:21px;line-height:1.1;filter:grayscale(1);opacity:.6}
+html.celu #c-nav button.on{color:var(--g2)}
+html.celu #c-nav button.on span{filter:none;opacity:1}
+/* hoja desde abajo */
+.sheet-ov{position:fixed;inset:0;background:rgba(15,25,18,.5);z-index:300;display:none;align-items:flex-end}
+.sheet-ov.open{display:flex}
+.sheet{width:100%;max-height:84%;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 14px calc(18px + env(safe-area-inset-bottom,0px));animation:shup .18s}
+@keyframes shup{from{transform:translateY(30px);opacity:0}}
+.sheet .grip{width:40px;height:4px;border-radius:2px;background:var(--border);margin:2px auto 10px}
+.sheet h4{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:0;padding:10px 6px 4px}
+.sheet button{display:flex;align-items:center;gap:14px;width:100%;padding:14px 8px;font-family:inherit;font-size:16px;font-weight:600;color:var(--text);background:none;border:0;border-bottom:1px solid var(--border);text-align:left;cursor:pointer}
+.sheet button .ic{font-size:20px;width:26px;text-align:center}
+.sheet button.on{color:var(--g2)}
+.sheet button.sal{color:var(--danger);border-bottom:0}
+/* cabecera de pantalla */
+html.celu .page-title{display:none}
+html.celu .page-sub{font-size:13px;margin-bottom:14px}
+/* sub-pantallas de Cartera */
+html.celu #c-sub{display:flex;background:var(--surface2);border-radius:14px;padding:4px;margin-bottom:14px}
+html.celu #c-sub button{flex:1;padding:12px 6px;border-radius:11px;border:0;background:none;font-family:inherit;font-weight:700;font-size:14.5px;color:var(--text2);cursor:pointer}
+html.celu #c-sub button.on{background:var(--g1);color:#fff;box-shadow:0 2px 8px rgba(21,164,99,.35)}
+html.celu #pg-resumen[data-sub=res] .sx-det,html.celu #pg-resumen[data-sub=det] .sx-res{display:none!important}
+/* indicadores: uno grande + el resto chicos */
+html.celu .metrics{grid-template-columns:1fr 1fr!important;gap:10px;margin-bottom:16px}
+html.celu .metric{padding:13px 14px;border-radius:14px;min-width:0}
+html.celu .metric-label{font-size:10.5px}
+html.celu .metric-value{font-size:20px}
+html.celu .metric-sub{font-size:11.5px}
+html.celu .metrics>.metric:first-child{grid-column:1/-1;background:linear-gradient(135deg,#1bb971,var(--g2));border:0;padding:20px;box-shadow:0 8px 22px rgba(21,164,99,.30)}
+html.celu .metrics>.metric:first-child .metric-label{color:rgba(255,255,255,.88);font-size:12px}
+html.celu .metrics>.metric:first-child .metric-value{color:#fff!important;font-size:34px;margin-top:4px}
+html.celu .metrics>.metric:first-child .metric-sub{color:rgba(255,255,255,.82);font-size:12.5px;margin-top:6px}
+html.celu .metrics>.metric:last-child:nth-child(even){grid-column:1/-1}
+/* tarjetas, filtros, botones */
+html.celu .card{padding:16px;border-radius:16px;margin-bottom:14px}
+html.celu .card-title{font-size:12.5px}
+html.celu .card-grid,html.celu .form-grid{grid-template-columns:1fr;gap:12px}
+html.celu .form-group label{font-size:12px}
+html.celu .form-group input,html.celu .form-group select,html.celu .form-group textarea{padding:13px 12px;border-radius:12px}
+html.celu .btn{padding:12px 16px;font-size:14.5px;border-radius:12px}
+html.celu .btn-sm{padding:9px 12px;font-size:13px;border-radius:10px}
+html.celu .btn-row .btn{flex:1 1 auto}
+html.celu .filter-bar{gap:8px}
+html.celu .filter-bar input,html.celu .filter-bar select{flex:1 1 46%;min-width:0;padding:12px;border-radius:12px}
+html.celu .filter-bar input[type=text],html.celu .filter-bar input[type=search]{flex:1 0 100%}
+html.celu .alerta-vence{font-size:14.5px;padding:13px 15px;border-radius:0 12px 12px 0}
+html.celu .badge{font-size:12px;padding:3px 10px}
+html.celu .dias-badge{font-size:11.5px;padding:2px 8px;margin-left:0}
+/* tablas de consulta -> tarjetas (las etiquetas las pone el JS en data-l) */
+html.celu .card:has(>.tbl-wrap>table.tc){padding:0!important;background:none;border:0;box-shadow:none;overflow:visible!important}
+html.celu .tbl-wrap:has(>table.tc){overflow:visible}
+html.celu table.tc,html.celu table.tc>tbody{display:block;width:100%}
+html.celu table.tc>thead{display:none}
+html.celu table.tc>tbody>tr{display:grid;grid-template-columns:repeat(3,1fr);gap:9px 10px;padding:15px 16px;margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 8px rgba(20,40,25,.05)}
+html.celu table.tc>tbody>tr>td{display:block;padding:0;border:0;background:none!important;text-align:left!important;font-size:14.5px!important;white-space:normal!important;min-width:0;font-family:inherit!important;color:var(--text)}
+html.celu table.tc>tbody>tr>td[data-l]::before{content:attr(data-l);display:block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+html.celu table.tc>tbody>tr>td.tit{grid-row:1;grid-column:1/3;font-size:16.5px!important;font-weight:700}
+html.celu table.tc>tbody>tr>td.tit::before,html.celu table.tc>tbody>tr>td.acc::before{display:none}
+html.celu table.tc>tbody>tr>td.der{grid-row:1;grid-column:3;text-align:right!important;font-size:17px!important;font-weight:700;white-space:nowrap!important}
+html.celu table.tc>tbody>tr>td.der::before{display:none}
+html.celu table.tc>tbody>tr>td.full{grid-column:1/-1}
+html.celu table.tc>tbody>tr>td.vacio{display:none}
+html.celu table.tc>tbody>tr>td.acc{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+html.celu table.tc>tbody>tr>td.acc:empty{display:none}
+html.celu table.tc>tbody>tr>td.acc .btn{flex:1 1 auto;padding:11px 10px;font-size:13.5px}
+html.celu table.tc>tbody>tr>td[colspan]{grid-column:1/-1;text-align:center!important}
+/* modales a pantalla completa */
+html.celu .modal-bg{align-items:stretch!important;padding:0!important}
+html.celu .modal-box{width:100%!important;max-width:none!important;max-height:none!important;height:100vh;height:100dvh;border-radius:0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+html.celu.celu-zoom .modal-box{height:var(--wfh)}
+html.celu .modal-header{padding-bottom:12px;border-bottom:3px solid var(--g1);margin-bottom:16px}
+html.celu .modal-title{font-size:18px}
+html.celu .modal-close{font-size:28px;padding:0 8px}
+html.celu .modal-box .tbl-wrap{overflow-x:auto}
+html.celu .toast{left:14px;right:14px;bottom:calc(96px + env(safe-area-inset-bottom,0px));text-align:center;font-size:14.5px;padding:13px 15px;border-radius:14px}
+.vista-sw{display:block;margin:20px auto;padding:10px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer}
+html.celu .month-tabs{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 14px;padding:0 14px 4px;scrollbar-width:none}
+html.celu .month-tabs::-webkit-scrollbar{display:none}
+html.celu .month-tab{flex:none;padding:10px 16px;font-size:14px}
+html.celu .cfg-modal{align-items:stretch}
+html.celu .pago-bar{height:10px;border-radius:5px}
+html.celu .cli-tools .btn{flex:1 1 auto}
+html.celu .merge-suggest{font-size:13.5px}
+html.celu .pin-card{width:auto;max-width:340px;margin:0 16px}
 </style>
 </head>
 <body>
@@ -462,6 +588,7 @@ function activarInterno(name,btn){
   if(r[name])r[name]();
 }
 function abrirModulo(name,btn){
+  if(MODULOS[name]&&document.documentElement.classList.contains('celu')){activarInterno(name,btn);try{window.scrollTo(0,0);}catch(_){ }return;}
   if(!MODULOS[name])return;
   if(ES_HIJA&&name===MODULO_VENTANA)return;
   try{
@@ -1045,6 +1172,67 @@ async function boot(){
     setTimeout(()=>{const i=document.getElementById('pin-input');if(i)i.focus();},100);
   }
 }
+
+/* ================= MODO CELULAR: comportamiento (solo corre si html.celu) ================= */
+function wfVista(v){try{localStorage.setItem('wf_vista',v);}catch(e){}const u=new URL(location.href);u.searchParams.delete('vista');location.replace(u.toString());}
+(function(){
+  const CELU=document.documentElement.classList.contains('celu');
+  if(!CELU){ if(window.WF_ES_TEL){const b=document.createElement('button');b.className='vista-sw';b.textContent='\uD83D\uDCF1 Ver versi\u00f3n celular';b.onclick=()=>wfVista('celu');document.body.appendChild(b);} return; }
+  const $=i=>document.getElementById(i), shell=document.querySelector('.shell');
+  const NOM={resumen:'Cobranzas Caja 2',mensual:'Por mes',clientes:'Por cliente',detalle:'Detalle',nuevo:'Nueva cobranza',exportar:'Exportar'};
+  const BAJO=[['resumen','\uD83D\uDCCA','Resumen'],['mensual','\uD83D\uDCC5','Por mes'],['clientes','\uD83D\uDC65','Clientes'],['detalle','\uD83D\uDCCB','Detalle'],['nuevo','\u2795','Nueva']];
+  const top=document.createElement('div');top.id='c-top';
+  const logo=document.querySelector('.brand img');
+  top.innerHTML=`<img alt="Winflex" src="${logo?logo.src:''}"><h1 id="c-tit"></h1>`;
+  const sy=document.querySelector('.sync-pill'); if(sy) top.appendChild(sy);
+  const br=document.createElement('button');br.className='c-ref';br.innerHTML='\u21BB';br.title='Actualizar';br.onclick=()=>actualizarDesdeNube();top.appendChild(br);
+  shell.insertBefore(top,shell.firstChild);
+  const nav=document.createElement('div');nav.id='c-nav';
+  nav.innerHTML=BAJO.map(([k,i,t])=>`<button data-pg="${k}"><span>${i}</span>${t}</button>`).join('')+`<button data-pg="__mas"><span>\u2630</span>M\u00e1s</button>`;
+  shell.appendChild(nav);
+  const ov=document.createElement('div');ov.className='sheet-ov';ov.innerHTML='<div class="sheet"></div>';document.body.appendChild(ov);
+  const sh=ov.firstChild; let ACT='resumen';
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open');});
+  nav.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.pg==='__mas'){ const w=$('who');
+      sh.innerHTML='<div class="grip"></div><h4>'+((w&&w.textContent)||'M\u00e1s')+'</h4>'
+        +`<button data-pg="exportar" class="${ACT==='exportar'?'on':''}"><span class="ic">\u2B07\uFE0F</span>Exportar a Excel</button>`
+        +`<button data-a="sync"><span class="ic">\uD83D\uDD04</span>Actualizar desde la nube</button>`
+        +`<button data-a="full"><span class="ic">\uD83D\uDDA5</span>Ver versi\u00f3n completa</button>`
+        +`<button data-a="salir" class="sal"><span class="ic">\uD83D\uDEAA</span>Cerrar sesi\u00f3n</button>`;
+      ov.classList.add('open');return;}
+    abrirModulo(b.dataset.pg);});
+  sh.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ov.classList.remove('open');
+    if(b.dataset.pg)abrirModulo(b.dataset.pg);else if(b.dataset.a==='sync')actualizarDesdeNube();else if(b.dataset.a==='full')wfVista('full');else if(b.dataset.a==='salir')logout();});
+  const marcar=pg=>{ACT=pg;$('c-tit').textContent=NOM[pg]||'Cobranzas';const enBajo=BAJO.some(x=>x[0]===pg);
+    nav.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.pg===pg||(!enBajo&&b.dataset.pg==='__mas')));};
+  const _ai=activarInterno; activarInterno=function(name,btn){try{_ai.apply(this,arguments);}finally{if(MODULOS[name])marcar(name);}}; marcar('resumen');
+  /* Resumen en dos pantallas: Totales / Graficos */
+  const res=$('pg-resumen');
+  if(res){
+    const sub=document.createElement('div');sub.id='c-sub';sub.innerHTML='<button data-s="res">Totales</button><button data-s="det">Gr\u00e1ficos</button>';
+    const ps=res.querySelector('.page-sub');ps.parentNode.insertBefore(sub,ps.nextSibling);
+    [...res.children].forEach(el=>{ if(el===sub||el===ps||el.classList.contains('page-title'))return; el.classList.add(el.querySelector&&el.querySelector('canvas')?'sx-det':'sx-res'); });
+    const setSub=v=>{res.dataset.sub=v;sub.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.s===v));
+      if(v==='det'){try{ if(window.Chart&&Chart.instances) Object.values(Chart.instances).forEach(c=>{try{c.resize();}catch(_){}}); }catch(_){}}};
+    sub.onclick=e=>{const b=e.target.closest('button');if(b){setSub(b.dataset.s);try{window.scrollTo(0,0);}catch(_){ }}};setSub('res');
+  }
+  /* tablas de consulta -> tarjetas */
+  const CFG_T={'mes-body':['Cliente','Total'],'cli-body':['Cliente','Total'],'det-body':['Cliente','Total']};
+  function etiquetar(){
+    Object.keys(CFG_T).forEach(id=>{ const tb=$(id); if(!tb)return; const t=tb.closest('table'); if(!t)return;
+      const ths=[...t.querySelectorAll(':scope>thead th')].map(x=>x.textContent.replace(/\s+/g,' ').trim()); if(!ths.length)return;
+      t.classList.add('tc'); const [tit,der]=CFG_T[id];
+      [...tb.children].forEach(tr=>{ const tds=[...tr.children]; if(tds.length!==ths.length)return;
+        tds.forEach((td,k)=>{ if(td.dataset.ok)return; td.dataset.ok='1'; const l=ths[k]; td.dataset.l=l;
+          if(l===tit)td.classList.add('tit'); else if(l===der)td.classList.add('der'); else if(!l)td.classList.add('acc');
+          const tx=td.textContent.trim(); if(l&&l!==tit&&l!==der&&(tx===''||tx==='-'||tx==='\u2014'||tx==='$0'||tx==='$ 0'))td.classList.add('vacio'); }); });
+    });
+  }
+  let _t=null; new MutationObserver(()=>{clearTimeout(_t);_t=setTimeout(etiquetar,30);}).observe(document.body,{childList:true,subtree:true});
+  etiquetar();
+})();
+
 boot();
 
 // ────────────────────────────────────────────────────────────────
